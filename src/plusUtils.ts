@@ -9,7 +9,6 @@ import {
   EmbeddingModels,
   PlusUtmMedium,
 } from "@/constants";
-import { BrevilabsClient } from "@/LLMProviders/brevilabsClient";
 import { logError, logInfo } from "@/logger";
 import { getSettings, setSettings, updateSetting, useSettingsValue } from "@/settings/model";
 import { Notice } from "obsidian";
@@ -52,9 +51,6 @@ const SELF_HOST_GRACE_PERIOD_MS = 15 * 24 * 60 * 60 * 1000;
 /** Number of successful validations required for permanent self-host mode */
 const SELF_HOST_PERMANENT_VALIDATION_COUNT = 3;
 
-/** Plans that qualify for self-host mode */
-const SELF_HOST_ELIGIBLE_PLANS = ["believer", "supporter"];
-
 /**
  * Check if self-host access is valid.
  * Valid if: permanently validated (3+ successful checks) OR within 15-day grace period.
@@ -95,12 +91,7 @@ export function isPlusModel(modelKey: string): boolean {
  * Use this for synchronous checks (e.g., model validation, UI state).
  */
 export function isPlusEnabled(): boolean {
-  const settings = getSettings();
-  // Self-host mode with valid plan validation bypasses Plus requirements
-  if (isSelfHostModeValid()) {
-    return true;
-  }
-  return settings.isPlusUser === true;
+  return true;
 }
 
 /**
@@ -108,54 +99,22 @@ export function isPlusEnabled(): boolean {
  * Returns true when self-host mode is valid to allow offline usage.
  */
 export function useIsPlusUser(): boolean | undefined {
-  const settings = useSettingsValue();
-  // Self-host mode with valid plan validation bypasses Plus requirements (requires license key)
-  if (
-    settings.plusLicenseKey &&
-    settings.enableSelfHostMode &&
-    settings.selfHostModeValidatedAt != null
-  ) {
-    // Permanently valid after 3 successful validations
-    if (settings.selfHostValidationCount >= SELF_HOST_PERMANENT_VALIDATION_COUNT) {
-      return true;
-    }
-    // Otherwise, check grace period
-    const isValid = Date.now() - settings.selfHostModeValidatedAt < SELF_HOST_GRACE_PERIOD_MS;
-    if (isValid) {
-      return true;
-    }
-  }
-  return settings.isPlusUser;
+  return true;
 }
 
 /**
  * Check if the user is a Plus user.
  * When self-host mode is valid, this returns true to allow offline usage.
  */
-export async function checkIsPlusUser(context?: Record<string, any>): Promise<boolean | undefined> {
-  // Self-host mode with valid plan validation bypasses license check
-  if (isSelfHostModeValid()) {
-    return true;
-  }
-
-  if (!getSettings().plusLicenseKey) {
-    turnOffPlus();
-    return false;
-  }
-  const brevilabsClient = BrevilabsClient.getInstance();
-  const result = await brevilabsClient.validateLicenseKey(context);
-  return result.isValid;
+export async function checkIsPlusUser(
+  _context?: Record<string, any>
+): Promise<boolean | undefined> {
+  return true;
 }
 
-/** Check if the user is on a plan that qualifies for self-host mode. */
+/** Check if self-host mode can be enabled locally. */
 export async function isSelfHostEligiblePlan(): Promise<boolean> {
-  if (!getSettings().plusLicenseKey) {
-    return false;
-  }
-  const brevilabsClient = BrevilabsClient.getInstance();
-  const result = await brevilabsClient.validateLicenseKey();
-  const planName = result.plan?.toLowerCase();
-  return planName != null && SELF_HOST_ELIGIBLE_PLANS.includes(planName);
+  return Boolean(getSettings().selfHostUrl?.trim());
 }
 
 /**
@@ -372,12 +331,12 @@ export function applyPlusSettings(): void {
   }
 }
 
-export function createPlusPageUrl(medium: PlusUtmMedium): string {
-  return `https://www.obsidiancopilot.com?utm_source=obsidian&utm_medium=${medium}`;
+export function createPlusPageUrl(_medium: PlusUtmMedium): string {
+  return "";
 }
 
-export function navigateToPlusPage(medium: PlusUtmMedium): void {
-  window.open(createPlusPageUrl(medium), "_blank");
+export function navigateToPlusPage(_medium: PlusUtmMedium): void {
+  new Notice("Copilot Plus website integration is disabled in this fork.");
 }
 
 export function turnOnPlus(): void {

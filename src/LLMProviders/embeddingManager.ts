@@ -11,7 +11,6 @@ import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { OllamaEmbeddings } from "@langchain/ollama";
 import { AzureOpenAIEmbeddings, OpenAIEmbeddings } from "@langchain/openai";
 import { Notice } from "obsidian";
-import { BrevilabsClient } from "./brevilabsClient";
 import { CustomJinaEmbeddings } from "./CustomJinaEmbeddings";
 import { CustomOpenAIEmbeddings } from "./CustomOpenAIEmbeddings";
 
@@ -146,22 +145,6 @@ export default class EmbeddingManager {
     }
 
     const customModel = this.getCustomModel(embeddingModelKey);
-
-    // Check if model is plus-exclusive but user is not a plus user
-    if (customModel.plusExclusive && !getSettings().isPlusUser) {
-      new Notice("Plus-only model, please consider upgrading to Plus to access it.");
-      throw new CustomError("Plus-only model selected but user is not on Plus plan");
-    }
-
-    // Check if model is believer-exclusive but user is not on believer plan
-    if (customModel.believerExclusive) {
-      const brevilabsClient = BrevilabsClient.getInstance();
-      const result = await brevilabsClient.validateLicenseKey();
-      if (!result.plan || result.plan.toLowerCase() !== "believer") {
-        new Notice("Believer-only model, please consider upgrading to Believer to access it.");
-        throw new CustomError("Believer-only model selected but user is not on Believer plan");
-      }
-    }
 
     const selectedModel = EmbeddingManager.modelMap[embeddingModelKey];
     if (!selectedModel.hasApiKey) {
