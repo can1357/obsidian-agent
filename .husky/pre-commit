@@ -1,6 +1,6 @@
 # .husky/pre-commit
-prettier $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g') --write --ignore-unknown
+bunx biome check --write --no-errors-on-unmatched --staged
 git update-index --again
 
 # Add linting
-npm run lint
+bun run lint

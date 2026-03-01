@@ -17,7 +17,7 @@ Copilot for Obsidian is an AI-powered assistant plugin that integrates various L
 
 - `bun run lint` - Run Biome lint checks
 - `bun run lint:fix` - Auto-fix Biome lint issues
-- `bun run format` - Format code with Prettier
+- `bun run format` - Format code with Biome
 - `bun run format:check` - Check formatting without changing files
 - **Before PR:** Always run `bun run format && bun run lint`
 
