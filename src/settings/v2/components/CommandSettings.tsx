@@ -1,18 +1,3 @@
-import React, { useMemo, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { useCustomCommands } from "@/commands/state";
-import { MobileCard, MobileCardDropdownAction } from "@/components/ui/mobile-card";
-import { CopyPlus, GripVertical, Lightbulb, PenLine, Plus, Trash2 } from "lucide-react";
-
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   closestCenter,
   DndContext,
@@ -29,25 +14,38 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-
-import { cn } from "@/lib/utils";
-import { logError } from "@/logger";
-import { updateSetting, useSettingsValue } from "@/settings/model";
-import { PromptSortStrategy } from "@/types";
-import { HelpTooltip } from "@/components/ui/help-tooltip";
+import { CopyPlus, GripVertical, Lightbulb, PenLine, Plus, Trash2 } from "lucide-react";
+import { Notice } from "obsidian";
+import React, { useMemo, useRef } from "react";
+import { CustomCommandSettingsModal } from "@/commands/CustomCommandSettingsModal";
 import { EMPTY_COMMAND } from "@/commands/constants";
 import { CustomCommandManager } from "@/commands/customCommandManager";
-import { CustomCommandSettingsModal } from "@/commands/CustomCommandSettingsModal";
 import {
   generateCopyCommandName,
   loadAllCustomCommands,
   sortCommandsByOrder,
 } from "@/commands/customCommandUtils";
 import { generateDefaultCommands } from "@/commands/migrator";
+import { useCustomCommands } from "@/commands/state";
 import { CustomCommand } from "@/commands/type";
 import { ConfirmModal } from "@/components/modals/ConfirmModal";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { HelpTooltip } from "@/components/ui/help-tooltip";
+import { MobileCard, MobileCardDropdownAction } from "@/components/ui/mobile-card";
 import { SettingItem } from "@/components/ui/setting-item";
-import { Notice } from "obsidian";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { cn } from "@/lib/utils";
+import { logError } from "@/logger";
+import { updateSetting, useSettingsValue } from "@/settings/model";
+import { PromptSortStrategy } from "@/types";
 
 const MobileCommandCard: React.FC<{
   command: CustomCommand;
@@ -85,7 +83,7 @@ const MobileCommandCard: React.FC<{
           `Are you sure you want to delete the command "${cmd.title}"? This will permanently remove the command file and cannot be undone.`,
           "Delete Command",
           "Delete",
-          "Cancel"
+          "Cancel",
         ).open();
       },
       variant: "destructive",
@@ -114,7 +112,7 @@ const MobileCommandCard: React.FC<{
                 ...command,
                 showInContextMenu: checked === true,
               },
-              command.title
+              command.title,
             );
           }}
         />
@@ -138,7 +136,7 @@ const MobileCommandCard: React.FC<{
                 ...command,
                 showInSlashMenu: checked === true,
               },
-              command.title
+              command.title,
             )
           }
         />
@@ -192,7 +190,7 @@ const SortableTableRow: React.FC<{
       className={cn(
         "tw-transition-colors",
         isDragging &&
-          "tw-relative tw-z-[100] tw-cursor-grabbing tw-shadow-lg tw-backdrop-blur-sm tw-border-accent/50"
+          "tw-relative tw-z-[100] tw-cursor-grabbing tw-shadow-lg tw-backdrop-blur-sm tw-border-accent/50",
       )}
     >
       <TableCell className="tw-w-10">
@@ -214,7 +212,7 @@ const SortableTableRow: React.FC<{
                 ...command,
                 showInContextMenu: checked === true,
               },
-              command.title
+              command.title,
             );
           }}
           className="tw-mx-auto"
@@ -229,7 +227,7 @@ const SortableTableRow: React.FC<{
                 ...command,
                 showInSlashMenu: checked === true,
               },
-              command.title
+              command.title,
             )
           }
           className="tw-mx-auto"
@@ -247,7 +245,7 @@ const SortableTableRow: React.FC<{
                 command,
                 async (updatedCommand) => {
                   await onUpdate(updatedCommand, command.title);
-                }
+                },
               );
               modal.open();
             }}
@@ -272,7 +270,7 @@ const SortableTableRow: React.FC<{
                 `Are you sure you want to delete the command "${command.title}"? This will permanently remove the command file and cannot be undone.`,
                 "Delete Command",
                 "Delete",
-                "Cancel"
+                "Cancel",
               ).open();
             }}
           >
@@ -300,7 +298,7 @@ export const CommandSettings: React.FC = () => {
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleUpdate = async (newCommand: CustomCommand, prevCommandTitle: string) => {
@@ -460,7 +458,7 @@ export const CommandSettings: React.FC = () => {
                     app,
                     generateDefaultCommands,
                     "This will add default commands to your custom prompts folder. Do you want to continue?",
-                    "Generate Default Commands"
+                    "Generate Default Commands",
                   ).open()
                 }
               >
@@ -480,7 +478,7 @@ export const CommandSettings: React.FC = () => {
                   newCommand,
                   async (updatedCommand) => {
                     await handleCreate(updatedCommand);
-                  }
+                  },
                 );
                 modal.open();
               }}

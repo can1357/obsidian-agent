@@ -59,7 +59,7 @@ export class CanvasLoader {
         }
         if (n.type === "text") return { ...n, content: n.text ?? "" };
         return { ...n, content: "" }; // link / group
-      })
+      }),
     );
 
     const allEdges = [...edges];

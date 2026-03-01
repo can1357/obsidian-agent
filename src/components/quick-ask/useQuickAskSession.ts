@@ -3,23 +3,22 @@
  * Handles conversation state and delegates streaming to shared hook.
  */
 
-import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { Notice } from "obsidian";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-
-import {
-  useStreamingChatSession,
-  type StreamingChatTurnContext,
-} from "@/hooks/use-streaming-chat-session";
-import {
-  QUICK_COMMAND_SYSTEM_PROMPT,
-  appendIncludeNoteContextPlaceholders,
-} from "@/commands/quickCommandPrompts";
 import { processCommandPrompt } from "@/commands/customCommandUtils";
-import { findCustomModel } from "@/utils";
+import {
+  appendIncludeNoteContextPlaceholders,
+  QUICK_COMMAND_SYSTEM_PROMPT,
+} from "@/commands/quickCommandPrompts";
+import {
+  type StreamingChatTurnContext,
+  useStreamingChatSession,
+} from "@/hooks/use-streaming-chat-session";
 import { logError, logWarn } from "@/logger";
-import type { QuickAskMessage } from "./types";
 import type { CopilotSettings } from "@/settings/model";
+import { findCustomModel } from "@/utils";
+import type { QuickAskMessage } from "./types";
 
 interface UseQuickAskSessionParams {
   selectedText: string;
@@ -159,7 +158,7 @@ export function useQuickAskSession(params: UseQuickAskSessionParams): QuickAskSe
         });
       }
     },
-    [includeNoteContext, runTurn, selectedText]
+    [includeNoteContext, runTurn, selectedText],
   );
 
   const stop = useCallback(() => {

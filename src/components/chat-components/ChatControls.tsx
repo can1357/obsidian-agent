@@ -1,15 +1,3 @@
-import { getCurrentProject, setCurrentProject, setProjectLoading, useChainType } from "@/aiParams";
-import { ProjectContextCache } from "@/cache/projectContextCache";
-import { ChainType } from "@/chainFactory";
-import { ConfirmModal } from "@/components/modals/ConfirmModal";
-import { Button } from "@/components/ui/button";
-import { DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { SettingSwitch } from "@/components/ui/setting-switch";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { logError } from "@/logger";
-import { updateSetting, useSettingsValue } from "@/settings/model";
-import { Docs4LLMParser } from "@/tools/FileParserManager";
-import { isRateLimitError } from "@/utils/rateLimitUtils";
 import { DropdownMenu, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
   AlertTriangle,
@@ -26,12 +14,24 @@ import {
 } from "lucide-react";
 import { Notice } from "obsidian";
 import React from "react";
+import { getCurrentProject, setCurrentProject, setProjectLoading, useChainType } from "@/aiParams";
+import { ProjectContextCache } from "@/cache/projectContextCache";
+import { ChainType } from "@/chainFactory";
 import {
   ChatHistoryItem,
   ChatHistoryPopover,
 } from "@/components/chat-components/ChatHistoryPopover";
-import { TokenCounter } from "./TokenCounter";
 import { ChatSettingsPopover } from "@/components/chat-components/ChatSettingsPopover";
+import { ConfirmModal } from "@/components/modals/ConfirmModal";
+import { Button } from "@/components/ui/button";
+import { DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { SettingSwitch } from "@/components/ui/setting-switch";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { logError } from "@/logger";
+import { updateSetting, useSettingsValue } from "@/settings/model";
+import { Docs4LLMParser } from "@/tools/FileParserManager";
+import { isRateLimitError } from "@/utils/rateLimitUtils";
+import { TokenCounter } from "./TokenCounter";
 
 export async function refreshVaultIndex() {
   try {
@@ -126,7 +126,7 @@ export async function forceRebuildCurrentProjectContext() {
         setProjectLoading(true); // Start loading indicator
         new Notice(
           `Force rebuilding context for project: ${currentProject.name}... This will take some time and re-fetch all data.`,
-          10000 // Longer notice as this is a bigger operation
+          10000, // Longer notice as this is a bigger operation
         );
 
         // Step 1: Completely clear all cached data for this project (in-memory and on-disk)
@@ -143,7 +143,7 @@ export async function forceRebuildCurrentProjectContext() {
         if (plugin && plugin.projectManager) {
           await plugin.projectManager.getProjectContext(currentProject.id);
           new Notice(
-            `Project context for "${currentProject.name}" rebuilt successfully from scratch.`
+            `Project context for "${currentProject.name}" rebuilt successfully from scratch.`,
           );
         } else {
           throw new Error("Copilot plugin or ProjectManager not available for rebuild.");
@@ -162,7 +162,7 @@ export async function forceRebuildCurrentProjectContext() {
     },
     // Confirmation message with a strong warning
     `DANGER: This will permanently delete all cached data (markdown, web URLs, YouTube transcripts, and processed file content) for the project "${currentProject.name}" from both memory and disk. The context will then be rebuilt from scratch, re-fetching all remote data and re-processing all local files. This cannot be undone. Are you absolutely sure?`,
-    "Force Rebuild Project Context" // Modal title
+    "Force Rebuild Project Context", // Modal title
   );
   modal.open();
 }
@@ -380,7 +380,7 @@ export function ChatControls({
                       app,
                       () => forceReindexVault(),
                       "This will delete and rebuild your entire vault index from scratch. This operation cannot be undone. Are you sure you want to proceed?",
-                      "Force Reindex Vault"
+                      "Force Reindex Vault",
                     );
                     modal.open();
                   }}

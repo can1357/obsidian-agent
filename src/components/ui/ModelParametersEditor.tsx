@@ -173,7 +173,7 @@ export function ModelParametersEditor({
                 : []),
               ...REASONING_EFFORT_OPTIONS.filter(
                 (opt) =>
-                  opt.value !== ReasoningEffort.MINIMAL && opt.value !== ReasoningEffort.XHIGH
+                  opt.value !== ReasoningEffort.MINIMAL && opt.value !== ReasoningEffort.XHIGH,
               ),
               ...(model.name.startsWith("gpt-5.2") && model.provider === "openai"
                 ? [{ value: ReasoningEffort.XHIGH, label: "Extra High" }]

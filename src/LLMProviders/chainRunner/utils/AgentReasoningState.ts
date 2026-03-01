@@ -144,7 +144,7 @@ export function summarizeToolResult(
   toolName: string,
   result: { success: boolean; result?: string },
   sourceInfo?: LocalSearchSourceInfo,
-  args?: Record<string, unknown>
+  args?: Record<string, unknown>,
 ): string {
   if (!result.success) {
     // Reuse the human-friendly call summary (e.g., "Searching notes") → "Searching notes failed"
@@ -241,7 +241,7 @@ export function summarizeToolResult(
 export function summarizeToolCall(
   toolName: string,
   args?: Record<string, unknown>,
-  expansion?: QueryExpansionInfo
+  expansion?: QueryExpansionInfo,
 ): string {
   switch (toolName) {
     case "localSearch": {
@@ -253,7 +253,7 @@ export function summarizeToolCall(
             typeof t === "string" &&
             t.trim().length > 0 &&
             !t.includes("[object ") &&
-            t !== "[object Object]"
+            t !== "[object Object]",
         );
         if (validTerms.length > 0) {
           const terms = validTerms

@@ -384,7 +384,7 @@ describe("ChunkManager", () => {
 [^5]: There are many reasons curious people are more likely to do great work.`;
 
       mockApp.vault.cachedRead = jest.fn((file) =>
-        Promise.resolve(file.path === notePath ? noteContent : "")
+        Promise.resolve(file.path === notePath ? noteContent : ""),
       );
       mockApp.metadataCache.getFileCache = jest.fn((file) =>
         file.path === notePath
@@ -398,7 +398,7 @@ describe("ChunkManager", () => {
               ],
               frontmatter: null,
             }
-          : { headings: [], frontmatter: null }
+          : { headings: [], frontmatter: null },
       );
 
       const chunks = await chunkManager.getChunks([notePath], {
@@ -409,7 +409,7 @@ describe("ChunkManager", () => {
       expect(chunks.length).toBeGreaterThan(1);
       expect(chunks[0].content).toContain("# 218 How to Do Great Work");
       expect(chunks[0].content).toContain(
-        "If you collected lists of techniques for doing great work"
+        "If you collected lists of techniques for doing great work",
       );
       expect(chunks[0].content.length).toBeGreaterThan(500);
     });
@@ -425,7 +425,7 @@ describe("ChunkManager", () => {
       ].join("\n\n");
 
       mockApp.vault.cachedRead = jest.fn((file) =>
-        Promise.resolve(file.path === notePath ? noteContent : "")
+        Promise.resolve(file.path === notePath ? noteContent : ""),
       );
       mockApp.metadataCache.getFileCache = jest.fn((file) =>
         file.path === notePath
@@ -433,7 +433,7 @@ describe("ChunkManager", () => {
               headings: [{ heading: "Heading", level: 1, position: { start: { offset: 0 } } }],
               frontmatter: null,
             }
-          : { headings: [], frontmatter: null }
+          : { headings: [], frontmatter: null },
       );
 
       const chunks = await chunkManager.getChunks([notePath], {
@@ -602,7 +602,7 @@ describe("ChunkManager", () => {
       // Create content that will generate multiple chunks - make it much longer
       const paragraph =
         "This is a substantial paragraph with enough content to create multiple chunks when split by the chunking algorithm. ".repeat(
-          20
+          20,
         );
       const longContent = Array(10).fill(paragraph).join("\n\n");
       createMockFile("test.md", longContent);

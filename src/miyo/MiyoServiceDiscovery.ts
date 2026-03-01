@@ -1,7 +1,7 @@
+import { Platform } from "obsidian";
 import { logInfo, logWarn } from "@/logger";
 import { getSettings } from "@/settings/model";
 import { err2String } from "@/utils";
-import { Platform } from "obsidian";
 
 /**
  * Service discovery payload for Miyo local service.
@@ -41,10 +41,7 @@ export class MiyoServiceDiscovery {
    * @returns The base URL (without trailing slash) or null if unavailable.
    */
   public async resolveBaseUrl(
-    options: {
-      overrideUrl?: string;
-      forceRefresh?: boolean;
-    } = {}
+    options: { overrideUrl?: string; forceRefresh?: boolean } = {},
   ): Promise<string | null> {
     const overrideUrl = (options.overrideUrl || "").trim();
     if (overrideUrl.length > 0) {

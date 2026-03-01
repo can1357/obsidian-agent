@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from "react";
-import { TFile, App } from "obsidian";
-import ChatInput from "./ChatInput";
+import { App, TFile } from "obsidian";
+import React, { useCallback, useState } from "react";
 import { ChatMessage } from "@/types/message";
+import ChatInput from "./ChatInput";
 import { useActiveWebTabState } from "./hooks/useActiveWebTabState";
 
 interface InlineMessageEditorProps {
@@ -32,7 +32,7 @@ export const InlineMessageEditor: React.FC<InlineMessageEditorProps> = ({
 
   // Convert initialContext to the format expected by ChatInput
   const [contextNotes, setContextNotes] = useState<TFile[]>(
-    initialContext?.notes?.map((note) => note as TFile) || []
+    initialContext?.notes?.map((note) => note as TFile) || [],
   );
   const [includeActiveNote, setIncludeActiveNote] = useState(false);
   const [includeActiveWebTab, setIncludeActiveWebTab] = useState(false);
@@ -48,7 +48,7 @@ export const InlineMessageEditor: React.FC<InlineMessageEditorProps> = ({
         urls: string[];
         tags: string[];
         folders: string[];
-      }
+      },
     ) => {
       // Convert back to ChatMessage context format
       const newContext: ChatMessage["context"] = {
@@ -61,7 +61,7 @@ export const InlineMessageEditor: React.FC<InlineMessageEditorProps> = ({
 
       onSave(text, newContext);
     },
-    [onSave, initialContext?.selectedTextContexts]
+    [onSave, initialContext?.selectedTextContexts],
   );
 
   // Handle cancelling the edit

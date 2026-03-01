@@ -1,42 +1,42 @@
-import React, { useCallback, useEffect } from "react";
-import { $getRoot, EditorState, LexicalEditor as LexicalEditorType } from "lexical";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
-import { PlainTextPlugin } from "@lexical/react/LexicalPlainTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
-import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
+import { PlainTextPlugin } from "@lexical/react/LexicalPlainTextPlugin";
+import { $getRoot, EditorState, LexicalEditor as LexicalEditorType } from "lexical";
 import { TFile } from "obsidian";
-import type { WebTabContext } from "@/types/message";
-import { SlashCommandPlugin } from "./plugins/SlashCommandPlugin";
-import { NoteCommandPlugin } from "./plugins/NoteCommandPlugin";
-import { TagCommandPlugin } from "./plugins/TagCommandPlugin";
-import { AtMentionCommandPlugin } from "./plugins/AtMentionCommandPlugin";
-import { NotePillNode } from "./pills/NotePillNode";
-import { URLPillNode } from "./pills/URLPillNode";
-import { ToolPillNode } from "./pills/ToolPillNode";
-import { FolderPillNode } from "./pills/FolderPillNode";
-import { ActiveNotePillNode } from "./pills/ActiveNotePillNode";
-import { WebTabPillNode } from "./pills/WebTabPillNode";
-import { ActiveWebTabPillNode } from "./pills/ActiveWebTabPillNode";
-import { PillDeletionPlugin } from "./plugins/PillDeletionPlugin";
-import { KeyboardPlugin } from "./plugins/KeyboardPlugin";
-import { ValueSyncPlugin } from "./plugins/ValueSyncPlugin";
-import { FocusPlugin } from "./plugins/FocusPlugin";
-import { NotePillSyncPlugin } from "./plugins/NotePillSyncPlugin";
-import { URLPillSyncPlugin } from "./plugins/URLPillSyncPlugin";
-import { ToolPillSyncPlugin } from "./plugins/ToolPillSyncPlugin";
-import { FolderPillSyncPlugin } from "./plugins/FolderPillSyncPlugin";
-import { ActiveNotePillSyncPlugin } from "./plugins/ActiveNotePillSyncPlugin";
-import { WebTabPillSyncPlugin } from "./plugins/WebTabPillSyncPlugin";
-import { PastePlugin } from "./plugins/PastePlugin";
-import { TextInsertionPlugin } from "./plugins/TextInsertionPlugin";
+import React, { useCallback, useEffect } from "react";
+import { ChainType } from "@/chainFactory";
 import { useChatInput } from "@/context/ChatInputContext";
 import { cn } from "@/lib/utils";
 import { logError } from "@/logger";
-import { ActiveFileProvider } from "./context/ActiveFileContext";
-import { ChainType } from "@/chainFactory";
 import { useSettingsValue } from "@/settings/model";
+import type { WebTabContext } from "@/types/message";
+import { ActiveFileProvider } from "./context/ActiveFileContext";
+import { ActiveNotePillNode } from "./pills/ActiveNotePillNode";
+import { ActiveWebTabPillNode } from "./pills/ActiveWebTabPillNode";
+import { FolderPillNode } from "./pills/FolderPillNode";
+import { NotePillNode } from "./pills/NotePillNode";
+import { ToolPillNode } from "./pills/ToolPillNode";
+import { URLPillNode } from "./pills/URLPillNode";
+import { WebTabPillNode } from "./pills/WebTabPillNode";
+import { ActiveNotePillSyncPlugin } from "./plugins/ActiveNotePillSyncPlugin";
+import { AtMentionCommandPlugin } from "./plugins/AtMentionCommandPlugin";
+import { FocusPlugin } from "./plugins/FocusPlugin";
+import { FolderPillSyncPlugin } from "./plugins/FolderPillSyncPlugin";
+import { KeyboardPlugin } from "./plugins/KeyboardPlugin";
+import { NoteCommandPlugin } from "./plugins/NoteCommandPlugin";
+import { NotePillSyncPlugin } from "./plugins/NotePillSyncPlugin";
+import { PastePlugin } from "./plugins/PastePlugin";
+import { PillDeletionPlugin } from "./plugins/PillDeletionPlugin";
+import { SlashCommandPlugin } from "./plugins/SlashCommandPlugin";
+import { TagCommandPlugin } from "./plugins/TagCommandPlugin";
+import { TextInsertionPlugin } from "./plugins/TextInsertionPlugin";
+import { ToolPillSyncPlugin } from "./plugins/ToolPillSyncPlugin";
+import { URLPillSyncPlugin } from "./plugins/URLPillSyncPlugin";
+import { ValueSyncPlugin } from "./plugins/ValueSyncPlugin";
+import { WebTabPillSyncPlugin } from "./plugins/WebTabPillSyncPlugin";
 
 interface LexicalEditorProps {
   value: string;
@@ -137,7 +137,7 @@ const LexicalEditor: React.FC<LexicalEditorProps> = ({
       },
       editable: !disabled,
     }),
-    [onURLsChange, disabled]
+    [onURLsChange, disabled],
   );
 
   const handleEditorChange = useCallback(
@@ -148,7 +148,7 @@ const LexicalEditor: React.FC<LexicalEditorProps> = ({
         onChange(textContent);
       });
     },
-    [onChange]
+    [onChange],
   );
 
   const handleEditorReady = useCallback(
@@ -156,7 +156,7 @@ const LexicalEditor: React.FC<LexicalEditorProps> = ({
       setEditorInstance(editor);
       onEditorReady?.(editor);
     },
-    [onEditorReady]
+    [onEditorReady],
   );
 
   return (

@@ -1,10 +1,10 @@
-import { App, TFile } from "obsidian";
-import { ChatMessage } from "@/types/message";
-import { logInfo, logError, logWarn } from "@/logger";
-import { getSettings } from "@/settings/model";
-import { ensureFolderExists } from "@/utils";
 import { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { App, TFile } from "obsidian";
+import { logError, logInfo, logWarn } from "@/logger";
+import { getSettings } from "@/settings/model";
+import { ChatMessage } from "@/types/message";
+import { ensureFolderExists } from "@/utils";
 
 /**
  * User Memory Management Class
@@ -28,7 +28,7 @@ export class UserMemoryManager {
     try {
       // Load recent conversations
       const recentConversationsFile = this.app.vault.getAbstractFileByPath(
-        this.getRecentConversationFilePath()
+        this.getRecentConversationFilePath(),
       );
       if (recentConversationsFile instanceof TFile) {
         this.recentConversationsContent = await this.app.vault.read(recentConversationsFile);
@@ -39,7 +39,7 @@ export class UserMemoryManager {
 
       // Load saved memories
       const savedMemoriesFile = this.app.vault.getAbstractFileByPath(
-        this.getSavedMemoriesFilePath()
+        this.getSavedMemoriesFilePath(),
       );
       if (savedMemoriesFile instanceof TFile) {
         this.savedMemoriesContent = await this.app.vault.read(savedMemoriesFile);
@@ -82,7 +82,7 @@ export class UserMemoryManager {
    */
   async updateSavedMemory(
     query: string,
-    chatModel: BaseChatModel
+    chatModel: BaseChatModel,
   ): Promise<{ content?: string; error?: string }> {
     const settings = getSettings();
 
@@ -106,7 +106,7 @@ export class UserMemoryManager {
       const result = await this.updateSavedMemoryFile(
         this.getSavedMemoriesFilePath(),
         query,
-        chatModel
+        chatModel,
       );
       return result;
     } catch (error) {
@@ -169,7 +169,7 @@ export class UserMemoryManager {
    */
   private async createConversationSection(
     messages: ChatMessage[],
-    chatModel: BaseChatModel
+    chatModel: BaseChatModel,
   ): Promise<string> {
     const { title, summary } = await this.extractTitleAndSummary(messages, chatModel);
     const timestamp = this.getTimestamp();
@@ -210,7 +210,7 @@ export class UserMemoryManager {
       const conversationSection = await this.createConversationSection(messages, chatModel);
       await this.addToRecentConversationsFile(
         this.getRecentConversationFilePath(),
-        conversationSection
+        conversationSection,
       );
     } catch (error) {
       logError("[UserMemoryManager] Error analyzing chat messages for user memory:", error);
@@ -245,7 +245,7 @@ export class UserMemoryManager {
   private async updateSavedMemoryFile(
     filePath: string,
     query: string,
-    chatModel: BaseChatModel
+    chatModel: BaseChatModel,
   ): Promise<{ content?: string; error?: string }> {
     const existingFile = this.app.vault.getAbstractFileByPath(filePath);
 
@@ -316,7 +316,7 @@ ${query.trim()}
    */
   private async addToRecentConversationsFile(
     filePath: string,
-    newConversationSection: string
+    newConversationSection: string,
   ): Promise<void> {
     const existingFile = this.app.vault.getAbstractFileByPath(filePath);
 
@@ -410,7 +410,7 @@ ${query.trim()}
    */
   private async extractTitleAndSummary(
     messages: ChatMessage[],
-    chatModel: BaseChatModel
+    chatModel: BaseChatModel,
   ): Promise<{ title: string; summary: string }> {
     const conversationText = messages.map((msg) => `${msg.sender}: ${msg.message}`).join("\n\n");
 

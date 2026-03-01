@@ -1,4 +1,4 @@
-import { logInfo, logWarn, logMarkdownBlock, logTable } from "@/logger";
+import { logInfo, logMarkdownBlock, logTable, logWarn } from "@/logger";
 
 /**
  * Quality summary for search results.
@@ -158,7 +158,7 @@ export function formatSearchResultStringForLLM(resultString: string): string {
  * @returns Sources array with explanation preserved for UI
  */
 export function extractSourcesFromSearchResults(
-  searchResults: any[]
+  searchResults: any[],
 ): { title: string; path: string; score: number; explanation?: any }[] {
   if (!Array.isArray(searchResults)) {
     return [];
@@ -283,7 +283,7 @@ export function summarizeExplanation(explanation: any): string {
 export function formatSplitSearchResultsForLLM(
   filterDocs: any[],
   searchDocs: any[],
-  startId = 1
+  startId = 1,
 ): string {
   let currentId = startId;
   const sections: string[] = [];
@@ -402,7 +402,7 @@ export function logSearchResultsDebugTable(searchResults: any[]): void {
   const mdSep = `| ---: | :-: | --- | --- | ---: | --- |`;
   const mdRows = rows.map(
     (r) =>
-      `| ${r.idx} | ${r.in} | ${esc(r.path)} | ${r.mtime || ""} | ${r.score} | ${esc(r.explanation)} |`
+      `| ${r.idx} | ${r.in} | ${esc(r.path)} | ${r.mtime || ""} | ${r.score} | ${esc(r.explanation)} |`,
   );
   // Surround with blank lines to ensure proper table block rendering
   logMarkdownBlock([

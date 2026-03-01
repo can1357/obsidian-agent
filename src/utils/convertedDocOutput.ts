@@ -1,6 +1,6 @@
+import { TFile, Vault } from "obsidian";
 import { logError, logInfo, logWarn } from "@/logger";
 import { ensureFolderExists } from "@/utils";
-import { TFile, Vault } from "obsidian";
 
 /**
  * Save converted document content to the specified output folder.
@@ -17,7 +17,7 @@ export async function saveConvertedDocOutput(
   file: TFile,
   content: string,
   vault: Vault,
-  outputFolder: string
+  outputFolder: string,
 ): Promise<void> {
   const trimmed = outputFolder?.trim();
   if (!trimmed) return;

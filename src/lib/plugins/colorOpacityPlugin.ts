@@ -40,7 +40,7 @@ const generateUtility =
 const generateAllUtilities = (e: any) => (color: string, name: string, opacity: number) => {
   const properties: ColorProperty[] = ["background-color", "border-color", "color"];
   const utilities = properties.map((property) =>
-    generateUtility(e)(property, name, color, opacity)
+    generateUtility(e)(property, name, color, opacity),
   );
 
   return Object.assign({}, ...utilities);

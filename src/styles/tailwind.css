@@ -894,8 +894,7 @@ If your plugin does not need CSS, delete this file.
 }
 
 /* Editor mode for mobile - legacy (no bottom navbar): minimal padding */
-body.is-mobile
-  .workspace-tab-container
+body.is-mobile .workspace-tab-container
   .workspace-leaf-content[data-type="copilot-chat-view"]
   .view-content {
   padding-bottom: var(--size-4-1) !important;
@@ -908,8 +907,9 @@ body.is-mobile
     .workspace-leaf-content[data-type="copilot-chat-view"]
     .view-content {
     padding-bottom: calc(
-      var(--navbar-height, 50px) + max(var(--safe-area-inset-bottom, 0px), var(--size-4-3)) +
-        var(--size-4-1)
+      var(--navbar-height, 50px) +
+      max(var(--safe-area-inset-bottom, 0px), var(--size-4-3)) +
+      var(--size-4-1)
     ) !important;
   }
 }
@@ -921,19 +921,21 @@ body.is-mobile
     .workspace-leaf-content[data-type="obsidian-copilot-apply-view"]
     .view-content {
     padding-bottom: calc(
-      var(--navbar-height, 50px) + max(var(--safe-area-inset-bottom, 0px), var(--size-4-3)) +
-        var(--size-4-1) + var(--size-4-4)
+      var(--navbar-height, 50px) +
+      max(var(--safe-area-inset-bottom, 0px), var(--size-4-3)) +
+      var(--size-4-1) +
+      var(--size-4-4)
     ) !important;
   }
 
   /* Lift the fixed Accept/Reject button bar above the navbar */
-  body.is-mobile:has(.mobile-navbar):not(.is-hidden-nav)
-    .workspace-tab-container
+  body.is-mobile:has(.mobile-navbar):not(.is-hidden-nav) .workspace-tab-container
     .workspace-leaf-content[data-type="obsidian-copilot-apply-view"]
     .tw-fixed.tw-bottom-4 {
     bottom: calc(
-      var(--navbar-height, 50px) + max(var(--safe-area-inset-bottom, 0px), var(--size-4-3)) +
-        var(--size-4-1)
+      var(--navbar-height, 50px) +
+      max(var(--safe-area-inset-bottom, 0px), var(--size-4-3)) +
+      var(--size-4-1)
     ) !important;
   }
 }

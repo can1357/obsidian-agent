@@ -1,19 +1,19 @@
+import { ChevronDown } from "lucide-react";
 import { App, Modal } from "obsidian";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Textarea } from "@/components/ui/textarea";
 import React, { useState } from "react";
 import { createRoot, Root } from "react-dom/client";
-import { getModelKeyFromModel, useSettingsValue } from "@/settings/model";
-import { getModelDisplayText } from "@/components/ui/model-display";
-import { cn } from "@/lib/utils";
-import { ChevronDown } from "lucide-react";
-import { logError } from "@/logger";
-import { CustomPromptSyntaxInstruction } from "@/components/CustomPromptSyntaxInstruction";
-import { CustomCommand } from "@/commands/type";
 import { validateCommandName } from "@/commands/customCommandUtils";
+import { CustomCommand } from "@/commands/type";
+import { CustomPromptSyntaxInstruction } from "@/components/CustomPromptSyntaxInstruction";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { getModelDisplayText } from "@/components/ui/model-display";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { logError } from "@/logger";
+import { getModelKeyFromModel, useSettingsValue } from "@/settings/model";
 
 type FormErrors = {
   title?: string;
@@ -123,7 +123,7 @@ function CustomCommandSettingsModalContent({
               "tw-text-sm !tw-shadow tw-transition-colors",
               "focus:tw-outline-none focus:tw-ring-1 focus:tw-ring-ring",
               "disabled:tw-cursor-not-allowed disabled:tw-opacity-50",
-              "hover:tw-bg-interactive-hover hover:tw-text-normal"
+              "hover:tw-bg-interactive-hover hover:tw-text-normal",
             )}
           >
             <option value="">Inherit from chat model</option>
@@ -136,7 +136,7 @@ function CustomCommandSettingsModalContent({
           <div
             className={cn(
               "tw-pointer-events-none tw-absolute tw-inset-y-0 tw-right-0 tw-flex tw-items-center tw-pr-2",
-              "tw-transition-colors group-hover:[&>svg]:tw-text-normal"
+              "tw-transition-colors group-hover:[&>svg]:tw-text-normal",
             )}
           >
             <ChevronDown className="tw-size-4" />
@@ -181,7 +181,7 @@ export class CustomCommandSettingsModal extends Modal {
     app: App,
     private commands: CustomCommand[],
     private command: CustomCommand,
-    private onUpdate: (command: CustomCommand) => void
+    private onUpdate: (command: CustomCommand) => void,
   ) {
     super(app);
     // https://docs.obsidian.md/Reference/TypeScript+API/Modal/setTitle
@@ -204,7 +204,7 @@ export class CustomCommandSettingsModal extends Modal {
         command={this.command}
         onConfirm={handleConfirm}
         onCancel={() => this.close()}
-      />
+      />,
     );
   }
 

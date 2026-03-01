@@ -1,16 +1,17 @@
+import { TFile, Vault } from "obsidian";
 import { getSelectedTextContexts } from "@/aiParams";
 import { ChainType } from "@/chainFactory";
 import { processPrompt } from "@/commands/customCommandUtils";
 import { LOADING_MESSAGES } from "@/constants";
-import { PromptContextEngine } from "@/context/PromptContextEngine";
-import { compactXmlBlock, getL2RefetchInstruction } from "@/context/L2ContextCompactor";
 import { CONTEXT_BLOCK_TYPES } from "@/context/contextBlockRegistry";
-import { parseContextIntoSegments } from "@/context/parseContextSegments";
+import { compactXmlBlock, getL2RefetchInstruction } from "@/context/L2ContextCompactor";
+import { PromptContextEngine } from "@/context/PromptContextEngine";
 import {
   PromptContextEnvelope,
   PromptLayerId,
   PromptLayerSegment,
 } from "@/context/PromptContextTypes";
+import { parseContextIntoSegments } from "@/context/parseContextSegments";
 import { ContextProcessor } from "@/contextProcessor";
 import { logInfo } from "@/logger";
 import { Mention } from "@/mentions/Mention";
@@ -18,7 +19,6 @@ import { getSettings } from "@/settings/model";
 import { FileParserManager } from "@/tools/FileParserManager";
 import { ChatMessage, MessageContext } from "@/types/message";
 import { extractNoteFiles, getNotesFromPath, getNotesFromTags } from "@/utils";
-import { TFile, Vault } from "obsidian";
 import { MessageRepository } from "./MessageRepository";
 
 // Lazy-loaded to avoid circular dependency issues in tests
@@ -73,7 +73,7 @@ export class ContextManager {
     messageRepo: MessageRepository,
     systemPrompt?: string,
     systemPromptIncludedFiles: TFile[] = [],
-    updateLoadingMessage?: (message: string) => void
+    updateLoadingMessage?: (message: string) => void,
   ): Promise<ContextProcessingResult> {
     try {
       logInfo(`[ContextManager] Processing context for message ${message.id}`);
@@ -85,7 +85,7 @@ export class ContextManager {
         processedMessage,
         "",
         vault,
-        activeNote
+        activeNote,
       );
 
       // 2. Build L2 context from previous turns (uses stored envelope content, preserves compaction)
@@ -128,7 +128,7 @@ export class ContextManager {
         notes,
         includeActiveNote,
         activeNote,
-        chainType
+        chainType,
       );
 
       // Add processed context notes to tracking sets
@@ -148,7 +148,7 @@ export class ContextManager {
 
         // Filter out already processed notes to avoid duplication
         const filteredTaggedNotes = taggedNotes.filter(
-          (note) => !processedNotePaths.has(note.path)
+          (note) => !processedNotePaths.has(note.path),
         );
 
         if (filteredTaggedNotes.length > 0) {
@@ -159,7 +159,7 @@ export class ContextManager {
             filteredTaggedNotes,
             false, // Don't include active note again
             null,
-            chainType
+            chainType,
           );
 
           // Add processed tagged notes to tracking sets and collect paths
@@ -182,7 +182,7 @@ export class ContextManager {
 
         // Filter out already processed notes to avoid duplication
         const filteredFolderNotes = folderNotes.filter(
-          (note) => !processedNotePaths.has(note.path)
+          (note) => !processedNotePaths.has(note.path),
         );
 
         if (filteredFolderNotes.length > 0) {
@@ -193,7 +193,7 @@ export class ContextManager {
             filteredFolderNotes,
             false, // Don't include active note again
             null,
-            chainType
+            chainType,
           );
 
           // Add processed folder notes to tracking sets and collect paths
@@ -248,7 +248,7 @@ export class ContextManager {
           finalProcessedMessage = processedUserMessage + compactedContextPortion;
           wasCompacted = true;
           logInfo(
-            `[ContextManager] Compacted context: ${result.originalCharCount} -> ${result.compactedCharCount} chars`
+            `[ContextManager] Compacted context: ${result.originalCharCount} -> ${result.compactedCharCount} chars`,
           );
         }
         updateLoadingMessage?.(LOADING_MESSAGES.DEFAULT);
@@ -309,7 +309,7 @@ export class ContextManager {
     includeActiveNote: boolean,
     activeNote: TFile | null,
     systemPrompt?: string,
-    systemPromptIncludedFiles: TFile[] = []
+    systemPromptIncludedFiles: TFile[] = [],
   ): Promise<void> {
     const message = messageRepo.getMessage(messageId);
 
@@ -328,7 +328,7 @@ export class ContextManager {
       activeNote,
       messageRepo, // Use same repo for L2 building
       systemPrompt,
-      systemPromptIncludedFiles
+      systemPromptIncludedFiles,
     );
 
     messageRepo.updateProcessedText(message.id, processedContent, contextEnvelope);
@@ -363,7 +363,7 @@ export class ContextManager {
    */
   private buildL2ContextFromPreviousTurns(
     currentMessageId: string,
-    messageRepo: MessageRepository
+    messageRepo: MessageRepository,
   ): { l2Context: string; l2Paths: Set<string> } {
     const allMessages = messageRepo.getDisplayMessages();
     const currentIndex = allMessages.findIndex((msg) => msg.id === currentMessageId);
@@ -456,7 +456,7 @@ export class ContextManager {
   }
 
   private buildPromptContextEnvelope(
-    params: BuildPromptContextEnvelopeParams
+    params: BuildPromptContextEnvelopeParams,
   ): PromptContextEnvelope | undefined {
     const messageId = params.message.id;
     if (!messageId) {
@@ -621,7 +621,7 @@ export class ContextManager {
   private appendParsedSegments(
     target: PromptLayerSegment[],
     content: string,
-    extraMetadata?: Record<string, unknown>
+    extraMetadata?: Record<string, unknown>,
   ) {
     const normalized = (content || "").trim();
     if (!normalized) {
@@ -653,7 +653,7 @@ export class ContextManager {
   createMessageContext(
     contextNotes: TFile[],
     contextUrls: string[],
-    selectedTextContexts = getSelectedTextContexts()
+    selectedTextContexts = getSelectedTextContexts(),
   ): MessageContext {
     return {
       notes: contextNotes,
@@ -668,14 +668,14 @@ export class ContextManager {
   async extractContextNotes(
     content: string,
     vault: Vault,
-    additionalNotes: TFile[] = []
+    additionalNotes: TFile[] = [],
   ): Promise<TFile[]> {
     const extractedNotes = await extractNoteFiles(content, vault);
 
     // Combine and deduplicate
     const allNotes = [...extractedNotes, ...additionalNotes];
     const uniqueNotes = allNotes.filter(
-      (note, index, array) => array.findIndex((n) => n.path === note.path) === index
+      (note, index, array) => array.findIndex((n) => n.path === note.path) === index,
     );
 
     return uniqueNotes;

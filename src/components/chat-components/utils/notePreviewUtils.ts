@@ -1,4 +1,4 @@
-import { TFile, App } from "obsidian";
+import { App, TFile } from "obsidian";
 
 // Get app instance
 declare const app: App;
@@ -13,7 +13,7 @@ declare const app: App;
  */
 export async function loadNoteContentForPreview(
   file: TFile,
-  maxLength: number = 500
+  maxLength: number = 500,
 ): Promise<string> {
   try {
     // Handle PDF and canvas files - treat as empty content (no preview)

@@ -61,7 +61,7 @@ export interface AdaptiveCutoffResult {
  */
 export function adaptiveCutoff(
   results: NoteIdRank[],
-  config: Partial<AdaptiveCutoffConfig> = {}
+  config: Partial<AdaptiveCutoffConfig> = {},
 ): AdaptiveCutoffResult {
   const cfg = { ...DEFAULT_ADAPTIVE_CUTOFF_CONFIG, ...config };
 
@@ -87,7 +87,7 @@ export function adaptiveCutoff(
 
   logInfo(
     `AdaptiveCutoff: ${selected.length}/${sorted.length} results kept ` +
-      `(${uniqueNotes} unique notes, threshold=${scoreThreshold.toFixed(3)})`
+      `(${uniqueNotes} unique notes, threshold=${scoreThreshold.toFixed(3)})`,
   );
 
   return {
@@ -104,7 +104,7 @@ export function adaptiveCutoff(
 function simpleCutoff(
   sorted: NoteIdRank[],
   scoreThreshold: number,
-  cfg: AdaptiveCutoffConfig
+  cfg: AdaptiveCutoffConfig,
 ): NoteIdRank[] {
   const selected: NoteIdRank[] = [];
 
@@ -128,7 +128,7 @@ function simpleCutoff(
 function diverseCutoff(
   sorted: NoteIdRank[],
   scoreThreshold: number,
-  cfg: AdaptiveCutoffConfig
+  cfg: AdaptiveCutoffConfig,
 ): NoteIdRank[] {
   // Phase 1: Pick best chunk per unique note (above threshold, or within floor)
   const selected: NoteIdRank[] = [];

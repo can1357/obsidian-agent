@@ -1,15 +1,13 @@
-import React from "react";
-import { TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip";
+import React, { type PropsWithChildren, useRef, useState } from "react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { type PropsWithChildren, useRef, useState } from "react";
 
 const TOLERANCE = 2;
 // detects text-overflow ellipses being used
 // ref: https://stackoverflow.com/questions/7738117/html-text-overflow-ellipsis-detection
 export function isEllipsesActive(
   textRef: React.MutableRefObject<HTMLDivElement | null>,
-  lineClamp?: number
+  lineClamp?: number,
 ): boolean {
   if (lineClamp && lineClamp > 1) {
     return textRef.current ? textRef.current.offsetHeight < textRef.current.scrollHeight : false;
@@ -90,7 +88,7 @@ export const TruncatedText = ({
               "tw-max-w-full tw-text-normal",
               (!lineClamp || lineClamp <= 1) && "tw-truncate",
               lineClamp && getLineClampClass(lineClamp),
-              className
+              className,
             )}
             data-testid="truncatedText"
           >

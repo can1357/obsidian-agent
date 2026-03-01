@@ -1,12 +1,12 @@
-import React, { useCallback, useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $getSelection, $isRangeSelection, TextNode } from "lexical";
-import { TypeaheadMenuPortal } from "@/components/chat-components/TypeaheadMenuPortal";
+import React, { useCallback, useState } from "react";
+import { TagSearchOption, useTagSearch } from "@/components/chat-components/hooks/useTagSearch";
 import {
-  useTypeaheadPlugin,
   TypeaheadState,
+  useTypeaheadPlugin,
 } from "@/components/chat-components/hooks/useTypeaheadPlugin";
-import { useTagSearch, TagSearchOption } from "@/components/chat-components/hooks/useTagSearch";
+import { TypeaheadMenuPortal } from "@/components/chat-components/TypeaheadMenuPortal";
 
 interface TagCommandPluginProps {
   onTagSelected?: () => void;
@@ -59,7 +59,7 @@ export function TagCommandPlugin({ onTagSelected }: TagCommandPluginProps): JSX.
       // Notify parent that a tag was selected from typeahead
       onTagSelected?.();
     },
-    [editor, onTagSelected]
+    [editor, onTagSelected],
   );
 
   // Use the shared typeahead hook

@@ -7,7 +7,7 @@ describe("SearchTools deduplication flow", () => {
       path: string;
       rerank_score?: number;
       score?: number;
-    }>
+    }>,
   ) {
     const sourcesLike = formattedResults.map((d) => ({
       title: d.title || d.path || "Untitled",

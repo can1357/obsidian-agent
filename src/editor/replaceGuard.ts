@@ -3,8 +3,8 @@
 import type { ChangeDesc } from "@codemirror/state";
 import type { EditorView } from "@codemirror/view";
 import type { WorkspaceLeaf } from "obsidian";
-import { SelectionHighlight } from "./selectionHighlight";
 import { logError } from "@/logger";
+import { SelectionHighlight } from "./selectionHighlight";
 
 /**
  * Replace validation failure reasons.
@@ -87,7 +87,7 @@ export function getErrorMessage(reason: ReplaceInvalidReason | null): string {
 function dispatchReplace(
   editorView: EditorView,
   range: { from: number; to: number },
-  replacement: string
+  replacement: string,
 ): void {
   // Reason: CM6 normalizes \r\n → \n internally, so string.length would overcount.
   // Using state.toText() ensures the length matches CM6's internal representation.
@@ -188,7 +188,7 @@ export function createMapPosReplaceGuard(params: MapPosReplaceGuardParams): Repl
 
     const invalid = (
       reason: ReplaceInvalidReason,
-      nextRange: { from: number; to: number } | null
+      nextRange: { from: number; to: number } | null,
     ): ReplaceStatus => ({
       ok: false,
       reason,
@@ -297,7 +297,7 @@ export function createHighlightReplaceGuard(params: HighlightReplaceGuardParams)
 
     const invalid = (
       reason: ReplaceInvalidReason,
-      nextRange: { from: number; to: number } | null
+      nextRange: { from: number; to: number } | null,
     ): ReplaceStatus => ({
       ok: false,
       reason,

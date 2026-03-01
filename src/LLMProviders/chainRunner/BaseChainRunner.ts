@@ -14,7 +14,7 @@ export interface ChainRunner {
       debug?: boolean;
       ignoreSystemMessage?: boolean;
       updateLoading?: (loading: boolean) => void;
-    }
+    },
   ): Promise<string>;
 }
 
@@ -34,7 +34,7 @@ export abstract class BaseChainRunner implements ChainRunner {
       debug?: boolean;
       ignoreSystemMessage?: boolean;
       updateLoading?: (loading: boolean) => void;
-    }
+    },
   ): Promise<string>;
 
   /**
@@ -58,7 +58,7 @@ export abstract class BaseChainRunner implements ChainRunner {
     updateCurrentAiMessage: (message: string) => void,
     sources?: { title: string; path: string; score: number }[],
     llmFormattedOutput?: string,
-    responseMetadata?: ResponseMetadata
+    responseMetadata?: ResponseMetadata,
   ) {
     // Save to memory and add message if we have a response
     // Skip only if it's a NEW_CHAT abort (clearing everything)
@@ -82,7 +82,7 @@ export abstract class BaseChainRunner implements ChainRunner {
         llmFormattedOutput || fullAIResponse || "[Response truncated - no content generated]";
       await this.chainManager.memoryManager.saveContext(
         { input: inputForMemory },
-        { output: outputForMemory }
+        { output: outputForMemory },
       );
 
       // For empty truncated responses, show a helpful message
@@ -228,7 +228,7 @@ export abstract class BaseChainRunner implements ChainRunner {
     ];
     return authHints.some(
       (hint) =>
-        loweredMessage.includes(hint) || loweredCode.includes(hint) || loweredType.includes(hint)
+        loweredMessage.includes(hint) || loweredCode.includes(hint) || loweredType.includes(hint),
     );
   }
 }

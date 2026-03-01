@@ -2,8 +2,8 @@ import { TFile } from "obsidian";
 import {
   createPatternSettingsValue,
   getFilePattern,
-  shouldIndexFile,
   PatternCategory,
+  shouldIndexFile,
 } from "@/search/searchUtils";
 
 // Mock dependencies
@@ -73,10 +73,10 @@ const createMockPatternCategory = (overrides: Partial<PatternCategory> = {}): Pa
 const createAndPopulateGroupList = (
   appFiles: TFile[],
   inclusionPatterns: PatternCategory | null,
-  exclusionPatterns: PatternCategory | null
+  exclusionPatterns: PatternCategory | null,
 ): GroupListItem => {
   const projectAllFiles = appFiles.filter((file) =>
-    shouldIndexFile(file, inclusionPatterns, exclusionPatterns, true)
+    shouldIndexFile(file, inclusionPatterns, exclusionPatterns, true),
   );
 
   // Initialize groups
@@ -165,7 +165,7 @@ describe("Context Manage Modal Functions", () => {
       ({ tagPatterns = [], folderPatterns = [], extensionPatterns = [], notePatterns = [] }) => {
         const patterns = [...tagPatterns, ...folderPatterns, ...extensionPatterns, ...notePatterns];
         return patterns.join(",");
-      }
+      },
     );
   });
 

@@ -1,7 +1,7 @@
-import { UserMemoryManager } from "@/memory/UserMemoryManager";
-import { getSettings } from "@/settings/model";
 import { DEFAULT_SYSTEM_PROMPT } from "@/constants";
 import { logInfo } from "@/logger";
+import { UserMemoryManager } from "@/memory/UserMemoryManager";
+import { getSettings } from "@/settings/model";
 import {
   getDisableBuiltinSystemPrompt,
   getEffectiveSystemPromptContent,
@@ -62,7 +62,7 @@ ${userPrompt}
  * @returns The complete system prompt with memory prefix
  */
 export async function getSystemPromptWithMemory(
-  userMemoryManager: UserMemoryManager | undefined
+  userMemoryManager: UserMemoryManager | undefined,
 ): Promise<string> {
   const systemPrompt = getSystemPrompt();
 

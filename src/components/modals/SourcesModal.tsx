@@ -6,7 +6,7 @@ export class SourcesModal extends Modal {
 
   constructor(
     app: App,
-    sources: { title: string; path: string; score: number; explanation?: any }[]
+    sources: { title: string; path: string; score: number; explanation?: any }[],
   ) {
     super(app);
     this.sources = sources;
@@ -23,7 +23,7 @@ export class SourcesModal extends Modal {
 
   private createSourceList(
     container: HTMLElement,
-    sources: { title: string; path: string; score: number; explanation?: any }[]
+    sources: { title: string; path: string; score: number; explanation?: any }[],
   ) {
     const list = container.createEl("ul");
     list.style.listStyleType = "none";
@@ -65,7 +65,7 @@ export class SourcesModal extends Modal {
       // Display with 4 decimals to match SearchCore logs and avoid apparent ties
       if (typeof source.score === "number") {
         itemContainer.appendChild(
-          document.createTextNode(` - Relevance score: ${source.score.toFixed(4)}`)
+          document.createTextNode(` - Relevance score: ${source.score.toFixed(4)}`),
         );
       }
 
@@ -105,7 +105,7 @@ export class SourcesModal extends Modal {
       const fields = new Set(explanation.lexicalMatches.map((m: any) => m.field));
       const queries = new Set(explanation.lexicalMatches.map((m: any) => m.query));
       details.push(
-        `Lexical: matched "${Array.from(queries).join('", "')}" in ${Array.from(fields).join(", ")}`
+        `Lexical: matched "${Array.from(queries).join('", "')}" in ${Array.from(fields).join(", ")}`,
       );
     }
 
@@ -117,7 +117,7 @@ export class SourcesModal extends Modal {
     // Add folder boost
     if (explanation.folderBoost) {
       details.push(
-        `Folder boost: ${explanation.folderBoost.boostFactor.toFixed(2)}x (${explanation.folderBoost.documentCount} docs in ${explanation.folderBoost.folder || "root"})`
+        `Folder boost: ${explanation.folderBoost.boostFactor.toFixed(2)}x (${explanation.folderBoost.documentCount} docs in ${explanation.folderBoost.folder || "root"})`,
       );
     }
 
@@ -131,7 +131,7 @@ export class SourcesModal extends Modal {
 
       if (connectionParts.length > 0) {
         details.push(
-          `Graph connections: ${gc.score.toFixed(1)} score (${connectionParts.join(", ")})`
+          `Graph connections: ${gc.score.toFixed(1)} score (${connectionParts.join(", ")})`,
         );
       }
     }
@@ -139,14 +139,14 @@ export class SourcesModal extends Modal {
     // Add old graph boost (if still present for backwards compatibility)
     if (explanation.graphBoost && !explanation.graphConnections) {
       details.push(
-        `Graph boost: ${explanation.graphBoost.boostFactor.toFixed(2)}x (${explanation.graphBoost.connections} connections)`
+        `Graph boost: ${explanation.graphBoost.boostFactor.toFixed(2)}x (${explanation.graphBoost.connections} connections)`,
       );
     }
 
     // Add base vs final score if boosted
     if (explanation.baseScore !== explanation.finalScore) {
       details.push(
-        `Score: ${explanation.baseScore.toFixed(4)} → ${explanation.finalScore.toFixed(4)}`
+        `Score: ${explanation.baseScore.toFixed(4)} → ${explanation.finalScore.toFixed(4)}`,
       );
     }
 

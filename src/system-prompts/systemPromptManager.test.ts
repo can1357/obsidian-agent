@@ -1,8 +1,8 @@
-import { SystemPromptManager } from "@/system-prompts/systemPromptManager";
-import { UserSystemPrompt } from "@/system-prompts/type";
 import { TFile, Vault } from "obsidian";
-import * as systemPromptUtils from "@/system-prompts/systemPromptUtils";
 import * as state from "@/system-prompts/state";
+import { SystemPromptManager } from "@/system-prompts/systemPromptManager";
+import * as systemPromptUtils from "@/system-prompts/systemPromptUtils";
+import { UserSystemPrompt } from "@/system-prompts/type";
 import * as utils from "@/utils";
 
 // Mock Obsidian
@@ -92,7 +92,7 @@ describe("SystemPromptManager", () => {
     it("throws error if vault not provided on first call", () => {
       (SystemPromptManager as any).instance = undefined;
       expect(() => SystemPromptManager.getInstance()).toThrow(
-        "Vault is required for first initialization"
+        "Vault is required for first initialization",
       );
     });
 
@@ -122,7 +122,7 @@ describe("SystemPromptManager", () => {
     beforeEach(() => {
       (systemPromptUtils.validatePromptName as jest.Mock).mockReturnValue(null);
       (systemPromptUtils.getPromptFilePath as jest.Mock).mockReturnValue(
-        "SystemPrompts/New Prompt.md"
+        "SystemPrompts/New Prompt.md",
       );
       (state.getCachedSystemPrompts as jest.Mock).mockReturnValue([]);
     });
@@ -161,21 +161,21 @@ describe("SystemPromptManager", () => {
 
     it("throws error for duplicate name", async () => {
       (systemPromptUtils.validatePromptName as jest.Mock).mockReturnValue(
-        "A prompt with this name already exists"
+        "A prompt with this name already exists",
       );
 
       await expect(manager.createPrompt(newPrompt)).rejects.toThrow(
-        "A prompt with this name already exists"
+        "A prompt with this name already exists",
       );
     });
 
     it("throws error for invalid name", async () => {
       (systemPromptUtils.validatePromptName as jest.Mock).mockReturnValue(
-        "Prompt name contains invalid characters"
+        "Prompt name contains invalid characters",
       );
 
       await expect(manager.createPrompt(newPrompt)).rejects.toThrow(
-        "Prompt name contains invalid characters"
+        "Prompt name contains invalid characters",
       );
     });
 
@@ -202,7 +202,7 @@ describe("SystemPromptManager", () => {
 
     beforeEach(() => {
       (systemPromptUtils.getPromptFilePath as jest.Mock).mockImplementation(
-        (title: string) => `SystemPrompts/${title}.md`
+        (title: string) => `SystemPrompts/${title}.md`,
       );
     });
 
@@ -231,7 +231,7 @@ describe("SystemPromptManager", () => {
 
       expect(app.fileManager.renameFile).toHaveBeenCalledWith(
         oldFile,
-        "SystemPrompts/Updated Prompt.md"
+        "SystemPrompts/Updated Prompt.md",
       );
       expect(mockVault.modify).toHaveBeenCalledWith(newFile, "Updated content");
     });
@@ -305,7 +305,7 @@ describe("SystemPromptManager", () => {
   describe("deletePrompt", () => {
     beforeEach(() => {
       (systemPromptUtils.getPromptFilePath as jest.Mock).mockReturnValue(
-        "SystemPrompts/Test Prompt.md"
+        "SystemPrompts/Test Prompt.md",
       );
     });
 
@@ -361,11 +361,11 @@ describe("SystemPromptManager", () => {
 
     beforeEach(() => {
       (systemPromptUtils.generateCopyPromptName as jest.Mock).mockReturnValue(
-        "Original Prompt (copy)"
+        "Original Prompt (copy)",
       );
       (systemPromptUtils.validatePromptName as jest.Mock).mockReturnValue(null);
       (systemPromptUtils.getPromptFilePath as jest.Mock).mockReturnValue(
-        "SystemPrompts/Original Prompt (copy).md"
+        "SystemPrompts/Original Prompt (copy).md",
       );
       (state.getCachedSystemPrompts as jest.Mock).mockReturnValue([originalPrompt]);
     });
@@ -409,7 +409,7 @@ describe("SystemPromptManager", () => {
 
       expect(mockVault.create).toHaveBeenCalledWith(
         "SystemPrompts/Original Prompt (copy).md",
-        "Original content"
+        "Original content",
       );
     });
 

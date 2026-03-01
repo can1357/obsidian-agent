@@ -1,10 +1,10 @@
+import { StructuredTool } from "@langchain/core/tools";
 import ChainManager from "@/LLMProviders/chainManager";
 import { getSystemPromptWithMemory } from "@/system-prompts/systemPromptBuilder";
 import { ToolMetadata, ToolRegistry } from "@/tools/ToolRegistry";
 import { ChatMessage } from "@/types/message";
-import { messageRequiresTools, ModelAdapter } from "./modelAdapter";
+import { ModelAdapter, messageRequiresTools } from "./modelAdapter";
 import { buildPromptDebugReport, PromptDebugReport } from "./toolPromptDebugger";
-import { StructuredTool } from "@langchain/core/tools";
 
 interface GeneratePromptDebugReportParams {
   chainManager: ChainManager;
@@ -23,7 +23,7 @@ interface GeneratePromptDebugReportParams {
  * @returns Structured prompt report with provenance metadata.
  */
 export async function generatePromptDebugReportForAgent(
-  params: GeneratePromptDebugReportParams
+  params: GeneratePromptDebugReportParams,
 ): Promise<PromptDebugReport> {
   const {
     chainManager,
@@ -39,7 +39,7 @@ export async function generatePromptDebugReportForAgent(
     basePrompt,
     toolDescriptions,
     toolNames,
-    toolMetadata
+    toolMetadata,
   );
 
   const memory = chainManager.memoryManager.getMemory();
@@ -84,7 +84,7 @@ interface AgentPromptDebugOptions {
  * @returns Annotated prompt debug report.
  */
 export async function buildAgentPromptDebugReport(
-  options: AgentPromptDebugOptions
+  options: AgentPromptDebugOptions,
 ): Promise<PromptDebugReport> {
   const { chainManager, adapter, availableTools, toolDescriptions, userMessage } = options;
 

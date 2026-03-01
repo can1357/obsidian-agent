@@ -1,14 +1,14 @@
+import { normalizePath, TAbstractFile, TFile } from "obsidian";
+import * as settingsModel from "@/settings/model";
 import {
-  validatePromptName,
-  getSystemPromptsFolder,
+  generateCopyPromptName,
   getPromptFilePath,
+  getSystemPromptsFolder,
   isSystemPromptFile,
   parseSystemPromptFile,
-  generateCopyPromptName,
+  validatePromptName,
 } from "@/system-prompts/systemPromptUtils";
 import { UserSystemPrompt } from "@/system-prompts/type";
-import { TFile, TAbstractFile, normalizePath } from "obsidian";
-import * as settingsModel from "@/settings/model";
 
 // Mock Obsidian
 jest.mock("obsidian", () => ({
@@ -62,10 +62,10 @@ describe("validatePromptName", () => {
 
   it("returns error for duplicate name (case-insensitive)", () => {
     expect(validatePromptName("prompt one", basePrompts)).toBe(
-      "A prompt with this name already exists"
+      "A prompt with this name already exists",
     );
     expect(validatePromptName("PROMPT TWO", basePrompts)).toBe(
-      "A prompt with this name already exists"
+      "A prompt with this name already exists",
     );
   });
 
@@ -91,7 +91,7 @@ describe("validatePromptName", () => {
     ];
     for (const name of invalids) {
       expect(validatePromptName(name, basePrompts)).toMatch(
-        /Prompt name contains invalid characters/
+        /Prompt name contains invalid characters/,
       );
     }
   });
@@ -102,13 +102,13 @@ describe("validatePromptName", () => {
 
   it("returns error for names with leading or trailing whitespace", () => {
     expect(validatePromptName("  Prompt One  ", basePrompts)).toBe(
-      "Prompt name cannot have leading or trailing spaces"
+      "Prompt name cannot have leading or trailing spaces",
     );
     expect(validatePromptName(" Leading", basePrompts)).toBe(
-      "Prompt name cannot have leading or trailing spaces"
+      "Prompt name cannot have leading or trailing spaces",
     );
     expect(validatePromptName("Trailing ", basePrompts)).toBe(
-      "Prompt name cannot have leading or trailing spaces"
+      "Prompt name cannot have leading or trailing spaces",
     );
   });
 });

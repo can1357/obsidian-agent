@@ -1,18 +1,18 @@
-import { CustomCommandManager } from "@/commands/customCommandManager";
-import { getCustomCommandsFolder, validateCommandName } from "@/commands/customCommandUtils";
-import { CustomCommand } from "@/commands/type";
-import { getSettings, updateSetting } from "@/settings/model";
-import { ensureFolderExists } from "@/utils";
 import {
+  COPILOT_COMMAND_CONTEXT_MENU_ENABLED,
   COPILOT_COMMAND_CONTEXT_MENU_ORDER,
   COPILOT_COMMAND_LAST_USED,
   COPILOT_COMMAND_MODEL_KEY,
   COPILOT_COMMAND_SLASH_ENABLED,
   DEFAULT_COMMANDS,
 } from "@/commands/constants";
-import { COPILOT_COMMAND_CONTEXT_MENU_ENABLED } from "@/commands/constants";
-import { ConfirmModal } from "@/components/modals/ConfirmModal";
+import { CustomCommandManager } from "@/commands/customCommandManager";
+import { getCustomCommandsFolder, validateCommandName } from "@/commands/customCommandUtils";
 import { getCachedCustomCommands } from "@/commands/state";
+import { CustomCommand } from "@/commands/type";
+import { ConfirmModal } from "@/components/modals/ConfirmModal";
+import { getSettings, updateSetting } from "@/settings/model";
+import { ensureFolderExists } from "@/utils";
 
 async function saveUnsupportedCommands(commands: CustomCommand[]) {
   const folderPath = getCustomCommandsFolder();
@@ -30,7 +30,7 @@ async function saveUnsupportedCommands(commands: CustomCommand[]) {
         frontmatter[COPILOT_COMMAND_MODEL_KEY] = command.modelKey;
         frontmatter[COPILOT_COMMAND_LAST_USED] = 0;
       });
-    })
+    }),
   );
 }
 
@@ -90,7 +90,7 @@ export async function migrateCommands() {
 export async function generateDefaultCommands(): Promise<void> {
   const existingCommands = getCachedCustomCommands();
   const defaultCommands = DEFAULT_COMMANDS.filter(
-    (command) => !existingCommands.some((c) => c.title === command.title)
+    (command) => !existingCommands.some((c) => c.title === command.title),
   );
   const newCommands = [...existingCommands, ...defaultCommands];
   CustomCommandManager.getInstance().updateCommands(newCommands);
@@ -113,7 +113,7 @@ export async function suggestDefaultCommands(): Promise<void> {
       "Would you like to add Copilot recommended commands in your custom prompts folder? These commands will be available through the right-click context menu and slash commands in chat.",
       "Welcome to Copilot",
       "Confirm",
-      "Skip"
+      "Skip",
     ).open();
     updateSetting("suggestedDefaultCommands", true);
   }

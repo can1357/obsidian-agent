@@ -1,22 +1,22 @@
-import { CustomModel, useModelKey } from "@/aiParams";
-import { processCommandPrompt } from "@/commands/customCommandUtils";
-import { MenuCommandModal, type ContentState } from "@/components/command-ui";
-import { SelectionHighlight } from "@/editor/selectionHighlight";
-import { createHighlightReplaceGuard, type ReplaceGuard } from "@/editor/replaceGuard";
-import { logError, logWarn } from "@/logger";
-import { cleanMessageForCopy, findCustomModel, insertIntoEditor } from "@/utils";
 import type { EditorView } from "@codemirror/view";
 import { PenLine } from "lucide-react";
-import { App, Notice, MarkdownView } from "obsidian";
+import { App, MarkdownView, Notice } from "obsidian";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot, Root } from "react-dom/client";
+import { CustomModel, useModelKey } from "@/aiParams";
+import { processCommandPrompt } from "@/commands/customCommandUtils";
 import { CustomCommand } from "@/commands/type";
-import { useSettingsValue, updateSetting } from "@/settings/model";
-import {
-  useStreamingChatSession,
-  type StreamingChatTurnContext,
-} from "@/hooks/use-streaming-chat-session";
+import { type ContentState, MenuCommandModal } from "@/components/command-ui";
 import { ABORT_REASON } from "@/constants";
+import { createHighlightReplaceGuard, type ReplaceGuard } from "@/editor/replaceGuard";
+import { SelectionHighlight } from "@/editor/selectionHighlight";
+import {
+  type StreamingChatTurnContext,
+  useStreamingChatSession,
+} from "@/hooks/use-streaming-chat-session";
+import { logError, logWarn } from "@/logger";
+import { updateSetting, useSettingsValue } from "@/settings/model";
+import { cleanMessageForCopy, findCustomModel, insertIntoEditor } from "@/utils";
 
 // ============================================================================
 // Behavior Config - Replaces mode-based branching
@@ -59,7 +59,7 @@ export interface ModalBehaviorConfig {
  */
 function resolveBehaviorConfig(
   command: CustomCommand,
-  overrides?: Partial<ModalBehaviorConfig>
+  overrides?: Partial<ModalBehaviorConfig>,
 ): ModalBehaviorConfig {
   const defaults: ModalBehaviorConfig = {
     autoExecuteOnOpen: true,
@@ -102,7 +102,7 @@ function CustomCommandChatModalContent({
   // Resolve behavior configuration
   const behavior = useMemo(
     () => resolveBehaviorConfig(command, behaviorConfig),
-    [command, behaviorConfig]
+    [command, behaviorConfig],
   );
 
   // Prevent concurrent submissions (double-Enter / re-entrancy).
@@ -154,13 +154,13 @@ function CustomCommandChatModalContent({
       }
       // For custom-command scope, changes only affect current session
     },
-    [modelSelectionScope]
+    [modelSelectionScope],
   );
 
   // Include note context state (for Quick Command mode)
   // Use local state for immediate UI updates, sync to settings on change
   const [includeNoteContext, setIncludeNoteContext] = useState(
-    () => settings.quickCommandIncludeNoteContext
+    () => settings.quickCommandIncludeNoteContext,
   );
 
   const handleIncludeNoteContextChange = useCallback((checked: boolean) => {
@@ -439,7 +439,7 @@ export class CustomCommandChatModal {
       command: CustomCommand;
       systemPrompt?: string;
       behaviorConfig?: Partial<ModalBehaviorConfig>;
-    }
+    },
   ) {}
 
   /**
@@ -663,7 +663,7 @@ export class CustomCommandChatModal {
         systemPrompt={systemPrompt}
         initialPosition={initialPosition}
         behaviorConfig={behaviorConfig}
-      />
+      />,
     );
   }
 

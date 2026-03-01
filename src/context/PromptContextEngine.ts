@@ -1,5 +1,4 @@
 import { SHA256 } from "crypto-js";
-import { logInfo } from "@/logger";
 import {
   PROMPT_LAYER_LABELS,
   PROMPT_LAYER_ORDER,
@@ -9,6 +8,7 @@ import {
   PromptLayerId,
   PromptLayerSegment,
 } from "@/context/PromptContextTypes";
+import { logInfo } from "@/logger";
 
 /**
  * PromptContextEngine centralizes the construction of Layered Prefix prompts.
@@ -39,7 +39,7 @@ export class PromptContextEngine {
    */
   buildEnvelope(params: PromptContextBuildParams): PromptContextEnvelope {
     const layers: PromptContextLayer[] = PROMPT_LAYER_ORDER.map((layerId) =>
-      this.buildLayer(layerId, params.layerSegments[layerId] ?? [])
+      this.buildLayer(layerId, params.layerSegments[layerId] ?? []),
     );
 
     const serializedText = this.serializeLayers(layers);
@@ -85,7 +85,7 @@ export class PromptContextEngine {
       sanitizedSegments
         .map((segment) => segment.content)
         .filter(Boolean)
-        .join("\n\n")
+        .join("\n\n"),
     );
 
     return {
@@ -120,7 +120,7 @@ export class PromptContextEngine {
         acc[layer.id] = layer.hash;
         return acc;
       },
-      {} as Record<PromptLayerId, string>
+      {} as Record<PromptLayerId, string>,
     );
   }
 

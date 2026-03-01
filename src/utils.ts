@@ -1,3 +1,9 @@
+import { BaseChain, RetrievalQAChain } from "@langchain/classic/chains";
+import { BaseChatModel } from "@langchain/core/language_models/chat_models";
+import { MemoryVariables } from "@langchain/core/memory";
+import { RunnableSequence } from "@langchain/core/runnables";
+import moment from "moment";
+import { MarkdownView, Notice, normalizePath, requestUrl, TFile, Vault } from "obsidian";
 import { ChainType, Document } from "@/chainFactory";
 import {
   ChatModelProviders,
@@ -11,14 +17,9 @@ import {
 import { logInfo, logWarn } from "@/logger";
 import { CopilotSettings } from "@/settings/model";
 import { ChatMessage } from "@/types/message";
-import { BaseChatModel } from "@langchain/core/language_models/chat_models";
-import { MemoryVariables } from "@langchain/core/memory";
-import { RunnableSequence } from "@langchain/core/runnables";
-import { BaseChain, RetrievalQAChain } from "@langchain/classic/chains";
-import moment from "moment";
-import { MarkdownView, Notice, TFile, Vault, normalizePath, requestUrl } from "obsidian";
-import { CustomModel } from "./aiParams";
 import { getApiKeyForProvider } from "@/utils/modelUtils";
+import { CustomModel } from "./aiParams";
+
 export { err2String } from "@/errorFormat";
 
 /**
@@ -290,7 +291,7 @@ export interface FormattedDateTime {
 
 export const formatDateTime = (
   now: Date,
-  timezone: "local" | "utc" = "local"
+  timezone: "local" | "utc" = "local",
 ): FormattedDateTime => {
   const formattedDateTime = moment(now);
 
@@ -400,7 +401,7 @@ export async function getAllNotesContent(vault: Vault): Promise<string> {
     // Import is not available at the top level due to circular dependency
     const { VAULT_NOTE_TAG } = await import("@/constants");
     vaultNotes.push(
-      `<${VAULT_NOTE_TAG}>\n<path>${file.path}</path>\n<content>\n${fileContent}\n</content>\n</${VAULT_NOTE_TAG}>`
+      `<${VAULT_NOTE_TAG}>\n<path>${file.path}</path>\n<content>\n${fileContent}\n</content>\n</${VAULT_NOTE_TAG}>`,
     );
   }
 
@@ -409,7 +410,7 @@ export async function getAllNotesContent(vault: Vault): Promise<string> {
 
 export function areEmbeddingModelsSame(
   model1: string | undefined,
-  model2: string | undefined
+  model2: string | undefined,
 ): boolean {
   if (!model1 || !model2) return false;
   // TODO: Hacks to handle different embedding model names for the same model. Need better handling.
@@ -461,7 +462,7 @@ function getChatContextStr(chatNoteContextPath: string, chatNoteContextTags: str
 export function getSendChatContextNotesPrompt(
   notes: { name: string; content: string }[],
   chatNoteContextPath: string,
-  chatNoteContextTags: string[]
+  chatNoteContextTags: string[],
 ): string {
   const noteTitles = notes.map((note) => getNoteTitleAndTags(note)).join("\n\n");
   return (
@@ -497,7 +498,7 @@ export function extractChatHistory(memoryVariables: MemoryVariables): ChatHistor
 
     chatHistory.push(
       { role: "user", content: userMessage },
-      { role: "assistant", content: aiMessage }
+      { role: "assistant", content: aiMessage },
     );
   }
 
@@ -535,7 +536,7 @@ function resolveNoteFilesFromTitles(noteTitles: string[], vault: Vault): TFile[]
           // Multiple files with same title - this shouldn't happen
           // as we should be using full paths for duplicate titles
           console.warn(
-            `Found multiple files with title "${noteTitle}". Expected a full path for duplicate titles.`
+            `Found multiple files with title "${noteTitle}". Expected a full path for duplicate titles.`,
           );
         }
       }
@@ -764,7 +765,7 @@ export function extractAllYoutubeUrls(text: string): string[] {
  */
 export async function safeFetch(
   url: string,
-  options: RequestInit & { throwOnHttpError?: boolean } = {}
+  options: RequestInit & { throwOnHttpError?: boolean } = {},
 ): Promise<Response> {
   const { throwOnHttpError = true } = options;
   // Initialize headers if not provided
@@ -897,7 +898,7 @@ function createReadableStreamFromString(input: string) {
 
 export function omit<T extends Record<string, any>, K extends keyof T>(
   obj: T,
-  keys: K[]
+  keys: K[],
 ): Omit<T, K> {
   const result = { ...obj };
   keys.forEach((key) => {
@@ -950,7 +951,7 @@ export function cleanMessageForCopy(message: string): string {
   // Remove writeToFile blocks wrapped in XML codeblocks
   cleanedMessage = cleanedMessage.replace(
     /```xml\s*[\s\S]*?<writeToFile>[\s\S]*?<\/writeToFile>[\s\S]*?```/g,
-    ""
+    "",
   );
 
   // Remove standalone writeToFile blocks
@@ -960,7 +961,7 @@ export function cleanMessageForCopy(message: string): string {
   // Format: <!--TOOL_CALL_START:id:toolName:displayName:emoji:confirmationMessage:isExecuting-->content<!--TOOL_CALL_END:id:result-->
   cleanedMessage = cleanedMessage.replace(
     /<!--TOOL_CALL_START:[^:]+:[^:]+:[^:]+:[^:]+:[^:]*:[^:]+-->[\s\S]*?<!--TOOL_CALL_END:[^:]+:[\s\S]*?-->/g,
-    ""
+    "",
   );
 
   // Remove agent reasoning blocks
@@ -1010,7 +1011,7 @@ export async function insertIntoEditor(message: string, replace: boolean = false
   /** Computes the end editor position after inserting text at start position */
   const getEndPosition = (
     start: { line: number; ch: number },
-    textLines: string[]
+    textLines: string[],
   ): { line: number; ch: number } => {
     const lineDelta = textLines.length - 1;
     if (lineDelta === 0) {
@@ -1068,7 +1069,7 @@ export async function insertIntoEditor(message: string, replace: boolean = false
 
 export function debounce<T extends (...args: any[]) => void>(
   func: T,
-  wait: number
+  wait: number,
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
   return (...args: Parameters<T>) => {
@@ -1165,7 +1166,7 @@ export function getModelInfo(model: BaseChatModel | string): ModelInfo {
 
 export function getMessageRole(
   model: BaseChatModel | string,
-  defaultRole: "system" | "human" = "system"
+  defaultRole: "system" | "human" = "system",
 ): "system" | "human" {
   return isOSeriesModel(model) ? "human" : defaultRole;
 }
@@ -1185,7 +1186,7 @@ export function getNeedSetKeyProvider(): Provider[] {
 
 export function checkModelApiKey(
   model: CustomModel,
-  settings: Readonly<CopilotSettings>
+  settings: Readonly<CopilotSettings>,
 ): {
   hasApiKey: boolean;
   errorNotice?: string;
@@ -1207,7 +1208,7 @@ export function checkModelApiKey(
   // GitHub Copilot uses OAuth, not API key
   if (model.provider === ChatModelProviders.GITHUB_COPILOT) {
     const hasAuth = Boolean(
-      model.apiKey || settings.githubCopilotToken || settings.githubCopilotAccessToken
+      model.apiKey || settings.githubCopilotToken || settings.githubCopilotAccessToken,
     );
     if (!hasAuth) {
       return {
@@ -1334,7 +1335,7 @@ export async function withSuppressedTokenWarnings<T>(fn: () => Promise<T>): Prom
 export async function withTimeout<T>(
   operation: (signal: AbortSignal) => Promise<T>,
   timeoutMs: number,
-  operationName: string = "Operation"
+  operationName: string = "Operation",
 ): Promise<T> {
   const { TimeoutError } = await import("@/error");
 

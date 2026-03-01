@@ -50,7 +50,7 @@ export class LayerToMessagesConverter {
    */
   static convert(
     envelope: PromptContextEnvelope,
-    options: ConversionOptions = {}
+    options: ConversionOptions = {},
   ): ProviderMessage[] {
     const { includeSystemMessage = true, mergeUserContent = true, debug = false } = options;
 
@@ -72,7 +72,7 @@ export class LayerToMessagesConverter {
       if (l2Previous && l2Previous.text) {
         systemParts.push(
           "\n## Context Library\n\nThe following notes are available for reference:\n\n" +
-            l2Previous.text
+            l2Previous.text,
         );
         if (debug) {
           logInfo("[LayerToMessagesConverter] Added L2 (cumulative context) to system");
@@ -131,7 +131,7 @@ export class LayerToMessagesConverter {
             l3Parts.push(
               "Context attached to this message:\n" +
                 referencedIds.map((id) => `- ${id}`).join("\n") +
-                "\n\nFind them in the Context Library in the system prompt above."
+                "\n\nFind them in the Context Library in the system prompt above.",
             );
           }
 
@@ -143,7 +143,7 @@ export class LayerToMessagesConverter {
           userContentParts.push(l3Parts.join("\n\n"));
           if (debug) {
             logInfo(
-              `[LayerToMessagesConverter] Added L3: ${referencedIds.length} references, ${newSegments.length} new items`
+              `[LayerToMessagesConverter] Added L3: ${referencedIds.length} references, ${newSegments.length} new items`,
             );
           }
         }

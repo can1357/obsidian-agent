@@ -75,7 +75,7 @@ function normalizeTimestampMs(value: unknown): number | null {
  */
 export function createSortComparator<T>(
   strategy: SortStrategy,
-  getters: RecentUsageSortGetters<T>
+  getters: RecentUsageSortGetters<T>,
 ): (a: T, b: T) => number {
   // Use default Intl.Collator to match localeCompare behavior for backwards compatibility
   const collator = new Intl.Collator(undefined);
@@ -154,7 +154,7 @@ export function createSortComparator<T>(
 export function sortByStrategy<T>(
   items: readonly T[],
   strategy: SortStrategy,
-  getters: RecentUsageSortGetters<T>
+  getters: RecentUsageSortGetters<T>,
 ): T[] {
   return [...items].sort(createSortComparator(strategy, getters));
 }

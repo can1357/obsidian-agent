@@ -1,3 +1,4 @@
+import { FileSystemAdapter, Notice, TFile, Vault } from "obsidian";
 import { ProjectConfig } from "@/aiParams";
 import { PDFCache } from "@/cache/pdfCache";
 import { ProjectContextCache } from "@/cache/projectContextCache";
@@ -6,7 +7,6 @@ import { MiyoClient } from "@/miyo/MiyoClient";
 import { getSettings } from "@/settings/model";
 import { saveConvertedDocOutput as saveConvertedDocOutputCore } from "@/utils/convertedDocOutput";
 import { extractRetryTime, isRateLimitError } from "@/utils/rateLimitUtils";
-import { FileSystemAdapter, Notice, TFile, Vault } from "obsidian";
 import { CanvasLoader } from "./CanvasLoader";
 
 interface FileParser {
@@ -20,7 +20,7 @@ interface FileParser {
 export async function saveConvertedDocOutput(
   file: TFile,
   content: string,
-  vault: Vault
+  vault: Vault,
 ): Promise<void> {
   const outputFolder = getSettings().convertedDocOutputFolder ?? "";
   await saveConvertedDocOutputCore(file, content, vault, outputFolder);
@@ -314,7 +314,7 @@ export class Docs4LLMParser implements FileParser {
   async parseFile(file: TFile, vault: Vault): Promise<string> {
     try {
       logInfo(
-        `[Docs4LLMParser] Project ${this.currentProject?.name}: Parsing ${file.extension} file: ${file.path}`
+        `[Docs4LLMParser] Project ${this.currentProject?.name}: Parsing ${file.extension} file: ${file.path}`,
       );
 
       if (!this.currentProject) {
@@ -324,18 +324,18 @@ export class Docs4LLMParser implements FileParser {
 
       const cachedContent = await this.projectContextCache.getOrReuseFileContext(
         this.currentProject,
-        file.path
+        file.path,
       );
       if (cachedContent) {
         logInfo(
-          `[Docs4LLMParser] Project ${this.currentProject.name}: Using cached content for: ${file.path}`
+          `[Docs4LLMParser] Project ${this.currentProject.name}: Using cached content for: ${file.path}`,
         );
         // Ensure output file exists even on cache hit (user may have just enabled the setting)
         await saveConvertedDocOutput(file, cachedContent, vault);
         return cachedContent;
       }
       logInfo(
-        `[Docs4LLMParser] Project ${this.currentProject.name}: Cache miss for: ${file.path}. Proceeding to API call.`
+        `[Docs4LLMParser] Project ${this.currentProject.name}: Cache miss for: ${file.path}. Proceeding to API call.`,
       );
 
       // For PDFs, try Miyo first when self-host mode is active
@@ -345,11 +345,11 @@ export class Docs4LLMParser implements FileParser {
           await this.projectContextCache.setFileContext(
             this.currentProject,
             file.path,
-            miyoResult.content
+            miyoResult.content,
           );
           await saveConvertedDocOutput(file, miyoResult.content, vault);
           logInfo(
-            `[Docs4LLMParser] Project ${this.currentProject.name}: Parsed PDF via Miyo: ${file.path}`
+            `[Docs4LLMParser] Project ${this.currentProject.name}: Parsed PDF via Miyo: ${file.path}`,
           );
           return miyoResult.content;
         }
@@ -365,24 +365,24 @@ export class Docs4LLMParser implements FileParser {
           await this.projectContextCache.setFileContext(
             this.currentProject,
             file.path,
-            directResult.content
+            directResult.content,
           );
           await saveConvertedDocOutput(file, directResult.content, vault);
           return directResult.content;
         }
         throw new Error(
-          `Could not parse PDF ${file.basename}. No PDF processing service configured.`
+          `Could not parse PDF ${file.basename}. No PDF processing service configured.`,
         );
       }
 
       // Non-PDF document types: no longer supported without external service
       throw new Error(
-        "Document conversion for this file type requires a configured document processing service."
+        "Document conversion for this file type requires a configured document processing service.",
       );
     } catch (error) {
       logError(
         `[Docs4LLMParser] Project ${this.currentProject?.name}: Error processing file ${file.path}:`,
-        error
+        error,
       );
 
       // Check if this is a rate limit error and show user-friendly notice
@@ -408,7 +408,7 @@ export class Docs4LLMParser implements FileParser {
 
     new Notice(
       `⚠️ Rate limit exceeded for document processing. Please try again in ${retryTime}. Having fewer non-markdown files in the project will help.`,
-      10000 // Show notice for 10 seconds
+      10000, // Show notice for 10 seconds
     );
   }
 

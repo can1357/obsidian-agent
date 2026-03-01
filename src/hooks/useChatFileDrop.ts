@@ -1,6 +1,6 @@
-import { isAllowedFileForNoteContext } from "@/utils";
 import { App, Notice, TFile } from "obsidian";
 import { RefObject, useEffect, useState } from "react";
+import { isAllowedFileForNoteContext } from "@/utils";
 
 /**
  * Props for the useChatFileDrop hook
@@ -106,7 +106,7 @@ export function useChatFileDrop(props: UseChatFileDropProps): UseChatFileDropRet
 
         // Check if we have string items (Obsidian nav bar drag) or file items (external files)
         const hasStringItems = Array.from(e.dataTransfer.items).some(
-          (item) => item.kind === "string"
+          (item) => item.kind === "string",
         );
         const hasFileItems = Array.from(e.dataTransfer.items).some((item) => item.kind === "file");
 
@@ -166,7 +166,7 @@ export function useChatFileDrop(props: UseChatFileDropProps): UseChatFileDropRet
           (item) =>
             new Promise<string>((resolve) => {
               item.getAsString((data) => resolve(data));
-            })
+            }),
         );
 
         const uriStrings = await Promise.all(uriStringPromises);
@@ -215,7 +215,7 @@ export function useChatFileDrop(props: UseChatFileDropProps): UseChatFileDropRet
           } else {
             // Unsupported file type
             new Notice(
-              `Unsupported file type: ${file.extension}. Supported types: md, pdf, canvas, and images.`
+              `Unsupported file type: ${file.extension}. Supported types: md, pdf, canvas, and images.`,
             );
           }
         }

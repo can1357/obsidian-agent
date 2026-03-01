@@ -1,6 +1,20 @@
+import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
+import { ChatAnthropic } from "@langchain/anthropic";
+import { ChatCohere } from "@langchain/cohere";
+import { BaseChatModel } from "@langchain/core/language_models/chat_models";
+import { ChatDeepSeek } from "@langchain/deepseek";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatGroq } from "@langchain/groq";
+import { ChatMistralAI } from "@langchain/mistralai";
+import { ChatOllama } from "@langchain/ollama";
+import { ChatOpenAI } from "@langchain/openai";
+import { ChatXAI } from "@langchain/xai";
+import { Notice } from "obsidian";
 import { CustomModel, getModelKey, ModelConfig } from "@/aiParams";
 import { ChatModelProviders, ModelCapability, ProviderInfo } from "@/constants";
 import { getDecryptedKey } from "@/encryptionService";
+import { MissingApiKeyError } from "@/error";
+import { GitHubCopilotChatModel } from "@/LLMProviders/githubCopilot/GitHubCopilotChatModel";
 import { logError, logInfo } from "@/logger";
 import {
   CopilotSettings,
@@ -16,22 +30,8 @@ import {
   safeFetch,
   safeFetchNoThrow,
 } from "@/utils";
-import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
-import { ChatAnthropic } from "@langchain/anthropic";
-import { ChatCohere } from "@langchain/cohere";
-import { BaseChatModel } from "@langchain/core/language_models/chat_models";
-import { ChatDeepSeek } from "@langchain/deepseek";
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { ChatGroq } from "@langchain/groq";
-import { ChatMistralAI } from "@langchain/mistralai";
-import { ChatOllama } from "@langchain/ollama";
-import { ChatOpenAI } from "@langchain/openai";
-import { ChatXAI } from "@langchain/xai";
-import { MissingApiKeyError } from "@/error";
-import { Notice } from "obsidian";
-import { ChatOpenRouter } from "./ChatOpenRouter";
 import { BedrockChatModel, type BedrockChatModelFields } from "./BedrockChatModel";
-import { GitHubCopilotChatModel } from "@/LLMProviders/githubCopilot/GitHubCopilotChatModel";
+import { ChatOpenRouter } from "./ChatOpenRouter";
 
 type ChatConstructorType = {
   new (config: any): any;
@@ -116,7 +116,7 @@ export default class ChatModelManager {
   private getTemperatureForModel(
     modelInfo: ModelInfo,
     customModel: CustomModel,
-    settings: CopilotSettings
+    settings: CopilotSettings,
   ): number | undefined {
     // Thinking-enabled models don't accept temperature
     if (modelInfo.isThinkingEnabled) {
@@ -169,7 +169,7 @@ export default class ChatModelManager {
           modelName,
           customModel.maxTokens ?? settings.maxTokens,
           customModel.temperature ?? settings.temperature,
-          customModel
+          customModel,
         ),
       },
       [ChatModelProviders.ANTHROPIC]: {
@@ -211,7 +211,7 @@ export default class ChatModelManager {
           modelName,
           customModel.maxTokens ?? settings.maxTokens,
           customModel.temperature ?? settings.temperature,
-          customModel
+          customModel,
         ),
       },
       [ChatModelProviders.COHEREAI]: {
@@ -312,7 +312,7 @@ export default class ChatModelManager {
           modelName,
           customModel.maxTokens ?? settings.maxTokens,
           customModel.temperature ?? settings.temperature,
-          customModel
+          customModel,
         ),
       },
       [ChatModelProviders.SILICONFLOW]: {
@@ -326,7 +326,7 @@ export default class ChatModelManager {
           modelName,
           customModel.maxTokens ?? settings.maxTokens,
           customModel.temperature ?? settings.temperature,
-          customModel
+          customModel,
         ),
       },
       [ChatModelProviders.MISTRAL]: {
@@ -362,14 +362,14 @@ export default class ChatModelManager {
         modelName,
         settings,
         maxTokens,
-        resolvedTemperature
+        resolvedTemperature,
       );
     }
 
     // Get provider-specific parameters (like topP, frequencyPenalty) that the provider supports
     const providerSpecificParams = this.getProviderSpecificParams(
       customModel.provider as ChatModelProviders,
-      customModel
+      customModel,
     );
 
     // LangChain 0.6.6 handles token configuration for special models internally
@@ -398,14 +398,14 @@ export default class ChatModelManager {
     modelName: string,
     maxTokens: number,
     _temperature: number | undefined,
-    customModel?: CustomModel
+    customModel?: CustomModel,
   ) {
     const settings = getSettings();
     const modelInfo = getModelInfo(modelName);
     const resolvedTemperature = this.getTemperatureForModel(
       modelInfo,
       customModel || ({} as CustomModel),
-      settings
+      settings,
     );
 
     const config: any = {
@@ -448,12 +448,12 @@ export default class ChatModelManager {
     modelName: string,
     settings: CopilotSettings,
     maxTokens: number,
-    temperature: number | undefined
+    temperature: number | undefined,
   ): Promise<BedrockChatModelFields> {
     const apiKeySource = customModel.apiKey || settings.amazonBedrockApiKey;
     if (!apiKeySource) {
       throw new Error(
-        "Amazon Bedrock API key is not configured. Provide a key in Settings > API Keys or the model definition."
+        "Amazon Bedrock API key is not configured. Provide a key in Settings > API Keys or the model definition.",
       );
     }
 
@@ -660,7 +660,7 @@ export default class ChatModelManager {
     // No valid model found
     throw new Error(
       "No valid chat model available for temperature override. " +
-        "Please check your API key settings and ensure at least one model is properly configured."
+        "Please check your API key settings and ensure at least one model is properly configured.",
     );
   }
 
@@ -736,7 +736,7 @@ export default class ChatModelManager {
     // CDN is unreachable. Use a simple char-based estimation instead — modern LLM
     // APIs return accurate token usage in response metadata anyway.
     newModelInstance.getNumTokens = async (
-      content: string | Array<{ type: string; text?: string }>
+      content: string | Array<{ type: string; text?: string }>,
     ) => {
       const text =
         typeof content === "string"
@@ -828,7 +828,7 @@ export default class ChatModelManager {
         // Second try with CORS
         await tryPing(true);
         new Notice(
-          "Connection successful, but requires CORS to be enabled. Please enable CORS for this model once you add it above."
+          "Connection successful, but requires CORS to be enabled. Please enable CORS for this model once you add it above.",
         );
         return true;
       } catch (error) {

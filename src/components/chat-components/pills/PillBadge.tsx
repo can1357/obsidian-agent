@@ -13,7 +13,7 @@ export function PillBadge({ children, className, ...props }: PillBadgeProps) {
       variant="secondary"
       className={cn(
         "tw-mx-0.5 tw-inline-flex tw-items-center tw-gap-1 tw-border tw-border-solid tw-border-border tw-px-2 tw-py-0 tw-align-middle tw-text-xs",
-        className
+        className,
       )}
       {...props}
     >

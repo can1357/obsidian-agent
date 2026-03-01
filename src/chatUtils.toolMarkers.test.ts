@@ -51,7 +51,7 @@ describe("updateChatMemory with tool call markers", () => {
     expect(memoryManager.getMemory().saved[0].input).toBe("find my piano notes");
     expect(memoryManager.getMemory().saved[0].output).toContain("<!--TOOL_CALL_START:");
     expect(memoryManager.getMemory().saved[0].output).toContain(
-      "ENC:%5B%7B%22title%22%3A%22Lesson%201%22%7D%5D"
+      "ENC:%5B%7B%22title%22%3A%22Lesson%201%22%7D%5D",
     );
   });
 });

@@ -1,5 +1,5 @@
-import { logInfo } from "@/logger";
 import { App } from "obsidian";
+import { logInfo } from "@/logger";
 import { NoteIdRank } from "../interfaces";
 import { extractNotePathFromChunkId } from "../utils/chunkIdUtils";
 
@@ -205,7 +205,7 @@ export class FolderBoostCalculator {
    */
   private logBoostedFolders(folderStats: Map<string, FolderBoostResult>): void {
     const boostedFolders = Array.from(folderStats.values()).sort(
-      (a, b) => b.relevanceRatio - a.relevanceRatio
+      (a, b) => b.relevanceRatio - a.relevanceRatio,
     );
 
     if (boostedFolders.length > 0) {
@@ -213,7 +213,7 @@ export class FolderBoostCalculator {
       boostedFolders.slice(0, 5).forEach((stats) => {
         const ratioPercent = (stats.relevanceRatio * 100).toFixed(1);
         logInfo(
-          `  ${stats.folderPath || "(root)"}: ${stats.documentCount}/${stats.totalDocsInFolder} docs (${ratioPercent}% relevant, ${stats.boostFactor.toFixed(2)}x boost)`
+          `  ${stats.folderPath || "(root)"}: ${stats.documentCount}/${stats.totalDocsInFolder} docs (${ratioPercent}% relevant, ${stats.boostFactor.toFixed(2)}x boost)`,
         );
       });
     }

@@ -1,7 +1,7 @@
-import { logInfo } from "@/logger";
-import ChatModelManager from "@/LLMProviders/chatModelManager";
-import { CompactionResult, ParsedContextItem } from "@/types/compaction";
 import { HumanMessage } from "@langchain/core/messages";
+import ChatModelManager from "@/LLMProviders/chatModelManager";
+import { logInfo } from "@/logger";
+import { CompactionResult, ParsedContextItem } from "@/types/compaction";
 
 /**
  * ContextCompactor - Compresses large context using map-reduce summarization.
@@ -137,7 +137,7 @@ Summary:`;
 
     logInfo(
       `[ContextCompactor] Done: ${originalCharCount} -> ${compacted.length} chars ` +
-        `(${((1 - compacted.length / originalCharCount) * 100).toFixed(0)}% reduction)`
+        `(${((1 - compacted.length / originalCharCount) * 100).toFixed(0)}% reduction)`,
     );
 
     return {
@@ -191,8 +191,8 @@ Summary:`;
       (item, i) =>
         !items.some(
           (other, j) =>
-            i !== j && other.startIndex <= item.startIndex && other.endIndex >= item.endIndex
-        )
+            i !== j && other.startIndex <= item.startIndex && other.endIndex >= item.endIndex,
+        ),
     );
   }
 
@@ -249,7 +249,7 @@ Summary:`;
             logInfo(`[ContextCompactor] Failed to summarize item ${index}:`, e);
             return { index, summary: null };
           }
-        })
+        }),
       );
       results.forEach(({ index, summary }) => {
         if (summary) summaries.set(index, summary);
@@ -292,7 +292,7 @@ Summary:`;
   private rebuild(
     original: string,
     items: ParsedContextItem[],
-    summaries: Map<number, string>
+    summaries: Map<number, string>,
   ): string {
     let result = original;
 

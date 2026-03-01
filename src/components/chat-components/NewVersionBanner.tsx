@@ -1,10 +1,10 @@
+import { XIcon } from "lucide-react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLatestVersion } from "@/hooks/useLatestVersion";
 import { cn } from "@/lib/utils";
 import { updateSetting, useSettingsValue } from "@/settings/model";
 import { isNewerVersion } from "@/utils";
-import { XIcon } from "lucide-react";
-import React, { useState } from "react";
 
 interface NewVersionBannerProps {
   currentVersion: string;
@@ -41,7 +41,7 @@ export function NewVersionBanner({ currentVersion }: NewVersionBannerProps) {
         "tw-min-h-14 tw-overflow-hidden",
         isVisible
           ? "tw-duration-300 tw-animate-in tw-slide-in-from-top"
-          : "tw-duration-300 tw-animate-out tw-slide-out-to-top"
+          : "tw-duration-300 tw-animate-out tw-slide-out-to-top",
       )}
     >
       <div className="tw-mb-1 tw-flex tw-items-center tw-justify-between tw-gap-2 tw-rounded-md tw-border tw-border-solid tw-border-border tw-p-2 tw-pl-3 tw-text-xs">

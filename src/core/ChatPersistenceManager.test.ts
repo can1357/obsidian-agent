@@ -1,5 +1,5 @@
-import { ChatMessage } from "@/types/message";
 import { Notice, TFile } from "obsidian";
+import { ChatMessage } from "@/types/message";
 import { ChatPersistenceManager } from "./ChatPersistenceManager";
 
 const USER_SENDER = "user";
@@ -331,7 +331,7 @@ Nature's quiet song`);
 
       expect(mockApp.vault.create).toHaveBeenCalledWith(
         "test-folder/Hello@20240923_221800.md",
-        expect.stringContaining("**user**: Hello")
+        expect.stringContaining("**user**: Hello"),
       );
       const savedContent = mockApp.vault.create.mock.calls[0][1];
       expect(savedContent).not.toContain("topic:");
@@ -388,14 +388,14 @@ Nature's quiet song`);
         async (file: TFile, updater: (frontmatter: Record<string, unknown>) => void) => {
           void file;
           updater(frontmatterState);
-        }
+        },
       );
 
       await persistenceManager.saveChat("gpt-4");
 
       expect(mockApp.vault.create).toHaveBeenCalledWith(
         "test-folder/Summarize_weather_data@20240923_221800.md",
-        expect.stringContaining("Summarize weather data")
+        expect.stringContaining("Summarize weather data"),
       );
       const savedContent = mockApp.vault.create.mock.calls[0][1];
       expect(savedContent).not.toContain("topic:");
@@ -405,7 +405,7 @@ Nature's quiet song`);
       expect(invoke).toHaveBeenCalled();
       expect(mockApp.fileManager.processFrontMatter).toHaveBeenCalledWith(
         mockFile,
-        expect.any(Function)
+        expect.any(Function),
       );
       expect(frontmatterState.topic).toBe("Forecast Insights");
     });
@@ -443,7 +443,7 @@ Nature's quiet song`);
       // Expect [[My Note]] -> My Note, [ref] -> ref, illegal chars removed, spaces -> underscores
       expect(mockApp.vault.create).toHaveBeenCalledWith(
         "test-folder/Check_My_Note_and_path_ref_test@20240923_221800.md",
-        expect.any(String)
+        expect.any(String),
       );
     });
 
@@ -469,7 +469,7 @@ Nature's quiet song`);
 
       expect(mockApp.vault.create).toHaveBeenCalledWith(
         "test-folder/Untitled_Chat@20240923_221800.md",
-        expect.any(String)
+        expect.any(String),
       );
     });
 
@@ -672,7 +672,7 @@ Nature's quiet song`);
         if (createCallCount === 1) {
           // First call: throw ENAMETOOLONG error (simulating the original filename being too long)
           const error = new Error(
-            "ENAMETOOLONG: name too long, open '/home/user/vault/copilot/copilot-conversations/1)_используй_словарь_уже_установленных_терминов_Словарь_перевода_Songs_of@20251025_161120.md'"
+            "ENAMETOOLONG: name too long, open '/home/user/vault/copilot/copilot-conversations/1)_используй_словарь_уже_установленных_терминов_Словарь_перевода_Songs_of@20251025_161120.md'",
           );
           return Promise.reject(error);
         } else {
@@ -705,7 +705,7 @@ Nature's quiet song`);
 
       // Verify a warning was logged about using minimal filename
       expect(jest.mocked(Notice)).toHaveBeenCalledWith(
-        expect.stringContaining("chat-1729873880000.md")
+        expect.stringContaining("chat-1729873880000.md"),
       );
     });
 
@@ -811,12 +811,12 @@ Nature's quiet song`);
       // Verify that vault.modify was called to update the existing fallback file
       expect(mockApp.vault.modify).toHaveBeenCalledWith(
         existingFallbackFile,
-        expect.stringContaining("используй словарь")
+        expect.stringContaining("используй словарь"),
       );
 
       // Verify the correct notices were shown
       expect(jest.mocked(Notice)).toHaveBeenCalledWith(
-        "Existing chat note found - updating it now."
+        "Existing chat note found - updating it now.",
       );
     });
 
@@ -853,7 +853,7 @@ Nature's quiet song`);
 
       expect(mockApp.vault.modify).toHaveBeenCalledWith(
         existingFile,
-        expect.stringContaining("**user**: Hello")
+        expect.stringContaining("**user**: Hello"),
       );
       expect(mockApp.vault.create).not.toHaveBeenCalled();
 
@@ -905,7 +905,7 @@ Nature's quiet song`);
 
       expect(mockApp.vault.modify).toHaveBeenCalledWith(
         existingFile,
-        expect.stringContaining("**user**: Hello again")
+        expect.stringContaining("**user**: Hello again"),
       );
       expect(mockApp.vault.create).toHaveBeenCalledTimes(1);
       expect(Notice).toHaveBeenCalledWith("Existing chat note found - updating it now.");
@@ -956,7 +956,7 @@ Nature's quiet song`);
 
       expect(mockApp.vault.modify).toHaveBeenCalledWith(
         existingFile,
-        expect.stringContaining("**user**: Conflict message")
+        expect.stringContaining("**user**: Conflict message"),
       );
       expect(mockApp.vault.create).toHaveBeenCalledTimes(1);
       expect(Notice).toHaveBeenCalledWith("Existing chat note found - updating it now.");
@@ -995,7 +995,7 @@ Nature's quiet song`);
       // Should write via adapter, not vault.create
       expect(mockApp.vault.adapter.write).toHaveBeenCalledWith(
         expect.stringContaining("test-folder/"),
-        expect.stringContaining("**user**: Hello")
+        expect.stringContaining("**user**: Hello"),
       );
       expect(mockApp.vault.create).not.toHaveBeenCalled();
 
@@ -1434,7 +1434,7 @@ tags:
       const noteContent = (persistenceManager as any).generateNoteContent(
         chatContent,
         messages[0].timestamp!.epoch,
-        testModelKey
+        testModelKey,
       );
 
       // Verify the content contains properly quoted modelKey
@@ -1467,7 +1467,7 @@ tags:
       const noteContent = (persistenceManager as any).generateNoteContent(
         chatContent,
         messages[0].timestamp!.epoch,
-        testModelKey
+        testModelKey,
       );
 
       // Verify the content contains properly escaped quotes
@@ -1500,7 +1500,7 @@ tags:
       const noteContent = (persistenceManager as any).generateNoteContent(
         chatContent,
         messages[0].timestamp!.epoch,
-        testModelKey
+        testModelKey,
       );
 
       // Verify the content contains properly escaped backslashes
@@ -1552,7 +1552,7 @@ tags:
       // Verify that modify was called with content containing lastAccessedAt
       expect(mockApp.vault.modify).toHaveBeenCalledWith(
         existingFile,
-        expect.stringContaining("lastAccessedAt: 1700000000000")
+        expect.stringContaining("lastAccessedAt: 1700000000000"),
       );
 
       getFilesSpy.mockRestore();
@@ -1632,7 +1632,7 @@ tags:
       // Verify that modify was called with content containing lastAccessedAt
       expect(mockApp.vault.modify).toHaveBeenCalledWith(
         existingFile,
-        expect.stringContaining("lastAccessedAt: 1700000000000")
+        expect.stringContaining("lastAccessedAt: 1700000000000"),
       );
 
       getFilesSpy.mockRestore();

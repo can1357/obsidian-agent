@@ -1,12 +1,5 @@
 import { TFile } from "obsidian";
 import {
-  getCommandFilePath,
-  getCustomCommandsFolder,
-  getNextCustomCommandOrder,
-} from "@/commands/customCommandUtils";
-import { CustomCommand } from "@/commands/type";
-import { CustomError } from "@/error";
-import {
   COPILOT_COMMAND_CONTEXT_MENU_ENABLED,
   COPILOT_COMMAND_CONTEXT_MENU_ORDER,
   COPILOT_COMMAND_LAST_USED,
@@ -14,13 +7,20 @@ import {
   COPILOT_COMMAND_SLASH_ENABLED,
 } from "@/commands/constants";
 import {
+  getCommandFilePath,
+  getCustomCommandsFolder,
+  getNextCustomCommandOrder,
+} from "@/commands/customCommandUtils";
+import { CustomCommand } from "@/commands/type";
+import { CustomError } from "@/error";
+import { ensureFolderExists } from "@/utils";
+import {
   addPendingFileWrite,
   deleteCachedCommand,
   removePendingFileWrite,
   updateCachedCommand,
   updateCachedCommands,
 } from "./state";
-import { ensureFolderExists } from "@/utils";
 
 export class CustomCommandManager {
   private static instance: CustomCommandManager;
@@ -39,7 +39,7 @@ export class CustomCommandManager {
    */
   async createCommand(
     command: CustomCommand,
-    options: { skipStoreUpdate?: boolean; autoOrder?: boolean } = {}
+    options: { skipStoreUpdate?: boolean; autoOrder?: boolean } = {},
   ): Promise<void> {
     // Merge default options with provided options
     const mergedOptions = { skipStoreUpdate: false, autoOrder: true, ...options };
@@ -102,7 +102,7 @@ export class CustomCommandManager {
         const newFileExists = app.vault.getAbstractFileByPath(filePath);
         if (newFileExists) {
           throw new CustomError(
-            "Error saving custom prompt. Please check if the title already exists."
+            "Error saving custom prompt. Please check if the title already exists.",
           );
         }
         const prevCommandFile = app.vault.getAbstractFileByPath(prevFilePath);

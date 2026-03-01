@@ -14,27 +14,26 @@
  */
 
 import {
+  CompactionConfig,
+  compactBySection,
+  DEFAULT_COMPACTION_CONFIG,
+  escapeXmlAttr,
+} from "./compactionUtils";
+import {
   ContextSourceType,
   extractContentFromBlock,
   extractSourceFromBlock,
   getSourceType,
   isRecoverable,
 } from "./contextBlockRegistry";
-import {
-  CompactionConfig,
-  DEFAULT_COMPACTION_CONFIG,
-  compactBySection,
-  escapeXmlAttr,
-} from "./compactionUtils";
-
-// Re-export types and utilities for backwards compatibility
-export type { ContextSourceType } from "./contextBlockRegistry";
-export type { CompactionConfig as L2CompactorConfig } from "./compactionUtils";
-export { compactBySection, truncateWithEllipsis } from "./compactionUtils";
-export { getSourceType as detectSourceType } from "./contextBlockRegistry";
 
 // Re-export chat history compaction for backwards compatibility
 export { compactAssistantOutput, compactChatHistoryContent } from "./ChatHistoryCompactor";
+export type { CompactionConfig as L2CompactorConfig } from "./compactionUtils";
+export { compactBySection, truncateWithEllipsis } from "./compactionUtils";
+// Re-export types and utilities for backwards compatibility
+export type { ContextSourceType } from "./contextBlockRegistry";
+export { getSourceType as detectSourceType } from "./contextBlockRegistry";
 
 /**
  * Extract the source identifier from an XML block.
@@ -75,7 +74,7 @@ export function compactL3ForL2(
   content: string,
   source: string,
   sourceType: ContextSourceType,
-  config: Partial<CompactionConfig> = {}
+  config: Partial<CompactionConfig> = {},
 ): string {
   const threshold = config.verbatimThreshold ?? DEFAULT_COMPACTION_CONFIG.verbatimThreshold;
 
@@ -106,7 +105,7 @@ ${compactedContent}
 export function compactXmlBlock(
   xmlBlock: string,
   blockType: string,
-  config: Partial<CompactionConfig> = {}
+  config: Partial<CompactionConfig> = {},
 ): string {
   // Never compact non-recoverable content (e.g., selected_text)
   if (!isRecoverable(blockType)) {

@@ -8,8 +8,8 @@ jest.mock("@/chainFactory", () => ({
   },
 }));
 
-import { ContextProcessor } from "@/contextProcessor";
 import { DATAVIEW_BLOCK_TAG } from "@/constants";
+import { ContextProcessor } from "@/contextProcessor";
 
 // Mock the global app object for Dataview plugin access
 global.app = {
@@ -201,7 +201,7 @@ LIST
               new Promise((resolve) => {
                 // Never resolve to simulate timeout
                 setTimeout(resolve, 10000);
-              })
+              }),
           ),
         },
       };

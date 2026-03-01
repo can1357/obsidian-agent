@@ -67,7 +67,7 @@ describe("TieredLexicalRetriever", () => {
     mockChunkManager.getChunkTextSync.mockImplementation(getChunkContent);
     mockChunkManager.getChunkText.mockReset();
     mockChunkManager.getChunkText.mockImplementation((id: string) =>
-      Promise.resolve(getChunkContent(id))
+      Promise.resolve(getChunkContent(id)),
     );
 
     // Mock app
@@ -189,7 +189,7 @@ describe("TieredLexicalRetriever", () => {
       };
       mockChunkManager.getChunkTextSync.mockImplementation(getTestChunkContent);
       mockChunkManager.getChunkText.mockImplementation((id: string) =>
-        Promise.resolve(getTestChunkContent(id))
+        Promise.resolve(getTestChunkContent(id)),
       );
 
       retrieveMock.mockResolvedValueOnce({
@@ -288,7 +288,7 @@ describe("TieredLexicalRetriever", () => {
       };
       mockChunkManager.getChunkTextSync.mockImplementation(getMultiChunkContent);
       mockChunkManager.getChunkText.mockImplementation((id: string) =>
-        Promise.resolve(getMultiChunkContent(id))
+        Promise.resolve(getMultiChunkContent(id)),
       );
 
       const multiChunkRetriever = new TieredLexicalRetriever(mockApp, {

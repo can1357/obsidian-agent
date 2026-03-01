@@ -37,7 +37,7 @@ function safeSerialize(value: unknown): string {
 
       return val;
     },
-    2
+    2,
   );
 }
 
@@ -47,14 +47,14 @@ function safeSerialize(value: unknown): string {
  */
 function buildLayeredViewFromMessages(
   messages: unknown[],
-  envelope?: PromptContextEnvelope
+  envelope?: PromptContextEnvelope,
 ): string {
   const lines: string[] = [];
 
   // Metadata line
   if (envelope) {
     lines.push(
-      `msg:${envelope.messageId ?? "N/A"} | conv:${envelope.conversationId ?? "N/A"} | v${envelope.version}`
+      `msg:${envelope.messageId ?? "N/A"} | conv:${envelope.conversationId ?? "N/A"} | v${envelope.version}`,
     );
     lines.push("");
   }

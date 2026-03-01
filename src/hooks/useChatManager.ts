@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ChainType } from "@/chainFactory";
-import { ChatMessage, MessageContext } from "@/types/message";
 import { ChatUIState } from "@/state/ChatUIState";
+import { ChatMessage, MessageContext } from "@/types/message";
 
 /**
  * React hook for using ChatManager through ChatUIState
@@ -38,17 +38,17 @@ export function useChatManager(chatUIState: ChatUIState) {
       context: MessageContext,
       chainType: ChainType,
       includeActiveNote: boolean = false,
-      includeActiveWebTab: boolean = false
+      includeActiveWebTab: boolean = false,
     ): Promise<string> => {
       return await chatUIState.sendMessage(
         displayText,
         context,
         chainType,
         includeActiveNote,
-        includeActiveWebTab
+        includeActiveWebTab,
       );
     },
-    [chatUIState]
+    [chatUIState],
   );
 
   const editMessage = useCallback(
@@ -56,29 +56,29 @@ export function useChatManager(chatUIState: ChatUIState) {
       messageId: string,
       newText: string,
       chainType: ChainType,
-      includeActiveNote: boolean = false
+      includeActiveNote: boolean = false,
     ): Promise<boolean> => {
       return await chatUIState.editMessage(messageId, newText, chainType, includeActiveNote);
     },
-    [chatUIState]
+    [chatUIState],
   );
 
   const regenerateMessage = useCallback(
     async (
       messageId: string,
       onUpdateCurrentMessage: (message: string) => void,
-      onAddMessage: (message: ChatMessage) => void
+      onAddMessage: (message: ChatMessage) => void,
     ): Promise<boolean> => {
       return await chatUIState.regenerateMessage(messageId, onUpdateCurrentMessage, onAddMessage);
     },
-    [chatUIState]
+    [chatUIState],
   );
 
   const deleteMessage = useCallback(
     async (messageId: string): Promise<boolean> => {
       return await chatUIState.deleteMessage(messageId);
     },
-    [chatUIState]
+    [chatUIState],
   );
 
   const clearMessages = useCallback((): void => {
@@ -89,7 +89,7 @@ export function useChatManager(chatUIState: ChatUIState) {
     async (messageId: string): Promise<void> => {
       await chatUIState.truncateAfterMessageId(messageId);
     },
-    [chatUIState]
+    [chatUIState],
   );
 
   // ================================
@@ -101,7 +101,7 @@ export function useChatManager(chatUIState: ChatUIState) {
     (message: ChatMessage): void => {
       chatUIState.addMessage(message);
     },
-    [chatUIState]
+    [chatUIState],
   );
 
   // ================================
@@ -112,14 +112,14 @@ export function useChatManager(chatUIState: ChatUIState) {
     (messages: ChatMessage[]): void => {
       chatUIState.loadMessages(messages);
     },
-    [chatUIState]
+    [chatUIState],
   );
 
   const getMessage = useCallback(
     (id: string): ChatMessage | undefined => {
       return chatUIState.getMessage(id);
     },
-    [chatUIState]
+    [chatUIState],
   );
 
   const getLLMMessages = useCallback((): ChatMessage[] => {

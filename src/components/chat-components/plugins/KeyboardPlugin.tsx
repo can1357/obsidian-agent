@@ -1,6 +1,6 @@
-import { useRef, useEffect } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { COMMAND_PRIORITY_LOW, KEY_ENTER_COMMAND } from "lexical";
+import { useEffect, useRef } from "react";
 import { SEND_SHORTCUT } from "@/constants";
 
 /**
@@ -70,7 +70,7 @@ export function KeyboardPlugin({ onSubmit, sendShortcut }: KeyboardPluginProps) 
           attachListeners(rootElement);
         }
         currentRootElement = rootElement;
-      }
+      },
     );
 
     return () => {
@@ -116,7 +116,7 @@ export function KeyboardPlugin({ onSubmit, sendShortcut }: KeyboardPluginProps) 
 
         return false;
       },
-      COMMAND_PRIORITY_LOW
+      COMMAND_PRIORITY_LOW,
     );
   }, [editor, onSubmit, sendShortcut]);
 

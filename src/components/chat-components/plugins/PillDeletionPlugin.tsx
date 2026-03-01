@@ -1,13 +1,13 @@
-import React from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
   $getSelection,
-  $isRangeSelection,
-  DELETE_CHARACTER_COMMAND,
-  COMMAND_PRIORITY_CRITICAL,
   $isElementNode,
+  $isRangeSelection,
+  COMMAND_PRIORITY_CRITICAL,
+  DELETE_CHARACTER_COMMAND,
   DecoratorNode,
 } from "lexical";
+import React from "react";
 
 /**
  * Interface for nodes that should be treated as pills for deletion purposes
@@ -93,7 +93,7 @@ export function PillDeletionPlugin(): null {
 
         return handled;
       },
-      COMMAND_PRIORITY_CRITICAL
+      COMMAND_PRIORITY_CRITICAL,
     );
 
     return () => {

@@ -1,22 +1,3 @@
-import { ProjectConfig, setCurrentProject } from "@/aiParams";
-import { AddProjectModal } from "@/components/modals/project/AddProjectModal";
-import { ConfirmModal } from "@/components/modals/ConfirmModal";
-import { Button } from "@/components/ui/button";
-import { useChatInput } from "@/context/ChatInputContext";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { HelpTooltip } from "@/components/ui/help-tooltip";
-import { SearchBar } from "@/components/ui/SearchBar";
-import { cn } from "@/lib/utils";
-import { logError } from "@/logger";
-import { updateSetting, useSettingsValue } from "@/settings/model";
-import { RecentUsageManager, sortByStrategy } from "@/utils/recentUsageManager";
 import {
   ChevronDown,
   ChevronUp,
@@ -30,8 +11,27 @@ import {
 } from "lucide-react";
 import { App, Notice } from "obsidian";
 import React, { memo, useEffect, useMemo, useState } from "react";
-import { filterProjects } from "@/utils/projectUtils";
+import { ProjectConfig, setCurrentProject } from "@/aiParams";
+import { ConfirmModal } from "@/components/modals/ConfirmModal";
+import { AddProjectModal } from "@/components/modals/project/AddProjectModal";
+import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { HelpTooltip } from "@/components/ui/help-tooltip";
+import { SearchBar } from "@/components/ui/SearchBar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useChatInput } from "@/context/ChatInputContext";
+import { cn } from "@/lib/utils";
+import { logError } from "@/logger";
+import { updateSetting, useSettingsValue } from "@/settings/model";
+import { filterProjects } from "@/utils/projectUtils";
+import { RecentUsageManager, sortByStrategy } from "@/utils/recentUsageManager";
 
 /**
  * Subscribe to a {@link RecentUsageManager} revision so in-memory touches can trigger
@@ -39,7 +39,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
  * is throttled).
  */
 function useRecentUsageManagerRevision<Key extends string>(
-  manager: RecentUsageManager<Key> | null | undefined
+  manager: RecentUsageManager<Key> | null | undefined,
 ): number {
   const [revision, setRevision] = useState(() => manager?.getRevision() ?? 0);
 
@@ -132,7 +132,7 @@ function ProjectItem({
                   app,
                   () => onDelete(project),
                   `Are you sure you want to delete project "${project.name}"?`,
-                  "Delete Project"
+                  "Delete Project",
                 );
                 modal.open();
               }}
@@ -207,7 +207,7 @@ export const ProjectList = memo(
             if (projectUsageTimestampsManager) {
               return projectUsageTimestampsManager.getEffectiveLastUsedAt(
                 project.id,
-                project.UsageTimestamps
+                project.UsageTimestamps,
               );
             }
             return project.UsageTimestamps;
@@ -218,7 +218,7 @@ export const ProjectList = memo(
         settings.projectListSortStrategy,
         projectUsageTimestampsManager,
         projectUsageRevision,
-      ]
+      ],
     );
 
     // Filter projects based on search query
@@ -242,7 +242,7 @@ export const ProjectList = memo(
             setSelectedProject(updatedProject);
           }
         },
-        originP
+        originP,
       );
       modal.open();
     };
@@ -474,7 +474,7 @@ export const ProjectList = memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
 ProjectList.displayName = "ProjectList";

@@ -5,10 +5,10 @@
  * Uses self-scheduling setTimeout pattern to avoid concurrent execution.
  */
 
+import { v4 as uuidv4 } from "uuid";
 import * as actions from "@/services/webViewerService/webViewerServiceActions";
 import type { WebViewerLeaf } from "@/services/webViewerService/webViewerServiceTypes";
 import type { WebSelectedTextContext } from "@/types/message";
-import { v4 as uuidv4 } from "uuid";
 
 // ============================================================================
 // Types
@@ -313,7 +313,7 @@ export class WebSelectionTracker {
    */
   private maybeClearSelectionForInvalidUrl(
     leaf: WebViewerLeaf,
-    state: LeafSelectionTrackingState
+    state: LeafSelectionTrackingState,
   ): void {
     // Only clear when we previously observed a valid selection for this leaf
     if (!state.lastSelection) {

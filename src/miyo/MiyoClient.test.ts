@@ -1,7 +1,7 @@
+import { requestUrl } from "obsidian";
 import { MiyoClient } from "@/miyo/MiyoClient";
 import { MiyoServiceDiscovery } from "@/miyo/MiyoServiceDiscovery";
 import { getSettings } from "@/settings/model";
-import { requestUrl } from "obsidian";
 
 jest.mock("obsidian", () => ({
   requestUrl: jest.fn(),
@@ -73,7 +73,7 @@ describe("MiyoClient.parseDoc", () => {
         method: "POST",
         contentType: "application/json",
         body: JSON.stringify({ path: "/tmp/sample.pdf" }),
-      })
+      }),
     );
   });
 
@@ -87,7 +87,7 @@ describe("MiyoClient.parseDoc", () => {
     const client = new MiyoClient();
 
     await expect(client.parseDoc("http://127.0.0.1:8742", "/tmp/sample.pdf")).rejects.toThrow(
-      "Miyo request failed with status 500"
+      "Miyo request failed with status 500",
     );
   });
 });

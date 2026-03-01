@@ -199,7 +199,7 @@ Just content, no path or modified date
       });
 
       expect(ToolResultFormatter.format("readNote", payload)).toBe(
-        '✅ Read "Test Note" · chunk 1 of 2 · more available'
+        '✅ Read "Test Note" · chunk 1 of 2 · more available',
       );
     });
 
@@ -211,7 +211,7 @@ Just content, no path or modified date
       });
 
       expect(ToolResultFormatter.format("readNote", payload)).toBe(
-        'Note "Vault/Missing.md" was not found or is not a readable file.'
+        'Note "Vault/Missing.md" was not found or is not a readable file.',
       );
     });
 

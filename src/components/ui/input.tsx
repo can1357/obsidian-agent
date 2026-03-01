@@ -12,13 +12,13 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
           "focus-visible:!tw-shadow-sm focus-visible:!tw-outline-none focus-visible:!tw-ring-1 focus-visible:!tw-ring-ring",
           "placeholder:tw-text-sm",
           "tw-flex tw-w-full tw-shadow-sm placeholder:tw-text-muted disabled:tw-cursor-not-allowed disabled:tw-opacity-50",
-          className
+          className,
         )}
         ref={ref}
         {...props}
       />
     );
-  }
+  },
 );
 Input.displayName = "Input";
 

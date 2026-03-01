@@ -41,7 +41,7 @@ export function mergeConfig(config: Partial<CompactionConfig> = {}): CompactionC
 export function compactBySection(
   content: string,
   previewCharsPerSection = 500,
-  maxSections = 20
+  maxSections = 20,
 ): string {
   // Split content by markdown headings (keep the heading with its section)
   const sections = content.split(/(?=^#{1,6}\s+)/m).filter((s) => s.trim());

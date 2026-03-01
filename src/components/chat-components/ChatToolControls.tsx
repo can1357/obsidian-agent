@@ -1,14 +1,14 @@
+import { Brain, Check, Database, Globe, Pen, Sparkles, Wrench } from "lucide-react";
 import React from "react";
-import { Database, Globe, Pen, Sparkles, Brain, Wrench, Check } from "lucide-react";
+import { ChainType } from "@/chainFactory";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChainType } from "@/chainFactory";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { updateSetting } from "@/settings/model";
 
@@ -95,7 +95,7 @@ const ChatToolControls: React.FC<ChatToolControlsProps> = ({
                 onClick={handleAutonomousAgentToggle}
                 className={cn(
                   "tw-text-muted hover:tw-text-accent",
-                  autonomousAgentToggle && "tw-text-accent tw-bg-accent/10"
+                  autonomousAgentToggle && "tw-text-accent tw-bg-accent/10",
                 )}
               >
                 <Brain className="tw-size-4" />
@@ -118,7 +118,7 @@ const ChatToolControls: React.FC<ChatToolControlsProps> = ({
                   onClick={handleVaultToggle}
                   className={cn(
                     "tw-text-muted hover:tw-text-accent",
-                    vaultToggle && "tw-text-accent tw-bg-accent/10"
+                    vaultToggle && "tw-text-accent tw-bg-accent/10",
                   )}
                 >
                   <Database className="tw-size-4" />
@@ -134,7 +134,7 @@ const ChatToolControls: React.FC<ChatToolControlsProps> = ({
                   onClick={handleWebToggle}
                   className={cn(
                     "tw-text-muted hover:tw-text-accent",
-                    webToggle && "tw-text-accent tw-bg-accent/10"
+                    webToggle && "tw-text-accent tw-bg-accent/10",
                   )}
                 >
                   <Globe className="tw-size-4" />
@@ -150,7 +150,7 @@ const ChatToolControls: React.FC<ChatToolControlsProps> = ({
                   onClick={handleComposerToggle}
                   className={cn(
                     "tw-text-muted hover:tw-text-accent",
-                    composerToggle && "tw-text-accent tw-bg-accent/10"
+                    composerToggle && "tw-text-accent tw-bg-accent/10",
                   )}
                 >
                   <span className="tw-flex tw-items-center tw-gap-0.5">

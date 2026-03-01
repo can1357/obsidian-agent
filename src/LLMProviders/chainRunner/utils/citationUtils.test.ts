@@ -7,8 +7,8 @@ import {
   hasInlineCitations,
   normalizeCitations,
   processInlineCitations,
-  sanitizeContentForCitations,
   type SourceCatalogEntry,
+  sanitizeContentForCitations,
 } from "./citationUtils";
 
 describe("citationUtils", () => {
@@ -371,16 +371,16 @@ More content
       // [^18] (fourth mention) -> [4] -> should map to [[2024-04-08]]
 
       expect(result).toContain(
-        '<span class="copilot-sources__index">[1]</span><span class="copilot-sources__text">[[2024-03-13]]</span>'
+        '<span class="copilot-sources__index">[1]</span><span class="copilot-sources__text">[[2024-03-13]]</span>',
       );
       expect(result).toContain(
-        '<span class="copilot-sources__index">[2]</span><span class="copilot-sources__text">[[2024-03-18]]</span>'
+        '<span class="copilot-sources__index">[2]</span><span class="copilot-sources__text">[[2024-03-18]]</span>',
       );
       expect(result).toContain(
-        '<span class="copilot-sources__index">[3]</span><span class="copilot-sources__text">[[2024-03-26]]</span>'
+        '<span class="copilot-sources__index">[3]</span><span class="copilot-sources__text">[[2024-03-26]]</span>',
       );
       expect(result).toContain(
-        '<span class="copilot-sources__index">[4]</span><span class="copilot-sources__text">[[2024-04-08]]</span>'
+        '<span class="copilot-sources__index">[4]</span><span class="copilot-sources__text">[[2024-04-08]]</span>',
       );
 
       // Verify the citations in text are renumbered correctly
@@ -409,10 +409,10 @@ More content
 
       // Should consolidate the 3 "How to Make Wealth" entries into 1
       expect(result).toContain(
-        '<span class="copilot-sources__index">[1]</span><span class="copilot-sources__text">[[How to Make Wealth]]</span>'
+        '<span class="copilot-sources__index">[1]</span><span class="copilot-sources__text">[[How to Make Wealth]]</span>',
       );
       expect(result).toContain(
-        '<span class="copilot-sources__index">[2]</span><span class="copilot-sources__text">[[Superlinear Returns]]</span>'
+        '<span class="copilot-sources__index">[2]</span><span class="copilot-sources__text">[[Superlinear Returns]]</span>',
       );
       expect(result).not.toContain('copilot-sources__index">[3]');
       expect(result).not.toContain('copilot-sources__index">[4]');
@@ -452,13 +452,13 @@ More content
 
       // After consolidation, should only have 3 unique sources:
       expect(result).toContain(
-        '<span class="copilot-sources__index">[1]</span><span class="copilot-sources__text">[[Document B]]</span>'
+        '<span class="copilot-sources__index">[1]</span><span class="copilot-sources__text">[[Document B]]</span>',
       );
       expect(result).toContain(
-        '<span class="copilot-sources__index">[2]</span><span class="copilot-sources__text">[[Document C]]</span>'
+        '<span class="copilot-sources__index">[2]</span><span class="copilot-sources__text">[[Document C]]</span>',
       );
       expect(result).toContain(
-        '<span class="copilot-sources__index">[3]</span><span class="copilot-sources__text">[[Document A]]</span>'
+        '<span class="copilot-sources__index">[3]</span><span class="copilot-sources__text">[[Document A]]</span>',
       );
       expect(result).not.toContain('copilot-sources__index">[4]');
 
@@ -486,10 +486,10 @@ More content
       // [^8] (second mention) -> [2] -> [[How to Do Great Work]]
 
       expect(result).toContain(
-        '<span class="copilot-sources__index">[1]</span><span class="copilot-sources__text">[[Superlinear Returns]]</span>'
+        '<span class="copilot-sources__index">[1]</span><span class="copilot-sources__text">[[Superlinear Returns]]</span>',
       );
       expect(result).toContain(
-        '<span class="copilot-sources__index">[2]</span><span class="copilot-sources__text">[[How to Do Great Work]]</span>'
+        '<span class="copilot-sources__index">[2]</span><span class="copilot-sources__text">[[How to Do Great Work]]</span>',
       );
 
       // CRITICAL: Both citations in text must be converted (not partial like [4][^8])

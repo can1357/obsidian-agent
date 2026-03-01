@@ -1,10 +1,10 @@
-import { CustomError } from "@/error";
-import EmbeddingsManager from "@/LLMProviders/embeddingManager";
-import { getSettings } from "@/settings/model";
-import { logFileManager } from "@/logFileManager";
-import { getTagsFromNote, stripHash } from "@/utils";
 import { Embeddings } from "@langchain/core/embeddings";
 import { App, TFile } from "obsidian";
+import { CustomError } from "@/error";
+import EmbeddingsManager from "@/LLMProviders/embeddingManager";
+import { logFileManager } from "@/logFileManager";
+import { getSettings } from "@/settings/model";
+import { getTagsFromNote, stripHash } from "@/utils";
 
 export interface PatternCategory {
   tagPatterns?: string[];
@@ -26,13 +26,13 @@ export async function getVectorLength(embeddingInstance: Embeddings | undefined)
     }
 
     console.log(
-      `Detected vector length: ${sampleEmbedding.length} for model: ${EmbeddingsManager.getModelName(embeddingInstance)}`
+      `Detected vector length: ${sampleEmbedding.length} for model: ${EmbeddingsManager.getModelName(embeddingInstance)}`,
     );
     return sampleEmbedding.length;
   } catch (error) {
     console.error("Error getting vector length:", error);
     throw new CustomError(
-      "Failed to determine embedding vector length. Please check your Copilot settings to make sure you have a working embedding model."
+      "Failed to determine embedding vector length. Please check your Copilot settings to make sure you have a working embedding model.",
     );
   }
 }
@@ -47,7 +47,7 @@ export async function getAllQAMarkdownContent(app: App): Promise<string> {
   });
 
   await Promise.all(filteredFiles.map((file) => app.vault.cachedRead(file))).then((contents) =>
-    contents.map((c) => (allContent += c + " "))
+    contents.map((c) => (allContent += c + " ")),
   );
 
   return allContent;
@@ -72,7 +72,7 @@ export function getDecodedPatterns(value: string): string[] {
           return trimmed;
         }
       })
-      .filter((item) => item.length > 0)
+      .filter((item) => item.length > 0),
   );
 
   return patterns;
@@ -147,7 +147,7 @@ export function shouldIndexFile(
   file: TFile,
   inclusions: PatternCategory | null,
   exclusions: PatternCategory | null,
-  isProject?: boolean
+  isProject?: boolean,
 ): boolean {
   // Always exclude Copilot's own log file from Copilot searches/indexing
   if (isInternalExcludedFile(file)) {
@@ -246,7 +246,7 @@ function matchFilePathWithTags(filePath: string, tagPatterns: string[]): boolean
     const tags = getTagsFromNote(file);
     if (
       tagPatterns.some((pattern) =>
-        tags.some((tag) => tag.toLowerCase() === stripHash(pattern).toLowerCase())
+        tags.some((tag) => tag.toLowerCase() === stripHash(pattern).toLowerCase()),
       )
     ) {
       return true;

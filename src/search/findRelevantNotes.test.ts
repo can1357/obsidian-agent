@@ -1,10 +1,10 @@
 import { TFile } from "obsidian";
-import { getBacklinkedNotes, getLinkedNotes } from "@/noteUtils";
-import { findRelevantNotes } from "@/search/findRelevantNotes";
 import { MiyoClient } from "@/miyo/MiyoClient";
 import { getMiyoSourceId } from "@/miyo/miyoUtils";
-import { CopilotSettings, getSettings } from "@/settings/model";
+import { getBacklinkedNotes, getLinkedNotes } from "@/noteUtils";
+import { findRelevantNotes } from "@/search/findRelevantNotes";
 import VectorStoreManager from "@/search/vectorStoreManager";
+import { CopilotSettings, getSettings } from "@/settings/model";
 
 jest.mock("@/noteUtils", () => ({
   getLinkedNotes: jest.fn(),
@@ -161,7 +161,7 @@ describe("findRelevantNotes", () => {
       "linked-only.md",
     ]);
     expect(
-      result.find((entry) => entry.document.path === "second.md")?.metadata.similarityScore
+      result.find((entry) => entry.document.path === "second.md")?.metadata.similarityScore,
     ).toBe(0.82);
     expect(mockGetDb).toHaveBeenCalledTimes(1);
     expect(mockGetDocsByEmbedding).toHaveBeenCalledTimes(2);
@@ -204,7 +204,7 @@ describe("findRelevantNotes", () => {
 
     expect(result.map((entry) => entry.document.path)).toEqual(["beta.md", "alpha.md"]);
     expect(
-      result.find((entry) => entry.document.path === "alpha.md")?.metadata.similarityScore
+      result.find((entry) => entry.document.path === "alpha.md")?.metadata.similarityScore,
     ).toBe(0.6);
     expect(mockGetDb).not.toHaveBeenCalled();
     expect(mockGetDocumentsByPath).not.toHaveBeenCalled();

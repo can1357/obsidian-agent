@@ -1,6 +1,6 @@
 import { TFile, TFolder } from "obsidian";
-import { getMatchingPatterns, shouldIndexFile } from "@/search/searchUtils";
 import { z } from "zod";
+import { getMatchingPatterns, shouldIndexFile } from "@/search/searchUtils";
 import { createLangChainTool } from "./createLangChainTool";
 
 interface FileTreeNode {
@@ -24,7 +24,7 @@ function getFileExtension(filename: string): string {
 
 function buildFileTree(
   folder: TFolder,
-  includeFiles: boolean = true
+  includeFiles: boolean = true,
 ): Record<string, FileTreeNode> {
   const files: string[] = [];
   const extensionCounts: Record<string, number> = {};

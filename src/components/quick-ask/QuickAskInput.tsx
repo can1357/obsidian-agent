@@ -3,32 +3,32 @@
  * Simplified version of LexicalEditor with @ mention support.
  */
 
-import React, { useCallback, useEffect, useState } from "react";
-import { $getRoot, EditorState, LexicalEditor as LexicalEditorType } from "lexical";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
-import { PlainTextPlugin } from "@lexical/react/LexicalPlainTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
-import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
+import { PlainTextPlugin } from "@lexical/react/LexicalPlainTextPlugin";
+import { $getRoot, EditorState, LexicalEditor as LexicalEditorType } from "lexical";
 import { TFile } from "obsidian";
-import { NotePillNode } from "@/components/chat-components/pills/NotePillNode";
-import { ActiveNotePillNode } from "@/components/chat-components/pills/ActiveNotePillNode";
-import { FolderPillNode } from "@/components/chat-components/pills/FolderPillNode";
-import { WebTabPillNode } from "@/components/chat-components/pills/WebTabPillNode";
-import { ActiveWebTabPillNode } from "@/components/chat-components/pills/ActiveWebTabPillNode";
-import { KeyboardPlugin } from "@/components/chat-components/plugins/KeyboardPlugin";
-import { ValueSyncPlugin } from "@/components/chat-components/plugins/ValueSyncPlugin";
-import { FocusPlugin } from "@/components/chat-components/plugins/FocusPlugin";
-import { NotePillSyncPlugin } from "@/components/chat-components/plugins/NotePillSyncPlugin";
-import { FolderPillSyncPlugin } from "@/components/chat-components/plugins/FolderPillSyncPlugin";
-import { ActiveNotePillSyncPlugin } from "@/components/chat-components/plugins/ActiveNotePillSyncPlugin";
-import { PillDeletionPlugin } from "@/components/chat-components/plugins/PillDeletionPlugin";
-import { AtMentionCommandPlugin } from "@/components/chat-components/plugins/AtMentionCommandPlugin";
+import React, { useCallback, useEffect, useState } from "react";
 import { ActiveFileProvider } from "@/components/chat-components/context/ActiveFileContext";
+import { ActiveNotePillNode } from "@/components/chat-components/pills/ActiveNotePillNode";
+import { ActiveWebTabPillNode } from "@/components/chat-components/pills/ActiveWebTabPillNode";
+import { FolderPillNode } from "@/components/chat-components/pills/FolderPillNode";
+import { NotePillNode } from "@/components/chat-components/pills/NotePillNode";
+import { WebTabPillNode } from "@/components/chat-components/pills/WebTabPillNode";
+import { ActiveNotePillSyncPlugin } from "@/components/chat-components/plugins/ActiveNotePillSyncPlugin";
+import { AtMentionCommandPlugin } from "@/components/chat-components/plugins/AtMentionCommandPlugin";
+import { FocusPlugin } from "@/components/chat-components/plugins/FocusPlugin";
+import { FolderPillSyncPlugin } from "@/components/chat-components/plugins/FolderPillSyncPlugin";
+import { KeyboardPlugin } from "@/components/chat-components/plugins/KeyboardPlugin";
+import { NotePillSyncPlugin } from "@/components/chat-components/plugins/NotePillSyncPlugin";
+import { PillDeletionPlugin } from "@/components/chat-components/plugins/PillDeletionPlugin";
+import { ValueSyncPlugin } from "@/components/chat-components/plugins/ValueSyncPlugin";
+import { SEND_SHORTCUT } from "@/constants";
 import { cn } from "@/lib/utils";
 import { logError } from "@/logger";
-import { SEND_SHORTCUT } from "@/constants";
 
 interface QuickAskInputProps {
   value: string;
@@ -113,7 +113,7 @@ export const QuickAskInput = React.memo(function QuickAskInput({
       },
       editable: !disabled,
     }),
-    [disabled]
+    [disabled],
   );
 
   const handleEditorChange = useCallback(
@@ -124,14 +124,14 @@ export const QuickAskInput = React.memo(function QuickAskInput({
         onChange(textContent);
       });
     },
-    [onChange]
+    [onChange],
   );
 
   const handleEditorReady = useCallback(
     (editor: LexicalEditorType) => {
       onEditorReady?.(editor);
     },
-    [onEditorReady]
+    [onEditorReady],
   );
 
   return (

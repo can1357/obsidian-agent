@@ -39,7 +39,7 @@ export class ProjectFileSelectModal extends BaseNoteModal<TFile> {
           file instanceof TFile &&
           !excludeFilePaths.includes(file.path) &&
           file.path !== this.activeNote?.path &&
-          !excludedExtensions.includes(file.extension.toLowerCase())
+          !excludedExtensions.includes(file.extension.toLowerCase()),
       );
 
     // Get all other files that weren't recently opened
@@ -51,7 +51,7 @@ export class ProjectFileSelectModal extends BaseNoteModal<TFile> {
       (file) =>
         !recentFiles.some((recent) => recent.path === file.path) &&
         !excludeFilePaths.includes(file.path) &&
-        file.path !== this.activeNote?.path
+        file.path !== this.activeNote?.path,
     );
 
     // Combine active note (if exists) with recent files and other files
@@ -86,7 +86,7 @@ export class ProjectFileSelectModal extends BaseNoteModal<TFile> {
       const titleEl = suggestionEl.createDiv();
       const file = match.item;
       titleEl.setText(
-        this.formatNoteTitle(file.basename, file === this.activeNote, file.extension)
+        this.formatNoteTitle(file.basename, file === this.activeNote, file.extension),
       );
       if (!this.titleOnly) {
         const pathEl = suggestionEl.createDiv({ cls: "mt-1 text-muted text-xs" });

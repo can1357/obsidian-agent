@@ -1,6 +1,6 @@
+import { App, TFile } from "obsidian";
 import { logInfo } from "@/logger";
 import { getMatchingPatterns, shouldIndexFile } from "@/search/searchUtils";
-import { App, TFile } from "obsidian";
 
 /**
  * Fast substring search using Obsidian's cachedRead for initial seeding
@@ -98,7 +98,7 @@ export class GrepScanner {
               // Skip files that can't be read
               logInfo(`GrepScanner: Skipping file ${file.path}: ${error}`);
             }
-          })
+          }),
         );
 
         // Yield periodically to prevent blocking
@@ -115,7 +115,7 @@ export class GrepScanner {
       const pathCount = Math.min(pathMatches.size, limit);
       const contentCount = results.length - pathCount;
       logInfo(
-        `  Grep: ${results.length} files match (${pathCount} path, ${contentCount} content) [${queries.slice(0, 3).join(", ")}${queries.length > 3 ? "..." : ""}]`
+        `  Grep: ${results.length} files match (${pathCount} path, ${contentCount} content) [${queries.slice(0, 3).join(", ")}${queries.length > 3 ? "..." : ""}]`,
       );
     }
 

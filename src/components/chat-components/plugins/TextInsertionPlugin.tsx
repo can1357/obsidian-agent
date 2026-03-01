@@ -1,9 +1,9 @@
-import React from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { COMMAND_PRIORITY_EDITOR } from "lexical";
+import React from "react";
 import {
-  INSERT_TEXT_WITH_PILLS_COMMAND,
   $insertTextWithPills,
+  INSERT_TEXT_WITH_PILLS_COMMAND,
   InsertTextOptions,
 } from "../utils/lexicalTextUtils";
 
@@ -26,7 +26,7 @@ export function TextInsertionPlugin(): null {
 
         return true;
       },
-      COMMAND_PRIORITY_EDITOR
+      COMMAND_PRIORITY_EDITOR,
     );
   }, [editor]);
 

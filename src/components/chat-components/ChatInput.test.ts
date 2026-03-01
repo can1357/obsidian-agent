@@ -1,4 +1,4 @@
-import { describe, it, expect } from "@jest/globals";
+import { describe, expect, it } from "@jest/globals";
 
 /**
  * ChatInput Edit Mode Tests
@@ -42,7 +42,7 @@ describe("ChatInput Edit Mode Behavior", () => {
 // Helper function to simulate the slash detection and replacement logic
 function detectSlashCommand(
   inputValue: string,
-  cursorPos: number
+  cursorPos: number,
 ): { shouldShowModal: boolean; slashPosition?: number } {
   // Check if we just typed a "/"
   if (cursorPos > 0 && inputValue[cursorPos - 1] === "/") {
@@ -63,7 +63,7 @@ function detectSlashCommand(
 function replaceSlashWithCommand(
   inputMessage: string,
   cursorPos: number,
-  commandContent: string
+  commandContent: string,
 ): { newMessage: string; newCursorPos: number } {
   // Find the slash position (should be cursorPos - 1 when we just typed it)
   const slashPos = cursorPos - 1;

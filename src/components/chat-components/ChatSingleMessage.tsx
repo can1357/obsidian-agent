@@ -1,6 +1,7 @@
+import { App, Component, MarkdownRenderer, MarkdownView, TFile } from "obsidian";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { AgentReasoningBlock } from "@/components/chat-components/AgentReasoningBlock";
 import { ChatButtons } from "@/components/chat-components/ChatButtons";
-import { SourcesModal } from "@/components/modals/SourcesModal";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   ContextFolderBadge,
   ContextNoteBadge,
@@ -9,6 +10,13 @@ import {
   ContextUrlBadge,
   ContextWebTabBadge,
 } from "@/components/chat-components/ContextBadges";
+import {
+  buildCopilotCollapsibleDomId,
+  captureCopilotCollapsibleOpenStates,
+  getCopilotCollapsibleDetailsFromEvent,
+  getMessageCollapsibleStates,
+  isEventWithinDetailsSummary,
+} from "@/components/chat-components/collapsibleStateUtils";
 import { InlineMessageEditor } from "@/components/chat-components/InlineMessageEditor";
 import { TokenLimitWarning } from "@/components/chat-components/TokenLimitWarning";
 import {
@@ -26,24 +34,16 @@ import {
   renderToolCallBanner,
   type ToolCallRootRecord,
 } from "@/components/chat-components/toolCallRootManager";
-import { AgentReasoningBlock } from "@/components/chat-components/AgentReasoningBlock";
+import { SourcesModal } from "@/components/modals/SourcesModal";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { USER_SENDER } from "@/constants";
-import { cn } from "@/lib/utils";
-import { parseToolCallMarkers } from "@/LLMProviders/chainRunner/utils/toolCallParser";
 import { parseReasoningBlock } from "@/LLMProviders/chainRunner/utils/AgentReasoningState";
 import { processInlineCitations } from "@/LLMProviders/chainRunner/utils/citationUtils";
+import { parseToolCallMarkers } from "@/LLMProviders/chainRunner/utils/toolCallParser";
+import { cn } from "@/lib/utils";
+import { useSettingsValue } from "@/settings/model";
 import { ChatMessage } from "@/types/message";
 import { cleanMessageForCopy, extractYoutubeVideoId, insertIntoEditor } from "@/utils";
-import { App, Component, MarkdownRenderer, MarkdownView, TFile } from "obsidian";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useSettingsValue } from "@/settings/model";
-import {
-  buildCopilotCollapsibleDomId,
-  captureCopilotCollapsibleOpenStates,
-  getCopilotCollapsibleDetailsFromEvent,
-  getMessageCollapsibleStates,
-  isEventWithinDetailsSummary,
-} from "@/components/chat-components/collapsibleStateUtils";
 
 const FOOTNOTE_SUFFIX_PATTERN = /^\d+-\d+$/;
 
@@ -67,7 +67,7 @@ export const normalizeFootnoteRendering = (root: HTMLElement): void => {
 
   root
     .querySelectorAll(
-      'a.footnote-ref, sup a[href^="#fn"], sup a[href^="#fn-"], a[href^="#fn"], a[href^="#fn-"]'
+      'a.footnote-ref, sup a[href^="#fn"], sup a[href^="#fn-"], a[href^="#fn"], a[href^="#fn-"]',
     )
     .forEach((anchor) => {
       const text = anchor.textContent?.trim() ?? "";
@@ -206,17 +206,17 @@ const ChatSingleMessage: React.FC<ChatSingleMessageProps> = ({
     message.id ||
       (message.timestamp?.epoch
         ? String(message.timestamp.epoch)
-        : `temp-${Date.now()}-${Math.random()}`)
+        : `temp-${Date.now()}-${Math.random()}`),
   );
 
   // Store roots in a global map to preserve them across component instances
   const rootsRef = useRef<Map<string, ToolCallRootRecord>>(
-    getMessageToolCallRoots(messageId.current)
+    getMessageToolCallRoots(messageId.current),
   );
 
   // Store error block roots separately to prevent ID collisions and race conditions
   const errorRootsRef = useRef<Map<string, ToolCallRootRecord>>(
-    getMessageErrorBlockRoots(messageId.current)
+    getMessageErrorBlockRoots(messageId.current),
   );
 
   // Get the global collapsible state map for this message
@@ -276,7 +276,7 @@ const ChatSingleMessage: React.FC<ChatSingleMessageProps> = ({
         content: string,
         tagName: string,
         summaryText: string,
-        streamingSummaryText: string
+        streamingSummaryText: string,
       ): string => {
         // Common styles as template strings
         const detailsStyle = `margin: 0.5rem 0 1.5rem; padding: 0.75rem; border: 1px solid var(--background-modifier-border); border-radius: 4px; background-color: var(--background-secondary)`;
@@ -310,7 +310,7 @@ const ChatSingleMessage: React.FC<ChatSingleMessageProps> = ({
             (_match, partialContent) => `<div style="${detailsStyle}">
               <div style="${summaryStyle}">${streamingSummaryText}</div>
               <div class="tw-text-muted" style="${contentStyle}">${partialContent.trim()}</div>
-            </div>`
+            </div>`,
           );
           return content;
         }
@@ -370,7 +370,7 @@ const ChatSingleMessage: React.FC<ChatSingleMessageProps> = ({
           processedContent,
           "writeToFile",
           "Generated new content",
-          "Generating changes..."
+          "Generating changes...",
         );
       };
 
@@ -411,7 +411,7 @@ const ChatSingleMessage: React.FC<ChatSingleMessageProps> = ({
       const noteImageProcessed = replaceLinks(
         latexProcessed,
         /!\[\[(.*?)]]/g,
-        (file) => `![](${app.vault.getResourcePath(file)})`
+        (file) => `![](${app.vault.getResourcePath(file)})`,
       );
 
       // Process think sections (no-op if none); do not depend on current model selection
@@ -423,7 +423,7 @@ const ChatSingleMessage: React.FC<ChatSingleMessageProps> = ({
       // Transform markdown sources section into HTML structure
       const sourcesSectionProcessed = processInlineCitations(
         writeToFileSectionProcessed,
-        settings.enableInlineCitations
+        settings.enableInlineCitations,
       );
 
       // Transform [[link]] to clickable format but exclude ![[]] image links
@@ -431,7 +431,7 @@ const ChatSingleMessage: React.FC<ChatSingleMessageProps> = ({
         sourcesSectionProcessed,
         /(?<!!)\[\[([^\]]+)]]/g,
         (file: TFile) =>
-          `<a href="obsidian://open?file=${encodeURIComponent(file.path)}">${file.basename}</a>`
+          `<a href="obsidian://open?file=${encodeURIComponent(file.path)}">${file.basename}</a>`,
       );
 
       /**
@@ -463,7 +463,7 @@ const ChatSingleMessage: React.FC<ChatSingleMessageProps> = ({
 
       return processYouTubeEmbed(noteLinksProcessed);
     },
-    [app, isStreaming, settings.enableInlineCitations, collapsibleOpenStateMap]
+    [app, isStreaming, settings.enableInlineCitations, collapsibleOpenStateMap],
   );
 
   // Persist collapsible open/closed state during streaming in real time.
@@ -629,7 +629,7 @@ const ChatSingleMessage: React.FC<ChatSingleMessageProps> = ({
               rootsRef.current,
               toolCallId,
               container as HTMLElement,
-              "render refresh"
+              "render refresh",
             );
 
             if (!isUnmountingRef.current && !rootRecord.isUnmounting) {
@@ -663,7 +663,7 @@ const ChatSingleMessage: React.FC<ChatSingleMessageProps> = ({
               errorRootsRef.current,
               errorId,
               container as HTMLElement,
-              "error render"
+              "error render",
             );
 
             if (!isUnmountingRef.current && !rootRecord.isUnmounting) {
@@ -678,7 +678,7 @@ const ChatSingleMessage: React.FC<ChatSingleMessageProps> = ({
         const currentToolCallIds = new Set(
           parsedMessage.segments
             .filter((s) => s.type === "toolCall" && s.toolCall)
-            .map((s) => s.toolCall!.id)
+            .map((s) => s.toolCall!.id),
         );
 
         existingToolCallIds.forEach((id) => {
@@ -695,7 +695,7 @@ const ChatSingleMessage: React.FC<ChatSingleMessageProps> = ({
         const currentErrorIds = new Set(
           parsedMessage.segments
             .filter((s) => s.type === "error" && s.error)
-            .map((s) => s.error!.id)
+            .map((s) => s.error!.id),
         );
 
         existingErrorIds.forEach((id) => {
@@ -706,7 +706,7 @@ const ChatSingleMessage: React.FC<ChatSingleMessageProps> = ({
                 messageId.current,
                 errorRootsRef.current,
                 id,
-                "error block removal"
+                "error block removal",
               );
               element.remove();
             }
@@ -860,7 +860,7 @@ const ChatSingleMessage: React.FC<ChatSingleMessageProps> = ({
       <div
         className={cn(
           "tw-group tw-mx-2 tw-rounded-md tw-p-2",
-          message.sender === USER_SENDER && "tw-border tw-border-solid tw-border-border"
+          message.sender === USER_SENDER && "tw-border tw-border-solid tw-border-border",
         )}
         style={
           message.sender === USER_SENDER

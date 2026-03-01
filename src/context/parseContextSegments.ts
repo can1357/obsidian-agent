@@ -1,9 +1,9 @@
-import { PromptLayerSegment } from "@/context/PromptContextTypes";
 import {
   CONTEXT_BLOCK_TYPES,
   extractSourceFromBlock,
   getSourceType,
 } from "@/context/contextBlockRegistry";
+import { PromptLayerSegment } from "@/context/PromptContextTypes";
 
 /**
  * Parse context XML string into individual segments (one per context item).
@@ -12,7 +12,7 @@ import {
  */
 export function parseContextIntoSegments(
   contextXml: string,
-  stable: boolean
+  stable: boolean,
 ): PromptLayerSegment[] {
   if (!contextXml.trim()) {
     return [];

@@ -1,3 +1,6 @@
+import { Key, Loader2 } from "lucide-react";
+import { Notice } from "obsidian";
+import React, { useState } from "react";
 import { ChainType } from "@/chainFactory";
 import { Button } from "@/components/ui/button";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
@@ -10,9 +13,6 @@ import { cn } from "@/lib/utils";
 import { getModelKeyFromModel, updateSetting, useSettingsValue } from "@/settings/model";
 import { checkModelApiKey, formatDateTime } from "@/utils";
 import { isSortStrategy } from "@/utils/recentUsageManager";
-import { Key, Loader2 } from "lucide-react";
-import { Notice } from "obsidian";
-import React, { useState } from "react";
 import { ApiKeyDialog } from "./ApiKeyDialog";
 
 const ChainType2Label: Record<ChainType, string> = {
@@ -27,7 +27,7 @@ export const BasicSettings: React.FC = () => {
   const { setSelectedTab } = useTab();
   const [isChecking, setIsChecking] = useState(false);
   const [conversationNoteName, setConversationNoteName] = useState(
-    settings.defaultConversationNoteName || "{$date}_{$time}__{$topic}"
+    settings.defaultConversationNoteName || "{$date}_{$time}__{$topic}",
   );
 
   const applyCustomNoteFormat = () => {
@@ -78,7 +78,7 @@ export const BasicSettings: React.FC = () => {
   };
 
   const defaultModelActivated = !!settings.activeModels.find(
-    (m) => m.enabled && getModelKeyFromModel(m) === settings.defaultModelKey
+    (m) => m.enabled && getModelKeyFromModel(m) === settings.defaultModelKey,
   );
   const enableActivatedModels = settings.activeModels
     .filter((m) => m.enabled)
@@ -155,7 +155,7 @@ export const BasicSettings: React.FC = () => {
             value={defaultModelActivated ? settings.defaultModelKey : "Select Model"}
             onChange={(value) => {
               const selectedModel = settings.activeModels.find(
-                (m) => m.enabled && getModelKeyFromModel(m) === value
+                (m) => m.enabled && getModelKeyFromModel(m) === value,
               );
               if (!selectedModel) return;
 
@@ -360,7 +360,7 @@ export const BasicSettings: React.FC = () => {
                 type="text"
                 className={cn(
                   "tw-min-w-[80px] tw-grow tw-transition-all tw-duration-200",
-                  isChecking ? "tw-w-[80px]" : "tw-w-[120px]"
+                  isChecking ? "tw-w-[80px]" : "tw-w-[120px]",
                 )}
                 placeholder="{$date}_{$time}__{$topic}"
                 value={conversationNoteName}

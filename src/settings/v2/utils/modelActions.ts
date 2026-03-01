@@ -25,7 +25,7 @@ export interface AddModelResult {
  * Fetch models for a provider
  */
 export async function fetchModelsForProvider(
-  provider: SettingKeyProviders
+  provider: SettingKeyProviders,
 ): Promise<FetchModelsResult> {
   try {
     // Special handling for GitHub Copilot
@@ -118,13 +118,13 @@ export async function fetchModelsForProvider(
 export async function verifyAndAddModel(
   model: { id: string; name: string; provider: SettingKeyProviders },
   activeModels: CustomModel[],
-  options?: { skipVerification?: boolean }
+  options?: { skipVerification?: boolean },
 ): Promise<AddModelResult> {
   const skipVerification = options?.skipVerification ?? false;
 
   // Check if model already exists
   const existingModel = activeModels.find(
-    (m) => m.name === model.name && m.provider === model.provider
+    (m) => m.name === model.name && m.provider === model.provider,
   );
 
   const alreadyExists = Boolean(existingModel);

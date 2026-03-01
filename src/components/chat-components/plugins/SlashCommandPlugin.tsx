@@ -1,18 +1,18 @@
-import React, { useCallback, useMemo, useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $getSelection, $isRangeSelection, TextNode } from "lexical";
 import fuzzysort from "fuzzysort";
+import { $getSelection, $isRangeSelection, TextNode } from "lexical";
+import React, { useCallback, useMemo, useState } from "react";
+import { CustomCommandManager } from "@/commands/customCommandManager";
+import { sortSlashCommands } from "@/commands/customCommandUtils";
 import { useCustomCommands } from "@/commands/state";
 import { CustomCommand } from "@/commands/type";
-import { sortSlashCommands } from "@/commands/customCommandUtils";
-import { CustomCommandManager } from "@/commands/customCommandManager";
-import { TypeaheadMenuPortal } from "@/components/chat-components/TypeaheadMenuPortal";
-import { TypeaheadOption } from "@/components/chat-components/TypeaheadMenuContent";
-import { $replaceTextRangeWithPills } from "@/components/chat-components/utils/lexicalTextUtils";
 import {
-  useTypeaheadPlugin,
   TypeaheadState,
+  useTypeaheadPlugin,
 } from "@/components/chat-components/hooks/useTypeaheadPlugin";
+import { TypeaheadOption } from "@/components/chat-components/TypeaheadMenuContent";
+import { TypeaheadMenuPortal } from "@/components/chat-components/TypeaheadMenuPortal";
+import { $replaceTextRangeWithPills } from "@/components/chat-components/utils/lexicalTextUtils";
 
 interface SlashCommandOption extends TypeaheadOption {
   command: CustomCommand;
@@ -92,7 +92,7 @@ export function SlashCommandPlugin(): JSX.Element {
         }
       });
     },
-    [editor]
+    [editor],
   );
 
   // Use the shared typeahead hook

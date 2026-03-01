@@ -18,7 +18,7 @@ export function DragHandle({ onMouseDown, className }: DragHandleProps) {
         "tw-flex tw-h-4 tw-items-center tw-justify-center",
         "tw-cursor-grab active:tw-cursor-grabbing",
         "hover:tw-bg-[color-mix(in_srgb,var(--background-modifier-hover)_20%,transparent)]",
-        className
+        className,
       )}
       onMouseDown={onMouseDown}
     >

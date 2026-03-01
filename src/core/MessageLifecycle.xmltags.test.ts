@@ -1,7 +1,7 @@
-import { MessageRepository } from "./MessageRepository";
-import { USER_SENDER, SELECTED_TEXT_TAG, WEB_SELECTED_TEXT_TAG } from "@/constants";
-import { MessageContext } from "@/types/message";
 import { TFile } from "obsidian";
+import { SELECTED_TEXT_TAG, USER_SENDER, WEB_SELECTED_TEXT_TAG } from "@/constants";
+import { MessageContext } from "@/types/message";
+import { MessageRepository } from "./MessageRepository";
 
 /**
  * Tests specifically for proper XML tag formatting in context processing
@@ -58,7 +58,7 @@ describe("Message Context XML Tag Formatting", () => {
       userMessage,
       processedText,
       USER_SENDER,
-      context
+      context,
     );
 
     // Get the full message with processed context (not history view)
@@ -106,7 +106,7 @@ The landscape of artificial intelligence continues to evolve rapidly. Here are t
       userMessage,
       processedText,
       USER_SENDER,
-      context
+      context,
     );
 
     // Get the full message with processed context
@@ -159,7 +159,7 @@ function fibonacci(n) {
       userMessage,
       processedText,
       USER_SENDER,
-      context
+      context,
     );
 
     // Get the full message with processed context
@@ -236,7 +236,7 @@ The Single Responsibility Principle states that a class should have only one rea
       userMessage,
       processedText,
       USER_SENDER,
-      context
+      context,
     );
 
     // Get the full message with processed context
@@ -255,7 +255,7 @@ The Single Responsibility Principle states that a class should have only one rea
     expect(message.indexOf("<note_context>")).toBeLessThan(message.indexOf("</note_context>"));
     expect(message.indexOf("<url_content>")).toBeLessThan(message.indexOf("</url_content>"));
     expect(message.indexOf(`<${SELECTED_TEXT_TAG}>`)).toBeLessThan(
-      message.indexOf(`</${SELECTED_TEXT_TAG}>`)
+      message.indexOf(`</${SELECTED_TEXT_TAG}>`),
     );
   });
 
@@ -286,7 +286,7 @@ The Single Responsibility Principle states that a class should have only one rea
       userMessage,
       processedText,
       USER_SENDER,
-      context
+      context,
     );
 
     // Get the full message with processed context
@@ -342,7 +342,7 @@ React is a JavaScript library for building user interfaces.
       userMessage,
       processedText,
       USER_SENDER,
-      context
+      context,
     );
 
     // Get the full message with processed context
@@ -409,7 +409,7 @@ Web content about React best practices
       userMessage,
       processedText,
       USER_SENDER,
-      context
+      context,
     );
 
     // Get the full message with processed context

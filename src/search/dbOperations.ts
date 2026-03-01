@@ -1,15 +1,16 @@
 // DEPRECATED: Orama DB operations are superseded by v3 MemoryIndexManager JSONL index. Keep only for
 // backward compatibility where needed; new features should not depend on this module.
-import EmbeddingsManager from "@/LLMProviders/embeddingManager";
-import { CustomError } from "@/error";
-import { logError, logInfo } from "@/logger";
-import { getSettings, subscribeToSettingsChange } from "@/settings/model";
-import { areEmbeddingModelsSame } from "@/utils";
+
 import { Embeddings } from "@langchain/core/embeddings";
 import { create, insert, Orama, remove, removeMultiple, search } from "@orama/orama";
 import { Mutex } from "async-mutex";
 import { MD5 } from "crypto-js";
 import { App, Notice, Platform } from "obsidian";
+import { CustomError } from "@/error";
+import EmbeddingsManager from "@/LLMProviders/embeddingManager";
+import { logError, logInfo } from "@/logger";
+import { getSettings, subscribeToSettingsChange } from "@/settings/model";
+import { areEmbeddingModelsSame } from "@/utils";
 import { ChunkedStorage } from "./chunkedStorage";
 import { getMatchingPatterns, getVectorLength, shouldIndexFile } from "./searchUtils";
 
@@ -191,7 +192,7 @@ export class DBOperations {
         await removeMultiple(
           this.oramaDb,
           searchResult.hits.map((hit) => hit.id),
-          500
+          500,
         );
         if (getSettings().debug) {
           logInfo(`Deleted document from local Copilot index: ${filePath}`);
@@ -269,7 +270,7 @@ export class DBOperations {
     const vectorLength = await getVectorLength(embeddingInstance);
     if (!vectorLength || vectorLength === 0) {
       throw new CustomError(
-        "Invalid vector length detected. Please check if your embedding model is working."
+        "Invalid vector length detected. Please check if your embedding model is working.",
       );
     }
 
@@ -286,7 +287,7 @@ export class DBOperations {
     });
     logInfo(
       `Created new semantic index database for ${this.dbPath}. ` +
-        `Embedding model: ${EmbeddingsManager.getModelName(embeddingInstance)} with vector length ${vectorLength}.`
+        `Embedding model: ${EmbeddingsManager.getModelName(embeddingInstance)} with vector length ${vectorLength}.`,
     );
     this.isIndexLoaded = true;
     return db;
@@ -308,7 +309,7 @@ export class DBOperations {
     options: {
       limit: number;
       similarity: number;
-    }
+    },
   ) {
     const result = await search(db, {
       mode: "vector",
@@ -372,7 +373,7 @@ export class DBOperations {
         // Calculate partition first
         const partition = this.chunkedStorage?.assignDocumentToPartition(
           docToSave.id,
-          getSettings().numPartitions
+          getSettings().numPartitions,
         );
 
         // Check if document exists
@@ -390,7 +391,7 @@ export class DBOperations {
         try {
           await insert(db, docToSave);
           logInfo(
-            `${existingDoc.hits.length > 0 ? "Updated" : "Inserted"} document ${docToSave.id} in partition ${partition}`
+            `${existingDoc.hits.length > 0 ? "Updated" : "Inserted"} document ${docToSave.id} in partition ${partition}`,
           );
 
           this.markUnsavedChanges();
@@ -398,7 +399,7 @@ export class DBOperations {
         } catch (insertErr) {
           logError(
             `Failed to ${existingDoc.hits.length > 0 ? "update" : "insert"} document ${docToSave.id}:`,
-            insertErr
+            insertErr,
           );
           // If we removed an existing document but failed to insert the new one,
           // we should try to restore the old document
@@ -470,7 +471,7 @@ export class DBOperations {
       } catch (error) {
         logError("Failed to initialize database:", error);
         throw new CustomError(
-          "Failed to initialize semantic index database. Please check your embedding model settings."
+          "Failed to initialize semantic index database. Please check your embedding model settings.",
         );
       }
 
@@ -508,7 +509,7 @@ export class DBOperations {
         // Model has changed, notify user and rebuild DB
         new Notice("New embedding model detected. Rebuilding Copilot index from scratch.");
         logInfo(
-          `Detected change in embedding model from "${prevEmbeddingModel}" to "${currEmbeddingModel}". Rebuilding Copilot index from scratch.`
+          `Detected change in embedding model from "${prevEmbeddingModel}" to "${currEmbeddingModel}". Rebuilding Copilot index from scratch.`,
         );
 
         // Create new DB with new model
@@ -535,7 +536,7 @@ export class DBOperations {
   public async garbageCollect(): Promise<number> {
     if (!this.oramaDb) {
       logInfo(
-        "Semantic index database not found during garbage collection. Attempting to initialize..."
+        "Semantic index database not found during garbage collection. Attempting to initialize...",
       );
       try {
         const embeddingInstance = await EmbeddingsManager.getInstance().getEmbeddingsAPI();
@@ -549,7 +550,7 @@ export class DBOperations {
       } catch (error) {
         logError("Failed to initialize database during garbage collection:", error);
         throw new CustomError(
-          "Failed to initialize database. Please check your embedding model settings."
+          "Failed to initialize database. Please check your embedding model settings.",
         );
       }
     }
@@ -563,7 +564,7 @@ export class DBOperations {
       const allowedPaths = new Set(
         files
           .filter((file) => shouldIndexFile(file, inclusions, exclusions))
-          .map((file) => file.path)
+          .map((file) => file.path),
       );
       // Get all documents in the database
       const docs = await DBOperations.getAllDocuments(this.oramaDb);
@@ -572,7 +573,7 @@ export class DBOperations {
       // 1) Files that no longer exist
       // 2) Files that exist but are excluded by current settings (or internal exclusions)
       const docsToRemove = docs.filter(
-        (doc) => !filePaths.has(doc.path) || !allowedPaths.has(doc.path)
+        (doc) => !filePaths.has(doc.path) || !allowedPaths.has(doc.path),
       );
 
       if (docsToRemove.length === 0) {
@@ -581,7 +582,7 @@ export class DBOperations {
 
       logInfo(
         "Copilot index: Docs to remove during garbage collection:",
-        Array.from(new Set(docsToRemove.map((doc) => doc.path))).join(", ")
+        Array.from(new Set(docsToRemove.map((doc) => doc.path))).join(", "),
       );
 
       if (docsToRemove.length === 1) {
@@ -590,7 +591,7 @@ export class DBOperations {
         await removeMultiple(
           this.oramaDb,
           docsToRemove.map((hit) => hit.id),
-          500
+          500,
         );
       }
 
@@ -759,7 +760,7 @@ export class DBOperations {
       if (filesMissing.length > 0) {
         logInfo(
           `Integrity check: ${filesMissing.length} file(s) missing embeddings, marked for re-indexing:`,
-          filesMissing.join(", ")
+          filesMissing.join(", "),
         );
       } else {
         logInfo("Index integrity check completed. All documents have embeddings.");

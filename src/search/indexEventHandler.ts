@@ -1,6 +1,6 @@
+import { App, MarkdownView, Platform, TAbstractFile, TFile } from "obsidian";
 import { logInfo } from "@/logger";
 import { getSettings, subscribeToSettingsChange } from "@/settings/model";
-import { App, MarkdownView, Platform, TAbstractFile, TFile } from "obsidian";
 import type { SemanticIndexBackend } from "./indexBackend/SemanticIndexBackend";
 import { IndexOperations } from "./indexOperations";
 import { getMatchingPatterns, shouldIndexFile } from "./searchUtils";
@@ -16,7 +16,7 @@ export class IndexEventHandler {
   constructor(
     private app: App,
     private indexOps: IndexOperations,
-    private indexBackend: SemanticIndexBackend
+    private indexBackend: SemanticIndexBackend,
   ) {
     this.syncEventListeners();
     subscribeToSettingsChange(() => {

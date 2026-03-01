@@ -1,8 +1,12 @@
-import { ProjectConfig, getCurrentProject } from "@/aiParams";
+import { App, Modal, Notice } from "obsidian";
+import React, { useState } from "react";
+import { createRoot, Root } from "react-dom/client";
+import { getCurrentProject, ProjectConfig } from "@/aiParams";
 import { ContextManageModal } from "@/components/modals/project/context-manage-modal";
 import { TruncatedText } from "@/components/TruncatedText";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
+import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { Input } from "@/components/ui/input";
 import { getModelDisplayWithIcons } from "@/components/ui/model-display";
 import { ObsidianNativeSelect } from "@/components/ui/obsidian-native-select";
@@ -12,10 +16,6 @@ import { DEFAULT_MODEL_SETTING } from "@/constants";
 import { getDecodedPatterns } from "@/search/searchUtils";
 import { getModelKeyFromModel, useSettingsValue } from "@/settings/model";
 import { checkModelApiKey, err2String, randomUUID } from "@/utils";
-import { App, Modal, Notice } from "obsidian";
-import React, { useState } from "react";
-import { createRoot, Root } from "react-dom/client";
-import { HelpTooltip } from "@/components/ui/help-tooltip";
 
 interface AddProjectModalContentProps {
   initialProject?: ProjectConfig;
@@ -52,11 +52,11 @@ function AddProjectModalContent({ initialProject, onSave, onCancel }: AddProject
       },
       created: Date.now(),
       UsageTimestamps: Date.now(),
-    }
+    },
   );
 
   const showContext = getDecodedPatterns(
-    formData.contextSource.inclusions || formData.contextSource.exclusions || "nothing"
+    formData.contextSource.inclusions || formData.contextSource.exclusions || "nothing",
   )
     .reverse()
     .join(",");
@@ -78,7 +78,7 @@ function AddProjectModalContent({ initialProject, onSave, onCancel }: AddProject
       async (updatedProject: ProjectConfig) => {
         setFormData(updatedProject);
       },
-      projectToEdit
+      projectToEdit,
     );
     modal.open();
   };
@@ -89,7 +89,7 @@ function AddProjectModalContent({ initialProject, onSave, onCancel }: AddProject
 
   const handleInputChange = (
     field: string,
-    value: string | number | string[] | Record<string, any>
+    value: string | number | string[] | Record<string, any>,
   ) => {
     setFormData((prev) => {
       // Handle text input
@@ -215,7 +215,7 @@ function AddProjectModalContent({ initialProject, onSave, onCancel }: AddProject
             onChange={(e) => {
               const value = e.target.value;
               const selectedModel = settings.activeModels.find(
-                (m) => m.enabled && getModelKeyFromModel(m) === value
+                (m) => m.enabled && getModelKeyFromModel(m) === value,
               );
               if (!selectedModel) return;
 
@@ -384,7 +384,7 @@ export class AddProjectModal extends Modal {
   constructor(
     app: App,
     private onSave: (project: ProjectConfig) => Promise<void>,
-    private initialProject?: ProjectConfig
+    private initialProject?: ProjectConfig,
   ) {
     super(app);
   }
@@ -407,7 +407,7 @@ export class AddProjectModal extends Modal {
         initialProject={this.initialProject}
         onSave={handleSave}
         onCancel={handleCancel}
-      />
+      />,
     );
   }
 

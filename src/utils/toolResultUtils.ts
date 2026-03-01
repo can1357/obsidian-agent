@@ -41,7 +41,7 @@ export function truncateToolResult(result: string, maxLength?: number): string {
 export function formatToolResultForMemory(
   toolName: string,
   result: string,
-  maxLength?: number
+  maxLength?: number,
 ): string {
   const truncatedResult = truncateToolResult(result, maxLength);
   return `Tool '${toolName}' result: ${truncatedResult}`;
@@ -55,7 +55,7 @@ export function formatToolResultForMemory(
  */
 export function processToolResults(
   toolResults: Array<{ toolName: string; result: string }>,
-  truncate: boolean = false
+  truncate: boolean = false,
 ): string {
   return toolResults
     .map((result) => {

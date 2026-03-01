@@ -1,3 +1,6 @@
+import { Loader2 } from "lucide-react";
+import { Notice } from "obsidian";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
 import { ObsidianNativeSelect } from "@/components/ui/obsidian-native-select";
@@ -11,9 +14,6 @@ import {
   verifyAndAddModel,
 } from "@/settings/v2/utils/modelActions";
 import { err2String, getProviderLabel } from "@/utils";
-import { Loader2 } from "lucide-react";
-import { Notice } from "obsidian";
-import React, { useCallback, useEffect, useRef, useState } from "react";
 
 interface ModelImporterProps {
   provider: SettingKeyProviders;
@@ -67,7 +67,7 @@ export function ModelImporter({
         setError(result.error || "Failed to load models");
         new Notice(
           `Failed to load models for ${getProviderLabel(provider)}: ${result.error}`,
-          5000
+          5000,
         );
       }
     } catch (err) {
@@ -107,18 +107,18 @@ export function ModelImporter({
       const result = await verifyAndAddModel(
         { id: selectedModel.id, name: selectedModel.name, provider },
         settings.activeModels,
-        { skipVerification }
+        { skipVerification },
       );
 
       if (result.alreadyExists) {
         if (result.verificationFailed) {
           new Notice(
             `Model ${selectedModel.name} already exists (verification failed: ${result.verificationError})`,
-            10000
+            10000,
           );
         } else {
           new Notice(
-            `Model ${selectedModel.name} verified successfully! It already exists in your models list.`
+            `Model ${selectedModel.name} verified successfully! It already exists in your models list.`,
           );
         }
       } else {
@@ -134,7 +134,7 @@ export function ModelImporter({
         if (result.verificationFailed) {
           new Notice(
             `Model ${selectedModel.name} added (verification failed: ${result.verificationError})`,
-            10000
+            10000,
           );
         } else {
           new Notice(`Model ${selectedModel.name} verified and added to your models list!`);

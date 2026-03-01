@@ -70,7 +70,7 @@ function inferMessageRole(message: any): "user" | "assistant" | null {
  */
 export function addChatHistoryToMessages(
   rawHistory: any[],
-  messages: Array<{ role: string; content: any }>
+  messages: Array<{ role: string; content: any }>,
 ): void {
   const processedHistory = processRawChatHistory(rawHistory);
   for (const msg of processedHistory) {
@@ -109,7 +109,7 @@ function extractTextContent(content: any): string {
  * @returns Array of text-only chat history entries
  */
 export function processedMessagesToTextOnly(
-  processedMessages: ProcessedMessage[]
+  processedMessages: ProcessedMessage[],
 ): ChatHistoryEntry[] {
   return processedMessages.map((msg) => ({
     role: msg.role,
@@ -230,7 +230,7 @@ export function extractConversationTurns(processedHistory: ProcessedMessage[]): 
  */
 export async function loadAndAddChatHistory(
   memory: any,
-  messages: Array<{ role: string; content: any }>
+  messages: Array<{ role: string; content: any }>,
 ): Promise<ProcessedMessage[]> {
   const memoryVariables = await memory.loadMemoryVariables({});
   const rawHistory = memoryVariables.history || [];

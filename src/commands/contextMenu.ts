@@ -1,7 +1,7 @@
+import type { App, Menu } from "obsidian";
 import { getCommandId, sortCommandsByOrder } from "@/commands/customCommandUtils";
 import { getCachedCustomCommands } from "@/commands/state";
 import { COMMAND_IDS } from "@/constants";
-import type { App, Menu } from "obsidian";
 import type { CustomCommand } from "./type";
 
 interface CommandManager {
@@ -59,7 +59,7 @@ export function registerContextMenu(menu: Menu, obsidianApp: App): void {
     // Get custom commands
     const commands = getCachedCustomCommands();
     const visibleCustomCommands = commands.filter(
-      (command: CustomCommand) => command.showInContextMenu
+      (command: CustomCommand) => command.showInContextMenu,
     );
 
     // Add separator if there are custom commands

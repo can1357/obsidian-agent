@@ -54,7 +54,7 @@ export function renderCiCMessage(contextSection: string, userQuestion: string): 
  */
 export function ensureCiCOrderingWithQuestion(
   localSearchPayload: string,
-  originalUserQuestion: string
+  originalUserQuestion: string,
 ): string {
   const trimmedQuestion = originalUserQuestion.trim();
 

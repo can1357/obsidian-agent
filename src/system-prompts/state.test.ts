@@ -1,17 +1,17 @@
+import * as settingsModel from "@/settings/model";
 import {
-  updateCachedSystemPrompts,
-  getSelectedPromptTitle,
-  setSelectedPromptTitle,
-  getDisableBuiltinSystemPrompt,
-  setDisableBuiltinSystemPrompt,
-  getEffectiveSystemPromptContent,
-  resetSessionSystemPromptSettings,
   getDefaultSystemPromptTitle,
-  setDefaultSystemPromptTitle,
+  getDisableBuiltinSystemPrompt,
+  getEffectiveSystemPromptContent,
+  getSelectedPromptTitle,
   initializeSessionPromptFromDefault,
+  resetSessionSystemPromptSettings,
+  setDefaultSystemPromptTitle,
+  setDisableBuiltinSystemPrompt,
+  setSelectedPromptTitle,
+  updateCachedSystemPrompts,
 } from "@/system-prompts/state";
 import { UserSystemPrompt } from "@/system-prompts/type";
-import * as settingsModel from "@/settings/model";
 
 // Mock settings
 jest.mock("@/settings/model", () => ({
@@ -230,7 +230,7 @@ describe("System Prompts State Management", () => {
 
       expect(settingsModel.updateSetting).toHaveBeenCalledWith(
         "defaultSystemPromptTitle",
-        "New Default Prompt"
+        "New Default Prompt",
       );
     });
 

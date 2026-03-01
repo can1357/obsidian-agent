@@ -9,7 +9,7 @@ export class ListPromptModal extends FuzzySuggestModal<string> {
     app: App,
     promptTitles: string[],
     onChoosePromptTitle: (promptTitle: string) => void,
-    descriptions: string[] = []
+    descriptions: string[] = [],
   ) {
     super(app);
     this.promptTitles = promptTitles;
@@ -30,7 +30,7 @@ export class ListPromptModal extends FuzzySuggestModal<string> {
   onChooseItem(promptTitle: string, evt: MouseEvent | KeyboardEvent) {
     // Find the original title by matching against the promptTitles array
     const index = this.promptTitles.findIndex(
-      (title) => promptTitle.startsWith(title + " (") || promptTitle === title
+      (title) => promptTitle.startsWith(title + " (") || promptTitle === title,
     );
     const actualTitle = index >= 0 ? this.promptTitles[index] : promptTitle;
     this.onChoosePromptTitle(actualTitle);

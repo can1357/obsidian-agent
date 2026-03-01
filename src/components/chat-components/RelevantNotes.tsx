@@ -1,21 +1,3 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { HelpTooltip } from "@/components/ui/help-tooltip";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useChatInput } from "@/context/ChatInputContext";
-import { useActiveFile } from "@/hooks/useActiveFile";
-import { cn } from "@/lib/utils";
-import { logWarn } from "@/logger";
-import { SemanticSearchToggleModal } from "@/components/modals/SemanticSearchToggleModal";
-import type { CopilotSettings } from "@/settings/model";
-import {
-  findRelevantNotes,
-  getSimilarityCategory,
-  RelevantNoteEntry,
-} from "@/search/findRelevantNotes";
-import { onIndexChanged } from "@/search/indexSignal";
 import {
   ArrowRight,
   ChevronDown,
@@ -28,6 +10,24 @@ import {
 } from "lucide-react";
 import { Notice, TFile } from "obsidian";
 import React, { memo, useCallback, useEffect, useState } from "react";
+import { SemanticSearchToggleModal } from "@/components/modals/SemanticSearchToggleModal";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { HelpTooltip } from "@/components/ui/help-tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useChatInput } from "@/context/ChatInputContext";
+import { useActiveFile } from "@/hooks/useActiveFile";
+import { cn } from "@/lib/utils";
+import { logWarn } from "@/logger";
+import {
+  findRelevantNotes,
+  getSimilarityCategory,
+  RelevantNoteEntry,
+} from "@/search/findRelevantNotes";
+import { onIndexChanged } from "@/search/indexSignal";
+import type { CopilotSettings } from "@/settings/model";
 
 /**
  * Return true when Miyo-backed semantic index is expected to be active.
@@ -314,7 +314,7 @@ export const RelevantNotes = memo(
             });
             setRefresher(refresher + 1);
           },
-          true // enabling
+          true, // enabling
         ).open();
       } else {
         // Semantic search is on but index missing — build it
@@ -330,7 +330,7 @@ export const RelevantNotes = memo(
       <div
         className={cn(
           "tw-w-full tw-border tw-border-solid tw-border-transparent tw-border-b-border tw-pb-2",
-          className
+          className,
         )}
       >
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -415,7 +415,7 @@ export const RelevantNotes = memo(
         </Collapsible>
       </div>
     );
-  }
+  },
 );
 
 RelevantNotes.displayName = "RelevantNotes";

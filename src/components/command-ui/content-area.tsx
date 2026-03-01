@@ -1,6 +1,6 @@
 import * as React from "react";
-import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 type ContentState =
   | { type: "idle" }
@@ -79,7 +79,7 @@ export function ContentArea({
           className={cn(
             "tw-min-w-fit tw-overflow-auto tw-border-solid",
             "tw-min-h-0 tw-w-full tw-flex-1 tw-resize-none tw-rounded-md tw-border tw-bg-transparent tw-px-3 tw-py-2 tw-text-base tw-shadow-sm placeholder:tw-text-muted focus-visible:tw-outline-none focus-visible:tw-ring-1 focus-visible:tw-ring-ring disabled:tw-cursor-not-allowed disabled:tw-opacity-50 md:tw-text-sm",
-            isDisabled && "tw-cursor-default tw-opacity-70"
+            isDisabled && "tw-cursor-default tw-opacity-70",
           )}
         />
       </div>
@@ -96,7 +96,7 @@ export function ContentArea({
         disabled={isDisabled}
         className={cn(
           "tw-min-h-[120px] tw-resize-y",
-          isDisabled && "tw-cursor-default tw-opacity-70"
+          isDisabled && "tw-cursor-default tw-opacity-70",
         )}
         style={{ minHeight }}
       />

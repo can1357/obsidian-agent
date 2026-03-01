@@ -1,3 +1,4 @@
+import { Editor, Notice, normalizePath, TAbstractFile, TFile, Vault } from "obsidian";
 import {
   COPILOT_COMMAND_CONTEXT_MENU_ENABLED,
   COPILOT_COMMAND_CONTEXT_MENU_ORDER,
@@ -9,15 +10,14 @@ import {
   QUICK_COMMAND_CODE_BLOCK,
 } from "@/commands/constants";
 import { CustomCommand } from "@/commands/type";
-import { logWarn } from "@/logger";
-import { normalizePath, Notice, TAbstractFile, TFile, Vault, Editor } from "obsidian";
-import { getSettings } from "@/settings/model";
 import {
-  updateCachedCommands,
-  getCachedCustomCommands,
-  addPendingFileWrite,
-  removePendingFileWrite,
-} from "./state";
+  NOTE_CONTEXT_PROMPT_TAG,
+  SELECTED_TEXT_TAG,
+  VARIABLE_NOTE_TAG,
+  VARIABLE_TAG,
+} from "@/constants";
+import { logWarn } from "@/logger";
+import { getSettings } from "@/settings/model";
 import { PromptSortStrategy } from "@/types";
 import {
   extractTemplateNoteFiles,
@@ -30,16 +30,16 @@ import {
 } from "@/utils";
 import { sortByStrategy } from "@/utils/recentUsageManager";
 import {
-  NOTE_CONTEXT_PROMPT_TAG,
-  SELECTED_TEXT_TAG,
-  VARIABLE_TAG,
-  VARIABLE_NOTE_TAG,
-} from "@/constants";
+  addPendingFileWrite,
+  getCachedCustomCommands,
+  removePendingFileWrite,
+  updateCachedCommands,
+} from "./state";
 
 export function validateCommandName(
   name: string,
   commands: CustomCommand[],
-  currentCommandName?: string
+  currentCommandName?: string,
 ): string | null {
   const trimmedName = name.trim();
 
@@ -187,13 +187,13 @@ export function sortSlashCommands(commands: CustomCommand[]): CustomCommand[] {
 export async function processCommandPrompt(
   prompt: string,
   selectedText: string,
-  skipAppendingSelectedText = false
+  skipAppendingSelectedText = false,
 ) {
   const result = await processPrompt(
     prompt,
     selectedText,
     app.vault,
-    app.workspace.getActiveFile()
+    app.workspace.getActiveFile(),
   );
 
   const processedPrompt = result.processedPrompt;
@@ -264,7 +264,7 @@ interface VariableProcessingResult {
 async function extractVariablesFromPrompt(
   customPrompt: string,
   vault: Vault,
-  activeNote?: TFile | null
+  activeNote?: TFile | null,
 ): Promise<{ variablesMap: Map<string, string>; includedFiles: Set<TFile> }> {
   const variablesMap = new Map<string, string>();
   const includedFiles = new Set<TFile>();
@@ -301,7 +301,7 @@ async function extractVariablesFromPrompt(
         const content = await getFileContent(file, vault);
         if (content) {
           notesContent.push(
-            `<${VARIABLE_NOTE_TAG}>\n<path>${file.path}</path>\n## ${getFileName(file)}\n\n${content}\n</${VARIABLE_NOTE_TAG}>`
+            `<${VARIABLE_NOTE_TAG}>\n<path>${file.path}</path>\n## ${getFileName(file)}\n\n${content}\n</${VARIABLE_NOTE_TAG}>`,
           );
           variableResult.files.push(file);
         }
@@ -315,7 +315,7 @@ async function extractVariablesFromPrompt(
         const content = await getFileContent(file, vault);
         if (content) {
           notesContent.push(
-            `<${VARIABLE_NOTE_TAG}>\n<path>${file.path}</path>\n## ${getFileName(file)}\n\n${content}\n</${VARIABLE_NOTE_TAG}>`
+            `<${VARIABLE_NOTE_TAG}>\n<path>${file.path}</path>\n## ${getFileName(file)}\n\n${content}\n</${VARIABLE_NOTE_TAG}>`,
           );
           variableResult.files.push(file);
         }
@@ -357,7 +357,7 @@ export async function processPrompt(
   selectedText: string,
   vault: Vault,
   activeNote?: TFile | null,
-  skipEmptyBraces: boolean = false
+  skipEmptyBraces: boolean = false,
 ): Promise<ProcessedPromptResult> {
   const settings = getSettings();
   const includedFiles = new Set<TFile>();
@@ -377,7 +377,7 @@ export async function processPrompt(
   const { variablesMap, includedFiles: variableFiles } = await extractVariablesFromPrompt(
     customPrompt,
     vault,
-    activeNote
+    activeNote,
   );
   variableFiles.forEach((file) => includedFiles.add(file));
 
@@ -457,7 +457,7 @@ ${noteContent}
  */
 export function generateCopyCommandName(
   originalName: string,
-  existingCommands: CustomCommand[]
+  existingCommands: CustomCommand[],
 ): string {
   const baseName = `${originalName} (copy)`;
   let copyName = baseName;
@@ -480,7 +480,7 @@ export function getNextCustomCommandOrder(): number {
   const commands = getCachedCustomCommands();
   const lastOrder = commands.reduce(
     (prev: number, curr: CustomCommand) => (prev > curr.order ? prev : curr.order),
-    0
+    0,
   );
   return lastOrder === Number.MAX_SAFE_INTEGER ? Number.MAX_SAFE_INTEGER : lastOrder + 10;
 }
@@ -573,7 +573,7 @@ export function removeQuickCommandBlocks(editor: Editor): boolean {
     // Restore the selection
     editor.setSelection(
       { line: newFromLine, ch: originalFrom.ch },
-      { line: newToLine, ch: originalTo.ch }
+      { line: newToLine, ch: originalTo.ch },
     );
   }
 

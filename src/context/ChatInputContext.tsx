@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useCallback, useState } from "react";
-import { INSERT_TEXT_WITH_PILLS_COMMAND } from "@/components/chat-components/utils/lexicalTextUtils";
 import { LexicalEditor } from "lexical";
+import React, { createContext, useCallback, useContext, useState } from "react";
+import { INSERT_TEXT_WITH_PILLS_COMMAND } from "@/components/chat-components/utils/lexicalTextUtils";
 
 interface ChatInputContextType {
   insertTextWithPills: (text: string, enableURLPills?: boolean) => void;
@@ -50,7 +50,7 @@ export function ChatInputProvider({ children }: ChatInputProviderProps): JSX.Ele
         });
       }
     },
-    [editor]
+    [editor],
   );
 
   const focusInput = useCallback(() => {

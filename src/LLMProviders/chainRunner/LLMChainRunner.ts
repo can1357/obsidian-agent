@@ -1,3 +1,4 @@
+import { getModelKey } from "@/aiParams";
 import { ABORT_REASON, ModelCapability } from "@/constants";
 import { LayerToMessagesConverter } from "@/context/LayerToMessagesConverter";
 import { logInfo } from "@/logger";
@@ -8,7 +9,6 @@ import { BaseChainRunner } from "./BaseChainRunner";
 import { loadAndAddChatHistory } from "./utils/chatHistoryUtils";
 import { recordPromptPayload } from "./utils/promptPayloadRecorder";
 import { ThinkBlockStreamer } from "./utils/ThinkBlockStreamer";
-import { getModelKey } from "@/aiParams";
 
 export class LLMChainRunner extends BaseChainRunner {
   /**
@@ -19,7 +19,7 @@ export class LLMChainRunner extends BaseChainRunner {
     // Require envelope for LLM chain
     if (!userMessage.contextEnvelope) {
       throw new Error(
-        "[LLMChainRunner] Context envelope is required but not available. Cannot proceed with LLM chain."
+        "[LLMChainRunner] Context envelope is required but not available. Cannot proceed with LLM chain.",
       );
     }
 
@@ -77,7 +77,7 @@ export class LLMChainRunner extends BaseChainRunner {
       debug?: boolean;
       ignoreSystemMessage?: boolean;
       updateLoading?: (loading: boolean) => void;
-    }
+    },
   ): Promise<string> {
     // Check if the current model has reasoning capability
     const settings = getSettings();
@@ -92,7 +92,7 @@ export class LLMChainRunner extends BaseChainRunner {
       // If we can't find the model, default to including thinking blocks
       logInfo(
         "Could not determine model capabilities, defaulting to include thinking blocks",
-        error
+        error,
       );
     }
 
@@ -117,7 +117,7 @@ export class LLMChainRunner extends BaseChainRunner {
       const chatStream = await withSuppressedTokenWarnings(() =>
         this.chainManager.chatModelManager.getChatModel().stream(messages, {
           signal: abortController.signal,
-        })
+        }),
       );
 
       for await (const chunk of chatStream) {
@@ -159,7 +159,7 @@ export class LLMChainRunner extends BaseChainRunner {
       updateCurrentAiMessage,
       undefined,
       undefined,
-      responseMetadata
+      responseMetadata,
     );
 
     return result.content;

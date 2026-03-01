@@ -1,13 +1,13 @@
 import {
-  compactL3ForL2,
   compactBySection,
-  truncateWithEllipsis,
-  detectSourceType,
-  extractSource,
-  extractContent,
-  compactXmlBlock,
   compactChatHistoryContent,
+  compactL3ForL2,
+  compactXmlBlock,
+  detectSourceType,
+  extractContent,
+  extractSource,
   getL2RefetchInstruction,
+  truncateWithEllipsis,
 } from "./L2ContextCompactor";
 
 describe("L2ContextCompactor", () => {
@@ -88,7 +88,7 @@ Also short.`;
     it("should limit number of sections", () => {
       const sections = Array.from(
         { length: 30 },
-        (_, i) => `## Section ${i + 1}\nContent ${i + 1}`
+        (_, i) => `## Section ${i + 1}\nContent ${i + 1}`,
       );
       const content = sections.join("\n\n");
 

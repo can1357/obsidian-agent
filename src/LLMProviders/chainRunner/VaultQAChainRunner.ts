@@ -1,10 +1,11 @@
+import { getModelKey } from "@/aiParams";
+import { getStandaloneQuestion } from "@/chainUtils";
 import {
   ABORT_REASON,
   DEFAULT_MAX_SOURCE_CHUNKS,
   ModelCapability,
   RETRIEVED_DOCUMENT_TAG,
 } from "@/constants";
-import { getStandaloneQuestion } from "@/chainUtils";
 import { LayerToMessagesConverter } from "@/context/LayerToMessagesConverter";
 import { logInfo } from "@/logger";
 import { RetrieverFactory } from "@/search/RetrieverFactory";
@@ -23,16 +24,15 @@ import {
 import { BaseChainRunner } from "./BaseChainRunner";
 import { loadAndAddChatHistory } from "./utils/chatHistoryUtils";
 import {
+  addFallbackSources,
   formatSourceCatalog,
   getQACitationInstructions,
-  sanitizeContentForCitations,
-  addFallbackSources,
   hasInlineCitations,
   type SourceCatalogEntry,
+  sanitizeContentForCitations,
 } from "./utils/citationUtils";
 import { recordPromptPayload } from "./utils/promptPayloadRecorder";
 import { ThinkBlockStreamer } from "./utils/ThinkBlockStreamer";
-import { getModelKey } from "@/aiParams";
 
 export class VaultQAChainRunner extends BaseChainRunner {
   async run(
@@ -44,7 +44,7 @@ export class VaultQAChainRunner extends BaseChainRunner {
       debug?: boolean;
       ignoreSystemMessage?: boolean;
       updateLoading?: (loading: boolean) => void;
-    }
+    },
   ): Promise<string> {
     // Check if the current model has reasoning capability
     const settings = getSettings();
@@ -59,7 +59,7 @@ export class VaultQAChainRunner extends BaseChainRunner {
       // If we can't find the model, default to including thinking blocks
       logInfo(
         "Could not determine model capabilities, defaulting to include thinking blocks",
-        error
+        error,
       );
     }
 
@@ -72,7 +72,7 @@ export class VaultQAChainRunner extends BaseChainRunner {
       const envelope = userMessage.contextEnvelope;
       if (!envelope) {
         throw new Error(
-          "[VaultQA] Context envelope is required but not available. Cannot proceed with VaultQA chain."
+          "[VaultQA] Context envelope is required but not available. Cannot proceed with VaultQA chain.",
         );
       }
 
@@ -124,7 +124,7 @@ export class VaultQAChainRunner extends BaseChainRunner {
           tagTerms: tags,
           returnAll: hasTagTerms,
         },
-        miyoActive ? { enableMiyo: false, enableSemanticSearchV3: false } : {}
+        miyoActive ? { enableMiyo: false, enableSemanticSearchV3: false } : {},
       );
       const retriever = retrieverResult.retriever;
       logInfo(`VaultQA: Using ${retrieverResult.type} retriever - ${retrieverResult.reason}`);
@@ -241,7 +241,7 @@ export class VaultQAChainRunner extends BaseChainRunner {
       const chatStream = await withSuppressedTokenWarnings(() =>
         this.chainManager.chatModelManager.getChatModel().stream(messages, {
           signal: abortController.signal,
-        })
+        }),
       );
 
       for await (const chunk of chatStream) {
@@ -286,7 +286,7 @@ export class VaultQAChainRunner extends BaseChainRunner {
       updateCurrentAiMessage,
       undefined,
       undefined,
-      responseMetadata
+      responseMetadata,
     );
 
     return fullAIResponse;

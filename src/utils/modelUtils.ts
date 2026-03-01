@@ -1,3 +1,4 @@
+import { CustomModel } from "@/aiParams";
 import {
   ChatModelProviders,
   ChatModels,
@@ -5,7 +6,6 @@ import {
   SettingKeyProviders,
 } from "@/constants";
 import { getSettings } from "@/settings/model";
-import { CustomModel } from "@/aiParams";
 
 /**
  * Check if a provider requires an API key.
@@ -69,6 +69,6 @@ function getRequiredModels(): ReadonlyArray<{ name: string; provider: string }> 
  */
 export function isRequiredChatModel(model: CustomModel): boolean {
   return getRequiredModels().some(
-    (required) => required.name === model.name && required.provider === model.provider
+    (required) => required.name === model.name && required.provider === model.provider,
   );
 }

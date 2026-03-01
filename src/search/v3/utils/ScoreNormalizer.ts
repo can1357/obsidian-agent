@@ -32,7 +32,7 @@ export class ScoreNormalizer {
   private updateExplanation(
     explanation: any | undefined,
     originalScore: number,
-    normalizedScore: number
+    normalizedScore: number,
   ): any | undefined {
     if (!explanation) return undefined;
 

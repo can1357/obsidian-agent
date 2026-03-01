@@ -256,7 +256,7 @@ describe("Time Expression Tests", () => {
             endDate: `${year}-${String(months.indexOf(month) + 1).padStart(2, "0")}-${month.days[year]}`,
           },
         },
-      ])
+      ]),
     );
 
     test.each(historicalCases)("$expression", async ({ expression, expected }) => {
@@ -369,16 +369,16 @@ describe("Time Expression Tests", () => {
       consoleWarnSpy.mockRestore();
     });
 
-    test.each(["invalid time", "", "random text", "week of invalid"])(
-      "invalid expression: %s",
-      async (expression) => {
-        const result = await getTimeRangeMs(expression);
-        expect(result).toBeUndefined();
-        // Verify that console.warn was called with the expected message
-        expect(consoleWarnSpy).toHaveBeenCalledWith(
-          `Unable to parse time expression: ${expression}`
-        );
-      }
-    );
+    test.each([
+      "invalid time",
+      "",
+      "random text",
+      "week of invalid",
+    ])("invalid expression: %s", async (expression) => {
+      const result = await getTimeRangeMs(expression);
+      expect(result).toBeUndefined();
+      // Verify that console.warn was called with the expected message
+      expect(consoleWarnSpy).toHaveBeenCalledWith(`Unable to parse time expression: ${expression}`);
+    });
   });
 });

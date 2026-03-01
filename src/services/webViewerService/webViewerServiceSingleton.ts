@@ -45,7 +45,7 @@ export function getWebViewerService(app: App): WebViewerService {
  */
 export function startActiveWebTabTracking(
   app: App,
-  options?: StartActiveWebTabTrackingOptions
+  options?: StartActiveWebTabTrackingOptions,
 ): ActiveWebTabTrackingRefs {
   return getWebViewerService(app).startActiveWebTabTracking(options);
 }
@@ -55,7 +55,7 @@ export function startActiveWebTabTracking(
  */
 export async function resolveWebViewerLeaf(
   app: App,
-  options?: ResolveLeafOptions
+  options?: ResolveLeafOptions,
 ): Promise<WebViewerLeaf> {
   return getWebViewerService(app).resolveLeaf(options);
 }
@@ -65,7 +65,7 @@ export async function resolveWebViewerLeaf(
  */
 export async function getWebViewerMarkdown(
   app: App,
-  options?: ResolveLeafOptions
+  options?: ResolveLeafOptions,
 ): Promise<string> {
   const leaf = await resolveWebViewerLeaf(app, options);
   return getWebViewerService(app).getReaderModeMarkdown(leaf);
@@ -77,7 +77,7 @@ export async function getWebViewerMarkdown(
 export async function getWebViewerSelectedText(
   app: App,
   trim = true,
-  options?: ResolveLeafOptions
+  options?: ResolveLeafOptions,
 ): Promise<string> {
   const leaf = await resolveWebViewerLeaf(app, options);
   return getWebViewerService(app).getSelectedText(leaf, trim);
@@ -88,7 +88,7 @@ export async function getWebViewerSelectedText(
  */
 export async function getWebViewerSelectedMarkdown(
   app: App,
-  options?: ResolveLeafOptions
+  options?: ResolveLeafOptions,
 ): Promise<string> {
   const leaf = await resolveWebViewerLeaf(app, options);
   return getWebViewerService(app).getSelectedMarkdown(leaf);
@@ -99,7 +99,7 @@ export async function getWebViewerSelectedMarkdown(
  */
 export async function getWebViewerPageInfo(
   app: App,
-  options?: ResolveLeafOptions
+  options?: ResolveLeafOptions,
 ): Promise<WebViewerPageInfo> {
   const leaf = await resolveWebViewerLeaf(app, options);
   return getWebViewerService(app).getPageInfo(leaf);
@@ -111,7 +111,7 @@ export async function getWebViewerPageInfo(
 export async function saveWebViewerToVault(
   app: App,
   saveOptions?: { preferCommand?: boolean; focusLeafBeforeCommand?: boolean },
-  resolveOptions?: ResolveLeafOptions
+  resolveOptions?: ResolveLeafOptions,
 ): Promise<SaveToVaultResult> {
   const leaf = await resolveWebViewerLeaf(app, { ...resolveOptions, focus: true });
   return getWebViewerService(app).saveToVault(leaf, saveOptions);

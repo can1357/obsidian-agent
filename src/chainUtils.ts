@@ -8,7 +8,7 @@ import {
 
 export async function getStandaloneQuestion(
   question: string,
-  chatHistory: ChatHistoryEntry[]
+  chatHistory: ChatHistoryEntry[],
 ): Promise<string> {
   const condenseQuestionTemplate = `Given the following conversation and a follow up question,
     summarize the conversation as context and keep the follow up question unchanged, in its original language.

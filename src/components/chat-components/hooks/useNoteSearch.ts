@@ -1,10 +1,10 @@
-import React, { useMemo } from "react";
-import { TFile } from "obsidian";
-import { FileText, FileClock } from "lucide-react";
 import fuzzysort from "fuzzysort";
-import { useAllNotes } from "./useAllNotes";
-import { TypeaheadOption } from "../TypeaheadMenuContent";
+import { FileClock, FileText } from "lucide-react";
+import { TFile } from "obsidian";
+import React, { useMemo } from "react";
 import { getSettings } from "@/settings/model";
+import { TypeaheadOption } from "../TypeaheadMenuContent";
+import { useAllNotes } from "./useAllNotes";
 
 export interface NoteSearchOption extends TypeaheadOption {
   file: TFile;
@@ -39,7 +39,7 @@ const DEFAULT_CONFIG: Required<NoteSearchConfig> = {
 export function useNoteSearch(
   query: string,
   config: NoteSearchConfig = {},
-  currentActiveFile: TFile | null = null
+  currentActiveFile: TFile | null = null,
 ): NoteSearchOption[] {
   // Get all available notes (including PDFs)
   const allNotes = useAllNotes();
@@ -64,10 +64,10 @@ export function useNoteSearch(
     // If no query, return first N notes with custom command notes ranked lower
     if (!query.trim()) {
       const regularNotes = allNoteOptions.filter(
-        (opt) => !opt.file.path.startsWith(customPromptsFolder + "/")
+        (opt) => !opt.file.path.startsWith(customPromptsFolder + "/"),
       );
       const customCommandNotes = allNoteOptions.filter((opt) =>
-        opt.file.path.startsWith(customPromptsFolder + "/")
+        opt.file.path.startsWith(customPromptsFolder + "/"),
       );
 
       // Add "Active Note" option at the top if there is an active file
@@ -84,7 +84,7 @@ export function useNoteSearch(
         // Reduce limit by 1 to account for active note option
         const noteResults = [...regularNotes, ...customCommandNotes].slice(
           0,
-          mergedConfig.limit - 1
+          mergedConfig.limit - 1,
         );
         return [activeNoteOption, ...noteResults];
       }

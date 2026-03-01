@@ -4,15 +4,15 @@
  * Verifies that web tab contexts are correctly normalized, merged, and deduplicated.
  */
 
+import type { WebTabContext } from "@/types/message";
 import {
-  normalizeUrlString,
-  normalizeUrlForMatching,
-  normalizeOptionalString,
-  normalizeWebTabContext,
   mergeWebTabContexts,
+  normalizeOptionalString,
+  normalizeUrlForMatching,
+  normalizeUrlString,
+  normalizeWebTabContext,
   sanitizeWebTabContexts,
 } from "@/utils/urlNormalization";
-import type { WebTabContext } from "@/types/message";
 
 describe("normalizeUrlString", () => {
   it("should return null for null input", () => {
@@ -55,23 +55,23 @@ describe("normalizeUrlForMatching", () => {
 
   it("should remove hash fragments", () => {
     expect(normalizeUrlForMatching("https://example.com/page#section1")).toBe(
-      "https://example.com/page"
+      "https://example.com/page",
     );
     expect(normalizeUrlForMatching("https://example.com/page#section2")).toBe(
-      "https://example.com/page"
+      "https://example.com/page",
     );
   });
 
   it("should remove default ports", () => {
     expect(normalizeUrlForMatching("https://example.com:443/path")).toBe(
-      "https://example.com/path"
+      "https://example.com/path",
     );
     expect(normalizeUrlForMatching("http://example.com:80/path")).toBe("http://example.com/path");
   });
 
   it("should preserve non-default ports", () => {
     expect(normalizeUrlForMatching("https://example.com:8443/path")).toBe(
-      "https://example.com:8443/path"
+      "https://example.com:8443/path",
     );
   });
 
@@ -86,10 +86,10 @@ describe("normalizeUrlForMatching", () => {
 
   it("should sort query parameters", () => {
     expect(normalizeUrlForMatching("https://example.com?b=2&a=1")).toBe(
-      "https://example.com/?a=1&b=2"
+      "https://example.com/?a=1&b=2",
     );
     expect(normalizeUrlForMatching("https://example.com?a=1&b=2")).toBe(
-      "https://example.com/?a=1&b=2"
+      "https://example.com/?a=1&b=2",
     );
   });
 

@@ -64,13 +64,14 @@ jest.mock("@/commands/customCommandUtils", () => ({
 jest.mock("@/services/webViewerService/webViewerServiceSingleton", () => ({
   getWebViewerService: jest.fn(),
 }));
-import { ChatManager } from "./ChatManager";
-import { MessageRepository } from "./MessageRepository";
-import { ContextManager } from "./ContextManager";
+
+import { TFile } from "obsidian";
 import { ChainType } from "@/chainFactory";
 import { getWebViewerService } from "@/services/webViewerService/webViewerServiceSingleton";
 import { ChatMessage, MessageContext } from "@/types/message";
-import { TFile } from "obsidian";
+import { ChatManager } from "./ChatManager";
+import { ContextManager } from "./ContextManager";
+import { MessageRepository } from "./MessageRepository";
 
 const USER_SENDER = "user";
 const createContextResult = (content = "Hello with context") => ({
@@ -146,7 +147,7 @@ describe("ChatManager", () => {
       mockMessageRepo,
       mockChainManager,
       mockFileParserManager,
-      mockPlugin
+      mockPlugin,
     );
   });
 
@@ -181,7 +182,7 @@ describe("ChatManager", () => {
           ...context,
           webTabs: [],
         },
-        undefined
+        undefined,
       );
       expect(mockContextManager.processMessageContext).toHaveBeenCalledWith(
         mockMessage,
@@ -193,12 +194,12 @@ describe("ChatManager", () => {
         expect.anything(), // messageRepo
         expect.any(String), // systemPrompt
         expect.any(Array), // systemPromptIncludedFiles
-        undefined // updateLoadingMessage
+        undefined, // updateLoadingMessage
       );
       expect(mockMessageRepo.updateProcessedText).toHaveBeenCalledWith(
         "msg-1",
         "Hello with context",
-        undefined
+        undefined,
       );
     });
 
@@ -230,7 +231,7 @@ describe("ChatManager", () => {
           selectedTextContexts: [],
           webTabs: [],
         },
-        undefined
+        undefined,
       );
     });
 
@@ -260,7 +261,7 @@ describe("ChatManager", () => {
           ...context,
           webTabs: [],
         },
-        undefined
+        undefined,
       );
     });
 
@@ -276,7 +277,7 @@ describe("ChatManager", () => {
       mockMessageRepo.getMessage.mockReturnValue(undefined); // Simulate failure
 
       await expect(
-        chatManager.sendMessage("Hello", context, ChainType.LLM_CHAIN)
+        chatManager.sendMessage("Hello", context, ChainType.LLM_CHAIN),
       ).rejects.toThrow();
     });
   });
@@ -302,7 +303,7 @@ describe("ChatManager", () => {
         false,
         mockActiveFile,
         expect.any(String), // systemPrompt
-        expect.any(Array) // systemPromptIncludedFiles
+        expect.any(Array), // systemPromptIncludedFiles
       );
     });
 
@@ -347,7 +348,7 @@ describe("ChatManager", () => {
       const result = await chatManager.regenerateMessage(
         "msg-2",
         mockUpdateMessage,
-        mockAddMessage
+        mockAddMessage,
       );
 
       expect(result).toBe(true);
@@ -357,7 +358,7 @@ describe("ChatManager", () => {
         expect.any(AbortController),
         mockUpdateMessage,
         mockAddMessage,
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -368,7 +369,7 @@ describe("ChatManager", () => {
       const mockLLMMessageNoEnvelope = createMockMessage(
         "msg-1",
         "Hello with context",
-        USER_SENDER
+        USER_SENDER,
       );
       // Second call: after reprocessing, has envelope
       const mockLLMMessageWithEnvelope = {
@@ -397,14 +398,14 @@ describe("ChatManager", () => {
         false, // includeActiveNote
         undefined, // activeNote
         "Test system prompt", // systemPrompt
-        [] // systemPromptIncludedFiles
+        [], // systemPromptIncludedFiles
       );
       expect(mockChainManager.runChain).toHaveBeenCalledWith(
         mockLLMMessageWithEnvelope,
         expect.any(AbortController),
         expect.any(Function),
         expect.any(Function),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -500,7 +501,7 @@ describe("ChatManager", () => {
       expect(mockMessageRepo.truncateAfterMessageId).toHaveBeenCalledWith("msg-1");
       expect(updateChatMemory).toHaveBeenCalledWith(
         expect.any(Array),
-        mockChainManager.memoryManager
+        mockChainManager.memoryManager,
       );
     });
   });
@@ -617,7 +618,7 @@ describe("ChatManager", () => {
             selectedTextContexts: [],
             webTabs: [],
           },
-          undefined
+          undefined,
         );
       });
     });
@@ -634,7 +635,7 @@ describe("ChatManager", () => {
 
         expect(updateChatMemory).toHaveBeenCalledWith(
           expect.any(Array),
-          mockChainManager.memoryManager
+          mockChainManager.memoryManager,
         );
       });
     });
@@ -650,7 +651,7 @@ describe("ChatManager", () => {
         const result = await chatManager.editMessage(
           "msg-1",
           "Edited message",
-          ChainType.LLM_CHAIN
+          ChainType.LLM_CHAIN,
         );
 
         expect(result).toBe(true);
@@ -663,7 +664,7 @@ describe("ChatManager", () => {
           false,
           mockActiveFile,
           expect.any(String), // systemPrompt
-          expect.any(Array) // systemPromptIncludedFiles
+          expect.any(Array), // systemPromptIncludedFiles
         );
       });
     });
@@ -692,7 +693,7 @@ describe("ChatManager", () => {
           expect.any(AbortController),
           expect.any(Function),
           expect.any(Function),
-          expect.any(Object)
+          expect.any(Object),
         );
       });
     });
@@ -735,7 +736,7 @@ describe("ChatManager", () => {
         context,
         ChainType.LLM_CHAIN,
         false, // includeActiveNote
-        true // includeActiveWebTab
+        true, // includeActiveWebTab
       );
 
       // The webTabs should include the active tab with isActive: true
@@ -752,7 +753,7 @@ describe("ChatManager", () => {
             }),
           ]),
         }),
-        undefined
+        undefined,
       );
     });
 
@@ -796,7 +797,7 @@ describe("ChatManager", () => {
             }),
           ]),
         }),
-        undefined
+        undefined,
       );
     });
 
@@ -842,7 +843,7 @@ describe("ChatManager", () => {
           title: "New Title",
           faviconUrl: "https://same.example.com/new-favicon.ico",
           isActive: true,
-        })
+        }),
       );
     });
 
@@ -892,7 +893,7 @@ describe("ChatManager", () => {
           title: "Guide - Section 2", // Title updated from active tab
           faviconUrl: "https://docs.example.com/favicon.ico",
           isActive: true,
-        })
+        }),
       );
     });
 
@@ -1067,7 +1068,7 @@ describe("ChatManager", () => {
         context,
         ChainType.LLM_CHAIN,
         false,
-        true // includeActiveWebTab=true
+        true, // includeActiveWebTab=true
       );
 
       const addMessageCall = mockMessageRepo.addMessage.mock.calls[0];
@@ -1160,7 +1161,7 @@ describe("ChatManager", () => {
         context,
         ChainType.LLM_CHAIN,
         false,
-        true
+        true,
       );
 
       const addMessageCall = mockMessageRepo.addMessage.mock.calls[0];
@@ -1211,7 +1212,7 @@ describe("ChatManager", () => {
         context,
         ChainType.LLM_CHAIN,
         false,
-        true
+        true,
       );
 
       // getWebViewerService should NOT be called because web selection suppresses active tab
@@ -1223,7 +1224,7 @@ describe("ChatManager", () => {
     // Import mocked modules for manipulation
     const { processPrompt } = jest.requireMock("@/commands/customCommandUtils");
     const { getSystemPrompt, getSystemPromptWithMemory, getEffectiveUserPrompt } = jest.requireMock(
-      "@/system-prompts/systemPromptBuilder"
+      "@/system-prompts/systemPromptBuilder",
     );
     const { getSettings } = jest.requireMock("@/settings/model");
     const { getCurrentProject } = jest.requireMock("@/aiParams");
@@ -1248,10 +1249,10 @@ describe("ChatManager", () => {
         const userCustomPrompt = "Simple prompt without templates    ";
         getEffectiveUserPrompt.mockReturnValue(userCustomPrompt);
         getSystemPrompt.mockReturnValue(
-          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
         getSystemPromptWithMemory.mockResolvedValue(
-          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
 
         mockPlugin.app.workspace.getActiveFile.mockReturnValue(mockActiveFile);
@@ -1278,10 +1279,10 @@ describe("ChatManager", () => {
         const userCustomPrompt = '{"foo": "bar", "nested": {"a": 1}}';
         getEffectiveUserPrompt.mockReturnValue(userCustomPrompt);
         getSystemPrompt.mockReturnValue(
-          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
         getSystemPromptWithMemory.mockResolvedValue(
-          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
 
         // processPrompt will be called but should return the JSON unchanged
@@ -1315,10 +1316,10 @@ describe("ChatManager", () => {
         const userCustomPrompt = "Use format: {} for placeholders";
         getEffectiveUserPrompt.mockReturnValue(userCustomPrompt);
         getSystemPrompt.mockReturnValue(
-          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
         getSystemPromptWithMemory.mockResolvedValue(
-          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
 
         // Mock processPrompt to return {} unchanged (because skipEmptyBraces: true)
@@ -1341,7 +1342,7 @@ describe("ChatManager", () => {
           "",
           mockPlugin.app.vault,
           mockActiveFile,
-          true
+          true,
         );
 
         // Verify {} is preserved as literal
@@ -1358,10 +1359,10 @@ describe("ChatManager", () => {
         const userCustomPrompt = '{"format": "json"}   \n';
         getEffectiveUserPrompt.mockReturnValue(userCustomPrompt);
         getSystemPrompt.mockReturnValue(
-          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
         getSystemPromptWithMemory.mockResolvedValue(
-          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
 
         // processPrompt returns JSON unchanged (handled internally)
@@ -1392,10 +1393,10 @@ describe("ChatManager", () => {
         getEffectiveUserPrompt.mockReturnValue("Use {activeNote} content");
         getSettings.mockReturnValue({ enableCustomPromptTemplating: false });
         getSystemPrompt.mockReturnValue(
-          "DEFAULT\n<user_custom_instructions>\nUse {activeNote} content\n</user_custom_instructions>"
+          "DEFAULT\n<user_custom_instructions>\nUse {activeNote} content\n</user_custom_instructions>",
         );
         getSystemPromptWithMemory.mockResolvedValue(
-          "DEFAULT\n<user_custom_instructions>\nUse {activeNote} content\n</user_custom_instructions>"
+          "DEFAULT\n<user_custom_instructions>\nUse {activeNote} content\n</user_custom_instructions>",
         );
 
         mockPlugin.app.workspace.getActiveFile.mockReturnValue(mockActiveFile);
@@ -1438,10 +1439,10 @@ describe("ChatManager", () => {
         const userCustomPrompt = "Use context from {activeNote}";
         getEffectiveUserPrompt.mockReturnValue(userCustomPrompt);
         getSystemPrompt.mockReturnValue(
-          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
         getSystemPromptWithMemory.mockResolvedValue(
-          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
 
         processPrompt.mockResolvedValue({
@@ -1463,7 +1464,7 @@ describe("ChatManager", () => {
           "", // selectedText (empty for system prompts)
           mockPlugin.app.vault, // vault
           mockActiveFile, // activeNote
-          true // skipEmptyBraces (system prompts treat {} as literal)
+          true, // skipEmptyBraces (system prompts treat {} as literal)
         );
       });
 
@@ -1475,10 +1476,10 @@ describe("ChatManager", () => {
 
         getEffectiveUserPrompt.mockReturnValue("Use {activeNote}");
         getSystemPrompt.mockReturnValue(
-          "DEFAULT\n<user_custom_instructions>\nUse {activeNote}\n</user_custom_instructions>"
+          "DEFAULT\n<user_custom_instructions>\nUse {activeNote}\n</user_custom_instructions>",
         );
         getSystemPromptWithMemory.mockResolvedValue(
-          "DEFAULT\n<user_custom_instructions>\nUse {activeNote}\n</user_custom_instructions>"
+          "DEFAULT\n<user_custom_instructions>\nUse {activeNote}\n</user_custom_instructions>",
         );
 
         processPrompt.mockResolvedValue({
@@ -1505,7 +1506,7 @@ describe("ChatManager", () => {
           expect.anything(),
           expect.any(String),
           expect.arrayContaining([mockIncludedFile]), // Should contain the included file
-          undefined // updateLoadingMessage
+          undefined, // updateLoadingMessage
         );
       });
     });
@@ -1521,10 +1522,10 @@ describe("ChatManager", () => {
 
         getEffectiveUserPrompt.mockReturnValue(userCustomPrompt);
         getSystemPrompt.mockReturnValue(
-          `DEFAULT_SYSTEM_PROMPT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT_SYSTEM_PROMPT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
         getSystemPromptWithMemory.mockResolvedValue(
-          `DEFAULT_SYSTEM_PROMPT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT_SYSTEM_PROMPT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
 
         processPrompt.mockResolvedValue({
@@ -1559,10 +1560,10 @@ describe("ChatManager", () => {
 
         getEffectiveUserPrompt.mockReturnValue(userCustomPrompt);
         getSystemPrompt.mockReturnValue(
-          `DEFAULT_SYSTEM_PROMPT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT_SYSTEM_PROMPT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
         getSystemPromptWithMemory.mockResolvedValue(
-          `DEFAULT_SYSTEM_PROMPT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT_SYSTEM_PROMPT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
 
         // No templates, so processPrompt won't be called
@@ -1609,10 +1610,10 @@ describe("ChatManager", () => {
 
         getEffectiveUserPrompt.mockReturnValue(userCustomPrompt);
         getSystemPrompt.mockReturnValue(
-          `DEFAULT_SYSTEM_PROMPT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT_SYSTEM_PROMPT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
         getSystemPromptWithMemory.mockResolvedValue(
-          `DEFAULT_SYSTEM_PROMPT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT_SYSTEM_PROMPT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
 
         processPrompt.mockResolvedValue({
@@ -1661,7 +1662,7 @@ describe("ChatManager", () => {
         getSystemPrompt.mockReturnValue(systemPromptWithoutMemory);
         // Memory prefix + system prompt
         getSystemPromptWithMemory.mockResolvedValue(
-          `${memoryContent}\n\n${systemPromptWithoutMemory}`
+          `${memoryContent}\n\n${systemPromptWithoutMemory}`,
         );
 
         processPrompt.mockResolvedValue({
@@ -1684,7 +1685,7 @@ describe("ChatManager", () => {
           "",
           mockPlugin.app.vault,
           mockActiveFile,
-          true // skipEmptyBraces
+          true, // skipEmptyBraces
         );
 
         // Verify the final system prompt still contains memory prefix
@@ -1702,10 +1703,10 @@ describe("ChatManager", () => {
         const userCustomPrompt = "Use {activeNote}";
         getEffectiveUserPrompt.mockReturnValue(userCustomPrompt);
         getSystemPrompt.mockReturnValue(
-          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
         getSystemPromptWithMemory.mockResolvedValue(
-          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
 
         // Make processPrompt throw an error
@@ -1719,7 +1720,7 @@ describe("ChatManager", () => {
 
         // Should not throw, should continue with original prompt
         await expect(chatManager.sendMessage("Hello", context, ChainType.LLM_CHAIN)).resolves.toBe(
-          "msg-1"
+          "msg-1",
         );
 
         // Verify contextManager was still called (chat continues)
@@ -1808,7 +1809,7 @@ describe("ChatManager", () => {
         // the suffix of getSystemPromptWithMemory (edge case, shouldn't happen normally)
         getSystemPrompt.mockReturnValue("DIFFERENT_SYSTEM_PROMPT");
         getSystemPromptWithMemory.mockResolvedValue(
-          "Memory\n\nACTUAL_SYSTEM_PROMPT_THAT_DOESNT_MATCH"
+          "Memory\n\nACTUAL_SYSTEM_PROMPT_THAT_DOESNT_MATCH",
         );
 
         processPrompt.mockResolvedValue({
@@ -1824,7 +1825,7 @@ describe("ChatManager", () => {
 
         // Should not throw
         await expect(chatManager.sendMessage("Hello", context, ChainType.LLM_CHAIN)).resolves.toBe(
-          "msg-1"
+          "msg-1",
         );
 
         // Verify contextManager was called (chat continues)
@@ -1886,7 +1887,7 @@ describe("ChatManager", () => {
           "",
           mockPlugin.app.vault,
           mockActiveFile,
-          true // skipEmptyBraces
+          true, // skipEmptyBraces
         );
 
         // Verify the final prompt contains project blocks
@@ -1919,10 +1920,10 @@ describe("ChatManager", () => {
         const userCustomPrompt = "User {activeNote}";
         getEffectiveUserPrompt.mockReturnValue(userCustomPrompt);
         getSystemPrompt.mockReturnValue(
-          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
         getSystemPromptWithMemory.mockResolvedValue(
-          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`
+          `DEFAULT\n<user_custom_instructions>\n${userCustomPrompt}\n</user_custom_instructions>`,
         );
 
         const userIncludedFile = { path: "user-note.md", basename: "User Note" } as TFile;

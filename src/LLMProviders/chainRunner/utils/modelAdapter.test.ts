@@ -1,5 +1,5 @@
-import { ModelAdapterFactory, joinPromptSections } from "./modelAdapter";
 import { ToolMetadata } from "@/tools/ToolRegistry";
+import { joinPromptSections, ModelAdapterFactory } from "./modelAdapter";
 
 describe("ModelAdapter", () => {
   describe("enhanceSystemPrompt", () => {
@@ -28,7 +28,7 @@ describe("ModelAdapter", () => {
         basePrompt,
         toolDescriptions,
         ["localSearch", "webSearch", "writeToFile"],
-        toolMetadata
+        toolMetadata,
       );
 
       // Check that tool instructions are included
@@ -52,7 +52,7 @@ describe("ModelAdapter", () => {
         basePrompt,
         toolDescriptions,
         ["localSearch"],
-        [toolMetadata[0]] // Only localSearch metadata
+        [toolMetadata[0]], // Only localSearch metadata
       );
 
       // Should include localSearch instructions
@@ -114,7 +114,7 @@ describe("ModelAdapter", () => {
         basePrompt,
         toolDescriptions,
         ["localSearch", "webSearch"],
-        [] // No metadata
+        [], // No metadata
       );
 
       // Should not include any tool-specific instructions
@@ -130,7 +130,7 @@ describe("ModelAdapter", () => {
         basePrompt,
         toolDescriptions,
         ["replaceInFile", "writeToFile"],
-        []
+        [],
       );
 
       // Check for composer-specific GPT instructions (simplified without XML examples)

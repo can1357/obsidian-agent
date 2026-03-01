@@ -1,5 +1,5 @@
-import React from "react";
 import { X } from "lucide-react";
+import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -26,7 +26,7 @@ export function ContextBadgeWrapper({
       className={cn(
         "tw-group/badge tw-items-center tw-gap-1 tw-border tw-border-solid tw-border-border tw-py-1 tw-pl-1.5 tw-pr-2 tw-text-xs",
         isClickable && "tw-cursor-pointer hover:tw-bg-interactive-hover",
-        className
+        className,
       )}
       onKeyDown={
         onRemove
@@ -46,7 +46,7 @@ export function ContextBadgeWrapper({
           className={cn(
             "tw-flex tw-size-full tw-items-center tw-justify-center",
             onRemove &&
-              "context-badge-icon-removable group-focus-within/badge:tw-invisible group-hover/badge:tw-invisible"
+              "context-badge-icon-removable group-focus-within/badge:tw-invisible group-hover/badge:tw-invisible",
           )}
         >
           {icon}

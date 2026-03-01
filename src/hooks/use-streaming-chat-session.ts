@@ -10,17 +10,17 @@
  * - ThinkBlockStreamer integration for provider-agnostic streaming chunks
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { RunnableSequence } from "@langchain/core/runnables";
 import type { BaseChatMemory } from "@langchain/classic/memory";
+import type { RunnableSequence } from "@langchain/core/runnables";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { CustomModel } from "@/aiParams";
 import { createChatChain, createChatMemory } from "@/commands/customCommandChatEngine";
-import { compactAssistantOutput } from "@/context/ChatHistoryCompactor";
-import { ThinkBlockStreamer } from "@/LLMProviders/chainRunner/utils/ThinkBlockStreamer";
 import { ABORT_REASON } from "@/constants";
-import { logError } from "@/logger";
+import { compactAssistantOutput } from "@/context/ChatHistoryCompactor";
 import { useRafThrottledCallback } from "@/hooks/use-raf-throttled-callback";
+import { ThinkBlockStreamer } from "@/LLMProviders/chainRunner/utils/ThinkBlockStreamer";
+import { logError } from "@/logger";
 
 export interface StreamingChatTurnContext {
   /** Abort signal for the current turn (covers prompt-building + streaming). */
@@ -60,7 +60,7 @@ export interface StreamingChatSessionApi {
    * - empty output
    */
   runTurn: (
-    getPrompt: (ctx: StreamingChatTurnContext) => Promise<string>
+    getPrompt: (ctx: StreamingChatTurnContext) => Promise<string>,
   ) => Promise<string | null>;
 
   /** Aborts the current turn (default reason: USER_STOPPED). */
@@ -101,7 +101,7 @@ function shouldSkipPersistOnAbort(signal: AbortSignal): boolean {
  * Shared streaming chat session hook for Quick Ask + CustomCommandChatModal.
  */
 export function useStreamingChatSession(
-  params: UseStreamingChatSessionParams
+  params: UseStreamingChatSessionParams,
 ): StreamingChatSessionApi {
   const { model, systemPrompt, excludeThinking = true, onNoModel, onNonAbortError } = params;
 
@@ -150,7 +150,7 @@ export function useStreamingChatSession(
       streamingTextRef.current = text;
       setStreamingTextThrottled(text);
     },
-    [setStreamingTextThrottled]
+    [setStreamingTextThrottled],
   );
 
   /** Ensures chain/memory exist and are recreated when model/systemPrompt change. */
@@ -184,7 +184,7 @@ export function useStreamingChatSession(
       if (!chainRef.current || !memoryRef.current) return null;
       return { chain: chainRef.current, memory: memoryRef.current };
     },
-    [model, modelKey, systemPrompt]
+    [model, modelKey, systemPrompt],
   );
 
   /** Cleanup on unmount: abort any active turn and prevent state updates. */
@@ -254,7 +254,7 @@ export function useStreamingChatSession(
 
   const runTurn = useCallback(
     async (
-      getPrompt: (ctx: StreamingChatTurnContext) => Promise<string>
+      getPrompt: (ctx: StreamingChatTurnContext) => Promise<string>,
     ): Promise<string | null> => {
       if (isStreamingRef.current) return null;
 
@@ -340,7 +340,7 @@ export function useStreamingChatSession(
               const compactedResult = compactAssistantOutput(result);
               await memory.saveContext(
                 { input: prompt },
-                { output: typeof compactedResult === "string" ? compactedResult : result }
+                { output: typeof compactedResult === "string" ? compactedResult : result },
               );
               hasSavedContextOnceRef.current = true;
             } catch (error) {
@@ -371,7 +371,7 @@ export function useStreamingChatSession(
 
       return committed;
     },
-    [excludeThinking, getOrCreateChain, handleDelta, model, setStreamingTextThrottled]
+    [excludeThinking, getOrCreateChain, handleDelta, model, setStreamingTextThrottled],
   );
 
   return {

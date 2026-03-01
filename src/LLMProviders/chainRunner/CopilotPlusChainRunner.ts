@@ -1,3 +1,7 @@
+import { BaseChatModel } from "@langchain/core/language_models/chat_models";
+import { AIMessage } from "@langchain/core/messages";
+import { StructuredTool } from "@langchain/core/tools";
+import { isProjectMode } from "@/aiParams";
 import { AVAILABLE_TOOLS } from "@/components/chat-components/constants/tools";
 import {
   ABORT_REASON,
@@ -13,53 +17,53 @@ import {
   ImageProcessingResult,
   MessageContent,
 } from "@/imageProcessing/imageProcessor";
+import ProjectManager from "@/LLMProviders/projectManager";
 import { logInfo, logWarn } from "@/logger";
 import { getSettings } from "@/settings/model";
 import { getSystemPromptWithMemory } from "@/system-prompts/systemPromptBuilder";
-import { writeToFileTool } from "@/tools/ComposerTools";
-import { ToolManager } from "@/tools/toolManager";
-import { ToolResultFormatter } from "@/tools/ToolResultFormatter";
-import { ToolRegistry } from "@/tools/ToolRegistry";
 import { initializeBuiltinTools } from "@/tools/builtinTools";
-import { localSearchTool, webSearchTool } from "@/tools/SearchTools";
+import { writeToFileTool } from "@/tools/ComposerTools";
 import { updateMemoryTool } from "@/tools/memoryTools";
-import { extractChatHistory } from "@/utils";
+import { localSearchTool, webSearchTool } from "@/tools/SearchTools";
+import { ToolRegistry } from "@/tools/ToolRegistry";
+import { ToolResultFormatter } from "@/tools/ToolResultFormatter";
+import { ToolManager } from "@/tools/toolManager";
 import { ChatMessage, ResponseMetadata } from "@/types/message";
-import { getApiErrorMessage, getMessageRole, withSuppressedTokenWarnings } from "@/utils";
-import { BaseChatModel } from "@langchain/core/language_models/chat_models";
+import {
+  extractChatHistory,
+  getApiErrorMessage,
+  getMessageRole,
+  withSuppressedTokenWarnings,
+} from "@/utils";
 import { BaseChainRunner } from "./BaseChainRunner";
 import { ActionBlockStreamer } from "./utils/ActionBlockStreamer";
 import { loadAndAddChatHistory } from "./utils/chatHistoryUtils";
-import {
-  addFallbackSources,
-  formatSourceCatalog,
-  getLocalSearchGuidance,
-  sanitizeContentForCitations,
-  type SourceCatalogEntry,
-} from "./utils/citationUtils";
-import {
-  extractSourcesFromSearchResults,
-  formatSearchResultsForLLM,
-  formatSearchResultStringForLLM,
-  formatSplitSearchResultsForLLM,
-  generateQualitySummary,
-  formatQualitySummary,
-  logSearchResultsDebugTable,
-} from "./utils/searchResultUtils";
 import {
   buildLocalSearchInnerContent,
   renderCiCMessage,
   wrapLocalSearchPayload,
 } from "./utils/cicPromptUtils";
+import {
+  addFallbackSources,
+  formatSourceCatalog,
+  getLocalSearchGuidance,
+  type SourceCatalogEntry,
+  sanitizeContentForCitations,
+} from "./utils/citationUtils";
 import { extractMarkdownImagePaths } from "./utils/imageExtraction";
+import { recordPromptPayload } from "./utils/promptPayloadRecorder";
+import {
+  extractSourcesFromSearchResults,
+  formatQualitySummary,
+  formatSearchResultStringForLLM,
+  formatSearchResultsForLLM,
+  formatSplitSearchResultsForLLM,
+  generateQualitySummary,
+  logSearchResultsDebugTable,
+} from "./utils/searchResultUtils";
 import { ThinkBlockStreamer } from "./utils/ThinkBlockStreamer";
 import { deduplicateSources } from "./utils/toolExecution";
-import { recordPromptPayload } from "./utils/promptPayloadRecorder";
 import { unescapeXml } from "./utils/xmlParsing";
-import { StructuredTool } from "@langchain/core/tools";
-import { AIMessage } from "@langchain/core/messages";
-import ProjectManager from "@/LLMProviders/projectManager";
-import { isProjectMode } from "@/aiParams";
 
 type ToolCallWithExecutor = {
   tool: any;
@@ -102,7 +106,7 @@ export class CopilotPlusChainRunner extends BaseChainRunner {
    */
   private async planToolCalls(
     userMessage: string,
-    chatModel: BaseChatModel
+    chatModel: BaseChatModel,
   ): Promise<{ toolCalls: ToolCallWithExecutor[]; salientTerms: string[]; returnAll: boolean }> {
     const availableTools = this.getAvailableToolsForPlanning();
 
@@ -154,7 +158,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
 
     // Get model response for planning (cast to AIMessage for type safety)
     const response = (await withSuppressedTokenWarnings(() =>
-      boundModel.invoke(planningMessages)
+      boundModel.invoke(planningMessages),
     )) as AIMessage;
 
     // Extract tool calls from native response
@@ -167,7 +171,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
     // Extract salient terms and returnAll intent from response text
     const { salientTerms, returnAll } = this.extractPlanningFieldsFromResponse(
       responseText,
-      userMessage
+      userMessage,
     );
 
     // Convert native tool calls to executor format
@@ -193,7 +197,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
    */
   private extractPlanningFieldsFromResponse(
     responseText: string,
-    originalQuery: string
+    originalQuery: string,
   ): { salientTerms: string[]; returnAll: boolean } {
     // Extract salient terms from [SALIENT_TERMS: ...] format
     let salientTerms: string[];
@@ -236,7 +240,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
   private async processAtCommands(
     userMessage: string,
     existingToolCalls: ToolCallWithExecutor[],
-    context: { salientTerms: string[]; timeRange?: any; returnAll?: boolean }
+    context: { salientTerms: string[]; timeRange?: any; returnAll?: boolean },
   ): Promise<ToolCallWithExecutor[]> {
     const message = userMessage.toLowerCase();
     const cleanQuery = this.removeAtCommands(userMessage);
@@ -309,7 +313,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
     const processedImages = await ImageBatchProcessor.processUrlBatch(
       urls,
       failedImages,
-      this.chainManager.app.vault
+      this.chainManager.app.vault,
     );
     ImageBatchProcessor.showFailedImagesNotice(failedImages);
     return processedImages;
@@ -320,7 +324,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
     const processedImages = await ImageBatchProcessor.processChatImageBatch(
       content,
       failedImages,
-      this.chainManager.app.vault
+      this.chainManager.app.vault,
     );
     ImageBatchProcessor.showFailedImagesNotice(failedImages);
     return processedImages;
@@ -339,7 +343,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
       identifierTag: string;
       displayName: string;
       useForResolution: boolean;
-    }
+    },
   ): Promise<string[]> {
     // Match the context block
     const blockRegex = new RegExp(`<${source.tagName}>([\\s\\S]*?)<\\/${source.tagName}>`);
@@ -356,14 +360,14 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
 
     // Extract identifier (path or url) for logging and optional resolution
     const identifierRegex = new RegExp(
-      `<${source.identifierTag}>(.*?)<\\/${source.identifierTag}>`
+      `<${source.identifierTag}>(.*?)<\\/${source.identifierTag}>`,
     );
     const identifierMatch = identifierRegex.exec(block);
     const identifier = identifierMatch ? identifierMatch[1] : undefined;
 
     logInfo(
       `[CopilotPlus] Extracting images from ${source.displayName}:`,
-      identifier || `no ${source.identifierTag}`
+      identifier || `no ${source.identifierTag}`,
     );
 
     // Use identifier for vault path resolution only if configured
@@ -442,7 +446,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
 
   protected async buildMessageContent(
     textContent: string,
-    userMessage: ChatMessage
+    userMessage: ChatMessage,
   ): Promise<MessageContent[]> {
     const failureMessages: string[] = [];
     const successfulImages: ImageContent[] = [];
@@ -462,7 +466,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
 
       if (!envelope) {
         throw new Error(
-          "[CopilotPlus] Context envelope is required but not available. Cannot extract images."
+          "[CopilotPlus] Context envelope is required but not available. Cannot extract images.",
         );
       }
 
@@ -563,7 +567,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
     abortController: AbortController,
     thinkStreamer: ThinkBlockStreamer,
     originalUserQuestion: string,
-    updateLoadingMessage?: (message: string) => void
+    updateLoadingMessage?: (message: string) => void,
   ): Promise<void> {
     // Get memory for chat history loading
     const memory = this.chainManager.memoryManager.getMemory();
@@ -579,7 +583,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
     const envelope = userMessage.contextEnvelope;
     if (!envelope) {
       throw new Error(
-        "[CopilotPlus] Context envelope is required but not available. Cannot proceed with CopilotPlus chain."
+        "[CopilotPlus] Context envelope is required but not available. Cannot proceed with CopilotPlus chain.",
       );
     }
 
@@ -686,7 +690,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
     const chatStream = await withSuppressedTokenWarnings(() =>
       this.chainManager.chatModelManager.getChatModel().stream(messages, {
         signal: abortController.signal,
-      })
+      }),
     );
 
     for await (const chunk of chatStream) {
@@ -712,7 +716,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
       ignoreSystemMessage?: boolean;
       updateLoading?: (loading: boolean) => void;
       updateLoadingMessage?: (message: string) => void;
-    }
+    },
   ): Promise<string> {
     const { updateLoadingMessage } = options;
 
@@ -732,7 +736,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
       const envelope = userMessage.contextEnvelope;
       if (!envelope) {
         throw new Error(
-          "[CopilotPlus] Context envelope is required but not available. Cannot proceed with CopilotPlus chain."
+          "[CopilotPlus] Context envelope is required but not available. Cannot proceed with CopilotPlus chain.",
         );
       }
       const l5User = envelope.layers.find((l) => l.id === "L5_USER");
@@ -747,12 +751,12 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
         // We execute it once here and remove it from toolCalls to avoid double execution
         let timeRange: any = undefined;
         const timeRangeCall = planningResult.toolCalls.find(
-          (tc) => tc.tool.name === "getTimeRangeMs"
+          (tc) => tc.tool.name === "getTimeRangeMs",
         );
         if (timeRangeCall) {
           const timeRangeResult = await ToolManager.callTool(
             timeRangeCall.tool,
-            timeRangeCall.args
+            timeRangeCall.args,
           );
           // Parse result if it's a JSON string (LangChain tools return strings)
           // Extract epoch values from TimeInfo objects - localSearch expects {startTime: number, endTime: number}
@@ -808,7 +812,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
           userMessage,
           abortController,
           addMessage,
-          updateCurrentAiMessage
+          updateCurrentAiMessage,
         );
       }
 
@@ -818,12 +822,12 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
       // here would re-inject L3 context into the user message, bypassing envelope separation.
       const l5Text = userMessage.contextEnvelope?.layers.find((l) => l.id === "L5_USER")?.text;
       const cleanedUserMessage = this.removeAtCommands(
-        l5Text || userMessage.originalMessage || userMessage.message
+        l5Text || userMessage.originalMessage || userMessage.message,
       );
 
       const { toolOutputs, sources: toolSources } = await this.executeToolCalls(
         toolCalls,
-        updateLoadingMessage
+        updateLoadingMessage,
       );
 
       // Use sources from tool execution
@@ -837,7 +841,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
       // This is checked in streamMultimodalResponse to append to final user content
       const textContentWithComposer = this.appendComposerInstructionsIfNeeded(
         cleanedUserMessage,
-        userMessage
+        userMessage,
       );
 
       logInfo("Invoking LLM with envelope-based context construction");
@@ -848,7 +852,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
         abortController,
         thinkStreamer,
         cleanedUserMessage,
-        updateLoadingMessage
+        updateLoadingMessage,
       );
     } catch (error: any) {
       // Reset loading message to default
@@ -889,7 +893,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
     fullAIResponse = addFallbackSources(
       fullAIResponse,
       fallbackSources,
-      settings.enableInlineCitations
+      settings.enableInlineCitations,
     );
 
     await this.handleResponse(
@@ -900,7 +904,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
       updateCurrentAiMessage,
       sources,
       undefined,
-      responseMetadata
+      responseMetadata,
     );
 
     return fullAIResponse;
@@ -908,7 +912,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
 
   private async executeToolCalls(
     toolCalls: any[],
-    updateLoadingMessage?: (message: string) => void
+    updateLoadingMessage?: (message: string) => void,
   ): Promise<{
     toolOutputs: { tool: string; output: any }[];
     sources: { title: string; path: string; score: number; explanation?: any }[];
@@ -979,7 +983,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
     // Calculate total content length (only content, not metadata)
     const totalContentLength = includedDocs.reduce(
       (sum, doc) => sum + (doc.content?.length || 0),
-      0
+      0,
     );
 
     // If total content length exceeds threshold, truncate content proportionally
@@ -988,7 +992,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
       const truncationRatio = MAX_CHARS_FOR_LOCAL_SEARCH_CONTEXT / totalContentLength;
       logInfo(
         "Truncating document contents to fit context length. Truncation ratio:",
-        truncationRatio
+        truncationRatio,
       );
       processedDocs = includedDocs.map((doc) => ({
         ...doc,
@@ -1057,7 +1061,7 @@ Otherwise omit RETURN_ALL or output: [RETURN_ALL: false]`;
    */
   protected processLocalSearchResult(
     toolResult: { result: string; success: boolean },
-    timeExpression?: string
+    timeExpression?: string,
   ): {
     formattedForLLM: string;
     formattedForDisplay: string;

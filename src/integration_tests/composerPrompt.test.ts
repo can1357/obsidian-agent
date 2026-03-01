@@ -1,15 +1,15 @@
-import { DEFAULT_SYSTEM_PROMPT, COMPOSER_OUTPUT_INSTRUCTIONS } from "../constants";
-import * as dotenv from "dotenv";
-import { jest } from "@jest/globals";
 import {
-  GoogleGenerativeAI,
-  HarmCategory,
-  HarmBlockThreshold,
   GenerativeModel,
+  GoogleGenerativeAI,
+  HarmBlockThreshold,
+  HarmCategory,
 } from "@google/generative-ai";
-
+import { jest } from "@jest/globals";
+import * as dotenv from "dotenv";
 // Add global fetch polyfill for Node.js environments
 import fetch, { Headers, Request, Response } from "node-fetch";
+import { COMPOSER_OUTPUT_INSTRUCTIONS, DEFAULT_SYSTEM_PROMPT } from "../constants";
+
 if (!globalThis.fetch) {
   globalThis.fetch = fetch as any;
   globalThis.Headers = Headers as any;
@@ -45,7 +45,7 @@ describe.skip("Composer Instructions - Integration Tests", () => {
     // Fail tests if no API key is available
     if (!process.env.GEMINI_API_KEY) {
       throw new Error(
-        "GEMINI_API_KEY not found in .env.test - integration tests require a valid API key"
+        "GEMINI_API_KEY not found in .env.test - integration tests require a valid API key",
       );
     }
 
@@ -83,14 +83,17 @@ describe.skip("Composer Instructions - Integration Tests", () => {
   const testComposerResponse = async (
     testName: string,
     userPrompt: string,
-    expectedBlocks: number = 1
+    expectedBlocks: number = 1,
   ) => {
     test(testName, async () => {
       try {
         // Create chat session and send message
         const chat = model.startChat();
         const result = await chat.sendMessage(
-          userPrompt + "\n\n<output_format>\n" + COMPOSER_OUTPUT_INSTRUCTIONS + "\n</output_format>"
+          userPrompt +
+            "\n\n<output_format>\n" +
+            COMPOSER_OUTPUT_INSTRUCTIONS +
+            "\n</output_format>",
         );
         const content = result.response.text();
         // Log preview for inspection
@@ -143,7 +146,7 @@ describe.skip("Composer Instructions - Integration Tests", () => {
   // Run tests with different prompts
   testComposerResponse(
     "Composer: create a new note",
-    "@composer Create a new note about climate change?"
+    "@composer Create a new note about climate change?",
   );
 
   testComposerResponse(
@@ -152,7 +155,7 @@ describe.skip("Composer Instructions - Integration Tests", () => {
 
      Title: [[atom]] 
      Path: atom.md
-     ${atom_note}`
+     ${atom_note}`,
   );
 
   testComposerResponse(
@@ -161,7 +164,7 @@ describe.skip("Composer Instructions - Integration Tests", () => {
 
      Title: [[atom]] 
      Path: atom.md
-     ${atom_note}`
+     ${atom_note}`,
   );
 
   testComposerResponse(
@@ -170,18 +173,18 @@ describe.skip("Composer Instructions - Integration Tests", () => {
 
      Title: [[atom]] 
      Path: atom.md
-     ${atom_note}`
+     ${atom_note}`,
   );
 
   testComposerResponse(
     "Composer: update multiple notes",
     "@composer Create two notes on the topic of Earth and Mars separately",
-    2
+    2,
   );
 
   testComposerResponse(
     "Composer: create a canvas",
     "@composer Create a sample canvas with 3 nodes and 1 edge",
-    1
+    1,
   );
 });

@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { App, Modal } from "obsidian";
 import React from "react";
 import { createRoot, Root } from "react-dom/client";
+import { Button } from "@/components/ui/button";
 
 function ConfirmModalContent({
   content,
@@ -44,7 +44,7 @@ export class ConfirmModal extends Modal {
     private content: string,
     title: string,
     private confirmButtonText: string = "Continue",
-    private cancelButtonText: string = "Cancel"
+    private cancelButtonText: string = "Cancel",
   ) {
     super(app);
     // https://docs.obsidian.md/Reference/TypeScript+API/Modal/setTitle
@@ -72,7 +72,7 @@ export class ConfirmModal extends Modal {
         onCancel={handleCancel}
         confirmButtonText={this.confirmButtonText}
         cancelButtonText={this.cancelButtonText}
-      />
+      />,
     );
   }
 

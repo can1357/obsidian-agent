@@ -1,21 +1,21 @@
+import { normalizePath, TAbstractFile, TFile } from "obsidian";
+import { logWarn } from "@/logger";
+import { getSettings } from "@/settings/model";
 import {
   COPILOT_SYSTEM_PROMPT_CREATED,
-  COPILOT_SYSTEM_PROMPT_MODIFIED,
-  COPILOT_SYSTEM_PROMPT_LAST_USED,
   COPILOT_SYSTEM_PROMPT_DEFAULT,
+  COPILOT_SYSTEM_PROMPT_LAST_USED,
+  COPILOT_SYSTEM_PROMPT_MODIFIED,
   EMPTY_SYSTEM_PROMPT,
 } from "@/system-prompts/constants";
 import { UserSystemPrompt } from "@/system-prompts/type";
-import { normalizePath, TAbstractFile, TFile } from "obsidian";
-import { getSettings } from "@/settings/model";
 import { stripFrontmatter } from "@/utils";
 import {
-  updateCachedSystemPrompts,
   addPendingFileWrite,
-  removePendingFileWrite,
   isPendingFileWrite,
+  removePendingFileWrite,
+  updateCachedSystemPrompts,
 } from "./state";
-import { logWarn } from "@/logger";
 
 /**
  * Validate a system prompt name
@@ -23,7 +23,7 @@ import { logWarn } from "@/logger";
 export function validatePromptName(
   name: string,
   prompts: UserSystemPrompt[],
-  currentPromptName?: string
+  currentPromptName?: string,
 ): string | null {
   const trimmedName = name.trim();
 
@@ -125,15 +125,15 @@ export async function parseSystemPromptFile(file: TFile): Promise<UserSystemProm
 
   const createdMs = coerceFrontmatterNumber(
     frontmatter?.[COPILOT_SYSTEM_PROMPT_CREATED],
-    EMPTY_SYSTEM_PROMPT.createdMs
+    EMPTY_SYSTEM_PROMPT.createdMs,
   );
   const modifiedMs = coerceFrontmatterNumber(
     frontmatter?.[COPILOT_SYSTEM_PROMPT_MODIFIED],
-    EMPTY_SYSTEM_PROMPT.modifiedMs
+    EMPTY_SYSTEM_PROMPT.modifiedMs,
   );
   const lastUsedMs = coerceFrontmatterNumber(
     frontmatter?.[COPILOT_SYSTEM_PROMPT_LAST_USED],
-    EMPTY_SYSTEM_PROMPT.lastUsedMs
+    EMPTY_SYSTEM_PROMPT.lastUsedMs,
   );
 
   return {
@@ -233,7 +233,7 @@ export async function updatePromptLastUsed(title: string): Promise<void> {
  */
 export function generateCopyPromptName(
   originalName: string,
-  existingPrompts: UserSystemPrompt[]
+  existingPrompts: UserSystemPrompt[],
 ): string {
   const baseName = `${originalName} (copy)`;
   let copyName = baseName;
@@ -257,7 +257,7 @@ export function generateCopyPromptName(
 export async function updatePromptDefaultFlag(
   title: string,
   isDefault: boolean,
-  folder?: string
+  folder?: string,
 ): Promise<void> {
   const filePath = getPromptFilePathInFolder(title, folder);
   const file = app.vault.getAbstractFileByPath(filePath);

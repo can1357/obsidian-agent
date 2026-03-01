@@ -6,27 +6,27 @@
  * All positioning and sizing is managed by QuickAskOverlay.
  */
 
-import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { MessageSquareX, Send, Square, X } from "lucide-react";
 import { Notice } from "obsidian";
-import { Send, Square, X, MessageSquareX } from "lucide-react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useModelKey } from "@/aiParams";
-import { useDraggable } from "@/hooks/use-draggable";
-import type { ResizeDirection } from "@/hooks/use-resizable";
-import { useSettingsValue, updateSetting } from "@/settings/model";
-import { cleanMessageForCopy } from "@/utils";
-import { ModelSelector } from "@/components/ui/ModelSelector";
+import { SelectedContent } from "@/components/command-ui";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
-import { useQuickAskSession } from "./useQuickAskSession";
-import { QuickAskMessageComponent } from "./QuickAskMessage";
+import { ModelSelector } from "@/components/ui/ModelSelector";
+import type { ReplaceInvalidReason } from "@/editor/replaceGuard";
+import { useDraggable } from "@/hooks/use-draggable";
+import type { ResizeDirection } from "@/hooks/use-resizable";
+import { updateSetting, useSettingsValue } from "@/settings/model";
+import { cleanMessageForCopy } from "@/utils";
 import { QuickAskInput } from "./QuickAskInput";
-import { SelectedContent } from "@/components/command-ui";
+import { QuickAskMessageComponent } from "./QuickAskMessage";
 // TODO: Uncomment when Edit/Edit-Direct modes are implemented
 // import { ModeSelector } from "./ModeSelector";
 // import { modeRegistry } from "./modeRegistry";
 import type { QuickAskPanelProps } from "./types";
-import type { ReplaceInvalidReason } from "@/editor/replaceGuard";
-import { Button } from "@/components/ui/button";
+import { useQuickAskSession } from "./useQuickAskSession";
 
 /**
  * QuickAskPanel - Floating panel for Quick Ask interactions.
@@ -64,7 +64,7 @@ export function QuickAskPanel({
   const selectedModelKey = settings.quickCommandModelKey ?? globalModelKey;
   // Use local state for includeNoteContext to ensure immediate UI updates
   const [includeNoteContext, setIncludeNoteContext] = useState(
-    () => settings.quickCommandIncludeNoteContext
+    () => settings.quickCommandIncludeNoteContext,
   );
 
   // Session hook
@@ -108,7 +108,7 @@ export function QuickAskPanel({
     (pos: { x: number; y: number }) => {
       onDragOffset?.(pos);
     },
-    [onDragOffset]
+    [onDragOffset],
   );
 
   const { handleMouseDown: handleDragMouseDown } = useDraggable({
@@ -127,7 +127,7 @@ export function QuickAskPanel({
         e.stopPropagation();
         onResizeStart?.(direction, { x: e.clientX, y: e.clientY });
       },
-    [onResizeStart]
+    [onResizeStart],
   );
 
   // Submit handler
@@ -149,7 +149,7 @@ export function QuickAskPanel({
         onClose();
       }
     },
-    [onClose]
+    [onClose],
   );
 
   // P0 Fix: Generic handler to stop propagation for other keyboard events
@@ -204,7 +204,7 @@ export function QuickAskPanel({
         }
       }
     },
-    [messages]
+    [messages],
   );
 
   const handleInsert = useCallback(
@@ -235,7 +235,7 @@ export function QuickAskPanel({
         new Notice("Failed to insert. Editor may have changed.");
       }
     },
-    [messages, view, onClose]
+    [messages, view, onClose],
   );
 
   const handleReplace = useCallback(
@@ -254,7 +254,7 @@ export function QuickAskPanel({
       new Notice("Replaced");
       onClose();
     },
-    [messages, replaceGuard, onClose]
+    [messages, replaceGuard, onClose],
   );
 
   const handleModelChange = useCallback((modelKey: string) => {

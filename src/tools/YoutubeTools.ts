@@ -1,7 +1,7 @@
+import { z } from "zod";
 import { selfHostYoutube4llm } from "@/LLMProviders/selfHostServices";
 import { getSettings } from "@/settings/model";
 import { extractAllYoutubeUrls } from "@/utils";
-import { z } from "zod";
 import { createLangChainTool } from "./createLangChainTool";
 
 // Maximum input length to prevent potential DoS attacks
@@ -56,7 +56,7 @@ const youtubeTranscriptionTool = createLangChainTool({
         try {
           if (!getSettings().supadataApiKey) {
             throw new Error(
-              "YouTube transcription requires a Supadata API key. Set it in settings."
+              "YouTube transcription requires a Supadata API key. Set it in settings.",
             );
           }
           const response = await selfHostYoutube4llm(url);
@@ -85,7 +85,7 @@ const youtubeTranscriptionTool = createLangChainTool({
             message: "An error occurred while transcribing the YouTube video",
           };
         }
-      })
+      }),
     );
 
     // Check if at least one transcription was successful

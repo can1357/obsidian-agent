@@ -1,5 +1,5 @@
-import { parseTextForPills } from "./lexicalTextUtils";
 import { TFile, TFolder } from "obsidian";
+import { parseTextForPills } from "./lexicalTextUtils";
 
 // Mock dependencies
 jest.mock("@/logger", () => ({
@@ -371,7 +371,7 @@ describe("parseTextForPills", () => {
       expect(result[4].type).toBe("tool-pill");
       // Tags now appear as plain text mixed with other text
       const hasInvalidToolAndTags = result.some(
-        (r) => r.type === "text" && r.content?.includes("@invalid") && r.content?.includes("#test")
+        (r) => r.type === "text" && r.content?.includes("@invalid") && r.content?.includes("#test"),
       );
       expect(hasInvalidToolAndTags || result[6]?.content === "@invalid").toBe(true);
       expect(result.some((r) => r.type === "folder-pill")).toBe(true);
@@ -431,7 +431,7 @@ describe("parseTextForPills", () => {
       // Verify that we have text and folder-pill
       expect(result.some((r) => r.type === "text" && r.content?.includes("@tool"))).toBe(true);
       expect(
-        result.some((r) => r.type === "text" && r.content?.includes("#tag_with_underscores"))
+        result.some((r) => r.type === "text" && r.content?.includes("#tag_with_underscores")),
       ).toBe(true);
       expect(result.some((r) => r.type === "folder-pill")).toBe(true);
     });

@@ -1,8 +1,8 @@
+import { Eye, EyeOff } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-import { Eye, EyeOff } from "lucide-react";
 import { getDecryptedKey } from "@/encryptionService";
+import { cn } from "@/lib/utils";
 import { logError } from "@/logger";
 import { err2String } from "@/utils";
 
@@ -59,7 +59,7 @@ export function PasswordInput({
         className={cn(
           "tw-absolute tw-inset-y-0 tw-right-2 tw-flex tw-items-center tw-justify-center",
           "tw-cursor-pointer",
-          disabled && "tw-cursor-not-allowed tw-opacity-50"
+          disabled && "tw-cursor-not-allowed tw-opacity-50",
         )}
         role="button"
         aria-label={showPassword ? "Hide password" : "Show password"}
@@ -69,7 +69,7 @@ export function PasswordInput({
             className={cn(
               "tw-size-3.5",
               "tw-text-muted/60 hover:tw-text-accent",
-              "tw-transition-colors tw-duration-200"
+              "tw-transition-colors tw-duration-200",
             )}
           />
         ) : (
@@ -77,7 +77,7 @@ export function PasswordInput({
             className={cn(
               "tw-size-3.5",
               "tw-text-muted/60 hover:tw-text-accent",
-              "tw-transition-colors tw-duration-200"
+              "tw-transition-colors tw-duration-200",
             )}
           />
         )}

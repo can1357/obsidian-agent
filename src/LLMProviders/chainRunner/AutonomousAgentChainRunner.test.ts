@@ -52,7 +52,7 @@ describe("AutonomousAgentChainRunner - Tool Call ID Generation", () => {
     it("should generate distinct IDs for different tool types", () => {
       const tools = ["localSearch", "readNote", "webSearch"];
       const ids = tools.map(
-        (tool) => `${tool}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`
+        (tool) => `${tool}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       );
 
       // All IDs should start with their respective tool name
@@ -120,7 +120,7 @@ describe("AutonomousAgentChainRunner - Tool Call ID Generation", () => {
         "Searching your vault...",
         true,
         "",
-        ""
+        "",
       );
 
       // Verify the marker contains the unique ID
@@ -220,7 +220,7 @@ describe("AutonomousAgentChainRunner - Tool Call ID Generation", () => {
         "",
         true,
         "",
-        ""
+        "",
       );
       currentIterationToolCallMessages.push(tempMarker);
 
@@ -229,7 +229,7 @@ describe("AutonomousAgentChainRunner - Tool Call ID Generation", () => {
 
       // Step 3: Find and replace the temporary marker
       const existingIndex = currentIterationToolCallMessages.findIndex((msg) =>
-        msg.includes(tempId)
+        msg.includes(tempId),
       );
 
       expect(existingIndex).toBe(0); // Should find the temporary marker
@@ -243,7 +243,7 @@ describe("AutonomousAgentChainRunner - Tool Call ID Generation", () => {
         "Searching your vault...",
         true,
         "",
-        ""
+        "",
       );
       currentIterationToolCallMessages[existingIndex] = uniqueMarker;
 

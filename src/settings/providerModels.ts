@@ -398,7 +398,7 @@ export interface ProviderResponseMap {
 
 // Adapter type definition - converts provider-specific models to standard format
 export type ModelAdapter<T extends SettingKeyProviders> = (
-  data: ProviderResponseMap[T]
+  data: ProviderResponseMap[T],
 ) => StandardModel[];
 
 // Create adapter function type

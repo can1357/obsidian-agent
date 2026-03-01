@@ -76,7 +76,7 @@ describe("saveConvertedDocOutput", () => {
       makeTFile("docs/report.pdf"),
       "[Error: something failed]",
       vault,
-      "output"
+      "output",
     );
     expect(adapter.write).not.toHaveBeenCalled();
   });
@@ -87,7 +87,7 @@ describe("saveConvertedDocOutput", () => {
     await saveConvertedDocOutput(makeTFile("docs/report.pdf"), "parsed markdown", vault, "output");
     expect(adapter.write).toHaveBeenCalledWith(
       "output/report.md",
-      "<!-- source: docs/report.pdf -->\nparsed markdown"
+      "<!-- source: docs/report.pdf -->\nparsed markdown",
     );
   });
 
@@ -106,7 +106,7 @@ describe("saveConvertedDocOutput", () => {
     await saveConvertedDocOutput(makeTFile("docs/report.pdf"), "new content", vault, "output");
     expect(adapter.write).toHaveBeenCalledWith(
       "output/report.md",
-      "<!-- source: docs/report.pdf -->\nnew content"
+      "<!-- source: docs/report.pdf -->\nnew content",
     );
   });
 
@@ -117,7 +117,7 @@ describe("saveConvertedDocOutput", () => {
     await saveConvertedDocOutput(makeTFile("docs/report.pdf"), "my content", vault, "output");
     expect(adapter.write).toHaveBeenCalledWith(
       "output/docs__report.md",
-      "<!-- source: docs/report.pdf -->\nmy content"
+      "<!-- source: docs/report.pdf -->\nmy content",
     );
   });
 

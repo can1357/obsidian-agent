@@ -1,8 +1,9 @@
 // DEPRECATED: Legacy partitioned Orama store. v3 uses JSONL snapshots + MemoryIndexManager.
-import { CustomError } from "@/error";
-import { getSettings } from "@/settings/model";
+
 import { create, load, Orama, RawData, save } from "@orama/orama";
 import { App } from "obsidian";
+import { CustomError } from "@/error";
+import { getSettings } from "@/settings/model";
 
 const CHUNK_PREFIX = "copilot-index-chunk-";
 const LEGACY_INDEX_SUFFIX = ".json";
@@ -19,7 +20,7 @@ export class ChunkedStorage {
   constructor(
     private app: App,
     private baseDir: string,
-    private identifier: string
+    private identifier: string,
   ) {}
 
   private getChunkPath(chunkIndex: number): string {
@@ -54,7 +55,7 @@ export class ChunkedStorage {
 
   private distributeDocumentsToPartitions(
     documents: any[],
-    numPartitions: number
+    numPartitions: number,
   ): Map<number, any[]> {
     const partitions = new Map<number, any[]>();
     const documentPartitions: Record<string, number> = {};
@@ -89,7 +90,7 @@ export class ChunkedStorage {
       console.log(`Total documents distributed: ${totalDistributed}`);
       if (totalDistributed !== documents.length) {
         console.error(
-          `Document count mismatch! Original: ${documents.length}, Distributed: ${totalDistributed}`
+          `Document count mismatch! Original: ${documents.length}, Distributed: ${totalDistributed}`,
         );
       }
     }
@@ -117,7 +118,7 @@ export class ChunkedStorage {
           JSON.stringify({
             ...rawData,
             schema: db.schema,
-          })
+          }),
         );
         return;
       }
@@ -157,7 +158,10 @@ export class ChunkedStorage {
         schema: db.schema,
         lastModified: Date.now(),
         documentPartitions: Object.fromEntries(
-          rawDocs.map((doc: any) => [doc.id, this.assignDocumentToPartition(doc.id, numPartitions)])
+          rawDocs.map((doc: any) => [
+            doc.id,
+            this.assignDocumentToPartition(doc.id, numPartitions),
+          ]),
         ),
       };
 
@@ -182,8 +186,8 @@ export class ChunkedStorage {
                 size: (rawData as any).index.vectorIndexes.embedding.size,
                 vectors: Object.fromEntries(
                   Object.entries((rawData as any).index.vectorIndexes.embedding.vectors).filter(
-                    ([id]) => docs.some((doc) => doc.id === id)
-                  )
+                    ([id]) => docs.some((doc) => doc.id === id),
+                  ),
                 ),
               },
             },
@@ -308,13 +312,13 @@ export class ChunkedStorage {
       // upsert cycles. These "ghost" IDs cause position mismatches after load,
       // where some user IDs point to wrong doc positions or undefined entries.
       mergedData.internalDocumentIDStore.internalIdToId = Object.values(orderedDocs).map(
-        (doc: any) => (doc as any).id
+        (doc: any) => (doc as any).id,
       );
 
       // Merge vectors from all chunks
       mergedData.index.vectorIndexes.embedding.vectors = Object.assign(
         {},
-        ...allChunks.map((chunk) => chunk.index?.vectorIndexes?.embedding?.vectors || {})
+        ...allChunks.map((chunk) => chunk.index?.vectorIndexes?.embedding?.vectors || {}),
       );
 
       // Load merged data into database

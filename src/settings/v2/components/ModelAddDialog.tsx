@@ -1,3 +1,6 @@
+import { CheckCircle2, ChevronDown, Loader2, XCircle } from "lucide-react";
+import { Notice } from "obsidian";
+import React, { useState } from "react";
 import { CustomModel } from "@/aiParams";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -35,10 +38,7 @@ import { logError } from "@/logger";
 import { getSettings } from "@/settings/model";
 import { err2String, getProviderInfo, getProviderLabel } from "@/utils";
 import { buildCurlCommandForModel } from "@/utils/curlCommand";
-import { CheckCircle2, ChevronDown, Loader2, XCircle } from "lucide-react";
 import { getApiKeyForProvider } from "@/utils/modelUtils";
-import { Notice } from "obsidian";
-import React, { useState } from "react";
 
 interface FormErrors {
   name: boolean;
@@ -202,7 +202,7 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
   };
 
   const [providerInfo, setProviderInfo] = useState<ProviderMetadata>(
-    getProviderInfo(defaultProvider)
+    getProviderInfo(defaultProvider),
   );
 
   // Check if the form has required fields filled
@@ -591,7 +591,7 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
                     <SelectItem key={provider} value={provider}>
                       {getProviderLabel(provider)}
                     </SelectItem>
-                  )
+                  ),
                 )}
               </SelectContent>
             </Select>

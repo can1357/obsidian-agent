@@ -1,3 +1,5 @@
+import { InternalTypedDocument, Orama, Result } from "@orama/orama";
+import { TFile } from "obsidian";
 import { logInfo, logWarn } from "@/logger";
 import { MiyoClient } from "@/miyo/MiyoClient";
 import { getMiyoSourceId } from "@/miyo/miyoUtils";
@@ -6,8 +8,6 @@ import { DBOperations } from "@/search/dbOperations";
 import type { SemanticIndexDocument } from "@/search/indexBackend/SemanticIndexBackend";
 import VectorStoreManager from "@/search/vectorStoreManager";
 import { getSettings } from "@/settings/model";
-import { InternalTypedDocument, Orama, Result } from "@orama/orama";
-import { TFile } from "obsidian";
 
 const MAX_K = 20;
 const ORIGINAL_WEIGHT = 0.7;
@@ -105,7 +105,7 @@ async function calculateSimilarityScoreFromOrama({
     DBOperations.getDocsByEmbedding(db, embedding, {
       limit: MAX_K,
       similarity: 0,
-    })
+    }),
   );
   const searchResults = await Promise.all(searchPromises);
   const allHits = searchResults.flat();
@@ -147,7 +147,7 @@ async function calculateSimilarityScoreFromMiyo(filePath: string): Promise<Map<s
 
     if (getSettings().debug) {
       logInfo(
-        `RelevantNotes(Miyo): received ${results.length} chunks, collected ${similarityScoreMap.size} note scores`
+        `RelevantNotes(Miyo): received ${results.length} chunks, collected ${similarityScoreMap.size} note scores`,
       );
     }
 
@@ -235,7 +235,7 @@ function getNoteLinks(file: TFile) {
  */
 function mergeScoreMaps(
   similarityScoreMap: Map<string, number>,
-  noteLinks: Map<string, { links: boolean; backlinks: boolean }>
+  noteLinks: Map<string, { links: boolean; backlinks: boolean }>,
 ) {
   const mergedMap = new Map<string, number>();
   const totalWeight = ORIGINAL_WEIGHT + LINKS_WEIGHT;

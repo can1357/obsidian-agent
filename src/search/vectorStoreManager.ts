@@ -1,12 +1,13 @@
 // DEPRECATED: v3 semantic indexing uses MemoryIndexManager (JSONL snapshots). This file remains only
 // for legacy Orama-based flows and should not be referenced by new code.
-import { updateIndexingProgressState } from "@/aiParams";
-import { CustomError } from "@/error";
-import { logInfo, logWarn } from "@/logger";
-import EmbeddingsManager from "@/LLMProviders/embeddingManager";
-import { CopilotSettings, getSettings, subscribeToSettingsChange } from "@/settings/model";
+
 import { Orama } from "@orama/orama";
 import { Notice, Platform, TFile } from "obsidian";
+import { updateIndexingProgressState } from "@/aiParams";
+import { CustomError } from "@/error";
+import EmbeddingsManager from "@/LLMProviders/embeddingManager";
+import { logInfo, logWarn } from "@/logger";
+import { CopilotSettings, getSettings, subscribeToSettingsChange } from "@/settings/model";
 import { MiyoIndexBackend } from "./indexBackend/MiyoIndexBackend";
 import { OramaIndexBackend } from "./indexBackend/OramaIndexBackend";
 import type {
@@ -14,8 +15,8 @@ import type {
   SemanticIndexDocument,
 } from "./indexBackend/SemanticIndexBackend";
 import { IndexEventHandler } from "./indexEventHandler";
-import { notifyIndexChanged } from "./indexSignal";
 import { IndexOperations } from "./indexOperations";
+import { notifyIndexChanged } from "./indexSignal";
 
 export default class VectorStoreManager {
   private static instance: VectorStoreManager;
@@ -103,7 +104,7 @@ export default class VectorStoreManager {
           }
           new Notice(
             "Failed to initialize vector store. Please make sure you have a valid API key " +
-              "for your embedding model and restart the plugin."
+              "for your embedding model and restart the plugin.",
           );
           console.error("Failed to initialize vector store:", error);
           break;
@@ -120,7 +121,7 @@ export default class VectorStoreManager {
 
   public async indexVaultToVectorStore(
     overwrite?: boolean,
-    options?: { userInitiated?: boolean }
+    options?: { userInitiated?: boolean },
   ): Promise<number> {
     await this.waitForInitialization();
 
@@ -227,7 +228,7 @@ export default class VectorStoreManager {
    */
   private async refreshBackend(
     settings: CopilotSettings,
-    prevSettings?: CopilotSettings
+    prevSettings?: CopilotSettings,
   ): Promise<void> {
     const nextBackendKey = this.getBackendKey(settings);
     if (nextBackendKey === this.activeBackendKey) {

@@ -1,10 +1,10 @@
+import { v4 as uuidv4 } from "uuid";
 import { AI_SENDER } from "@/constants";
 import ChainManager from "@/LLMProviders/chainManager";
-import { ChatMessage } from "@/types/message";
-import { err2String, formatDateTime } from "./utils";
 import { logError } from "@/logger";
-import { v4 as uuidv4 } from "uuid";
+import { ChatMessage } from "@/types/message";
 import { formatErrorChunk } from "@/utils/toolResultUtils";
+import { err2String, formatDateTime } from "./utils";
 
 export type Role = "assistant" | "user" | "system";
 
@@ -19,7 +19,7 @@ export const getAIResponse = async (
     ignoreSystemMessage?: boolean;
     updateLoading?: (loading: boolean) => void;
     updateLoadingMessage?: (message: string) => void;
-  } = {}
+  } = {},
 ) => {
   const abortController = new AbortController();
   updateShouldAbort(abortController);
@@ -29,7 +29,7 @@ export const getAIResponse = async (
       abortController,
       updateCurrentAiMessage,
       addMessage,
-      options
+      options,
     );
   } catch (error) {
     logError("Model request failed:", error);

@@ -6,10 +6,10 @@ jest.mock("@/chainFactory", () => ({
   },
 }));
 
-import { ContextProcessor } from "@/contextProcessor";
-import { EMBEDDED_NOTE_TAG } from "@/constants";
-import { ChainType } from "@/chainFactory";
 import { TFile, Vault } from "obsidian";
+import { ChainType } from "@/chainFactory";
+import { EMBEDDED_NOTE_TAG } from "@/constants";
+import { ContextProcessor } from "@/contextProcessor";
 
 type FileCacheMap = Record<string, any>;
 type FileContentMap = Record<string, string>;
@@ -53,7 +53,7 @@ describe("ContextProcessor - Embedded Notes", () => {
 
     fileParserManager = {
       supportsExtension: jest.fn(
-        (extension: string) => extension === "md" || extension === "canvas"
+        (extension: string) => extension === "md" || extension === "canvas",
       ),
       parseFile: jest.fn(async (file: TFile) => {
         const content = fileContents[file.path];
@@ -85,7 +85,7 @@ describe("ContextProcessor - Embedded Notes", () => {
       [source],
       false,
       null,
-      ChainType.LLM_CHAIN
+      ChainType.LLM_CHAIN,
     );
 
     expect(result).toContain(`<${EMBEDDED_NOTE_TAG}>`);
@@ -120,7 +120,7 @@ describe("ContextProcessor - Embedded Notes", () => {
       [source],
       false,
       null,
-      ChainType.LLM_CHAIN
+      ChainType.LLM_CHAIN,
     );
 
     expect(result).toContain("<heading>Section</heading>");
@@ -154,7 +154,7 @@ describe("ContextProcessor - Embedded Notes", () => {
       [source],
       false,
       null,
-      ChainType.LLM_CHAIN
+      ChainType.LLM_CHAIN,
     );
 
     expect(result).toContain("<block_id>block-ref</block_id>");
@@ -176,7 +176,7 @@ describe("ContextProcessor - Embedded Notes", () => {
       [source],
       false,
       null,
-      ChainType.LLM_CHAIN
+      ChainType.LLM_CHAIN,
     );
 
     expect(result).toContain("<content>");
@@ -195,7 +195,7 @@ describe("ContextProcessor - Embedded Notes", () => {
       [source],
       false,
       null,
-      ChainType.LLM_CHAIN
+      ChainType.LLM_CHAIN,
     );
 
     expect(result).toContain("<error>Embedded note not found</error>");

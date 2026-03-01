@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react";
 import { TFile } from "obsidian";
-import { TypeaheadMenuPopover } from "./TypeaheadMenuPopover";
+import React, { useCallback, useEffect, useState } from "react";
 import {
-  useAtMentionCategories,
   AtMentionCategory,
   AtMentionOption,
   CategoryOption,
+  useAtMentionCategories,
 } from "./hooks/useAtMentionCategories";
 import { useAtMentionSearch } from "./hooks/useAtMentionSearch";
+import { TypeaheadMenuPopover } from "./TypeaheadMenuPopover";
 
 interface AtMentionTypeaheadProps {
   isOpen: boolean;
@@ -48,7 +48,7 @@ export function AtMentionTypeahead({
     extendedState.mode,
     extendedState.selectedCategory,
     availableCategoryOptions,
-    currentActiveFile
+    currentActiveFile,
   );
 
   // Handle selection
@@ -75,7 +75,7 @@ export function AtMentionTypeahead({
         onClose();
       }
     },
-    [extendedState.mode, searchQuery, onSelect, onClose]
+    [extendedState.mode, searchQuery, onSelect, onClose],
   );
 
   const handleHighlight = useCallback((index: number) => {
@@ -154,7 +154,7 @@ export function AtMentionTypeahead({
         }
       }
     },
-    [selectedIndex, searchResults, handleSelect, onClose, extendedState.mode, searchQuery]
+    [selectedIndex, searchResults, handleSelect, onClose, extendedState.mode, searchQuery],
   );
 
   // Reset state when menu closes

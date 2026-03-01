@@ -1,15 +1,15 @@
-import React, { useMemo, useState } from "react";
 import { ArrowUpRight, Check, Edit2, MessageCircle, Trash2, X } from "lucide-react";
+import { Platform } from "obsidian";
+import React, { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SearchBar } from "@/components/ui/SearchBar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { SearchBar } from "@/components/ui/SearchBar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { logError } from "@/logger";
 import { useSettingsValue } from "@/settings/model";
 import { sortByStrategy } from "@/utils/recentUsageManager";
-import { Platform } from "obsidian";
 
 export interface ChatHistoryItem {
   id: string;
@@ -46,7 +46,7 @@ export function ChatHistoryPopover({
   const filteredHistory = useMemo(() => {
     if (!searchQuery.trim()) return chatHistory;
     return chatHistory.filter((chat) =>
-      chat.title.toLowerCase().includes(searchQuery.toLowerCase())
+      chat.title.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [chatHistory, searchQuery]);
 
@@ -303,7 +303,7 @@ function ChatHistoryItem({
   return (
     <div
       className={cn(
-        "tw-group tw-flex tw-cursor-pointer tw-items-center tw-gap-2 tw-rounded-md tw-p-1 tw-transition-colors hover:tw-bg-modifier-hover"
+        "tw-group tw-flex tw-cursor-pointer tw-items-center tw-gap-2 tw-rounded-md tw-p-1 tw-transition-colors hover:tw-bg-modifier-hover",
       )}
       onClick={() => onLoadChat(chat.id)}
     >
@@ -318,7 +318,7 @@ function ChatHistoryItem({
       <div
         className={cn(
           "tw-flex tw-shrink-0 tw-items-center tw-gap-1.5 tw-transition-opacity",
-          isMobile ? "tw-flex" : "tw-hidden group-hover:tw-flex"
+          isMobile ? "tw-flex" : "tw-hidden group-hover:tw-flex",
         )}
       >
         {confirmDeleteId === chat.id ? (

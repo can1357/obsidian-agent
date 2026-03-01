@@ -1,13 +1,13 @@
 // TODO(logan): This entire file is deprecated since we moved to direct chat model calls in chain runners
 // Consider removing after verifying no dependencies remain
 
+import { BaseChatMemory } from "@langchain/classic/memory";
+import { formatDocumentsAsString } from "@langchain/classic/util/document";
 import { BaseLanguageModel } from "@langchain/core/language_models/base";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { ChatPromptTemplate, PromptTemplate } from "@langchain/core/prompts";
 import { BaseRetriever } from "@langchain/core/retrievers";
 import { RunnablePassthrough, RunnableSequence } from "@langchain/core/runnables";
-import { BaseChatMemory } from "@langchain/classic/memory";
-import { formatDocumentsAsString } from "@langchain/classic/util/document";
 import { removeErrorTags, removeThinkTags } from "./utils";
 
 export interface LLMChainInput {
@@ -131,7 +131,7 @@ class ChainFactory {
   public static createConversationalRetrievalChain(
     args: ConversationalRetrievalChainParams,
     onDocumentsRetrieved: (documents: Document[]) => void,
-    debug?: boolean
+    debug?: boolean,
   ): RunnableSequence {
     const { llm, retriever, systemMessage } = args;
 
@@ -160,7 +160,7 @@ Question: {question}
 
     const formatChatHistory = (chatHistory: [string, string][]) => {
       const formattedDialogueTurns = chatHistory.map(
-        (dialogueTurn) => `Human: ${dialogueTurn[0]}\nAssistant: ${dialogueTurn[1]}`
+        (dialogueTurn) => `Human: ${dialogueTurn[0]}\nAssistant: ${dialogueTurn[1]}`,
       );
       return formattedDialogueTurns.join("\n");
     };

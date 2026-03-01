@@ -4,7 +4,7 @@
  * The latest arguments are always used, suitable for streaming UI updates.
  */
 
-import { useRef, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 /**
  * Returns a callback that is throttled to at most once per animation frame.
@@ -45,6 +45,6 @@ export function useRafThrottledCallback<T extends (...args: unknown[]) => void>(
         }
       });
     }) as T,
-    []
+    [],
   );
 }

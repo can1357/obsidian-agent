@@ -1,7 +1,7 @@
+import { Notice, TFile, Vault } from "obsidian";
 import { logError } from "@/logger";
 import { safeFetch } from "@/utils";
 import { arrayBufferToBase64 } from "@/utils/base64";
-import { Notice, TFile, Vault } from "obsidian";
 
 export interface ImageContent {
   type: "image_url";
@@ -55,13 +55,13 @@ export class ImageProcessor {
         // Check if extension from URL path is supported
         if (potentialExtension) {
           const isSupported = this.IMAGE_EXTENSIONS.some(
-            (ext) => ext.toLowerCase() === `.${potentialExtension}`
+            (ext) => ext.toLowerCase() === `.${potentialExtension}`,
           );
           if (!isSupported) {
             // If extension is present but not supported, it's definitively not a supported image URL
             logError(
               `Unsupported image format from URL path: .${potentialExtension}. Supported formats: ${this.IMAGE_EXTENSIONS.join(", ")}`,
-              url
+              url,
             );
             // Don't show Notice here, let caller decide based on overall result
             return false;
@@ -83,7 +83,7 @@ export class ImageProcessor {
             // HEAD succeeded, but Content-Type is not image/*
             // Trust the explicit Content-Type over heuristics
             console.warn(
-              `HEAD request succeeded for ${url} but Content-Type (${contentType}) is not image/*.`
+              `HEAD request succeeded for ${url} but Content-Type (${contentType}) is not image/*.`,
             );
             return false; // Return false immediately
           }
@@ -93,7 +93,7 @@ export class ImageProcessor {
           // Log as warning, as this is handled by falling back to heuristics.
           console.warn(
             `HEAD request failed for URL: ${url}. Proceeding to heuristic check.`,
-            headError
+            headError,
           );
           // Proceed to heuristic check ONLY if HEAD failed
           const searchParams = urlObj.searchParams;
@@ -118,7 +118,7 @@ export class ImageProcessor {
           const imageIndicatorCount = imageIndicators.filter(Boolean).length;
           if (imageIndicatorCount >= 2) {
             logError(
-              `Identified as image based on URL heuristics (indicator count: ${imageIndicatorCount}): ${url}`
+              `Identified as image based on URL heuristics (indicator count: ${imageIndicatorCount}): ${url}`,
             );
             return true; // Assume image based on heuristics
           }
@@ -164,7 +164,7 @@ export class ImageProcessor {
           if (potentialExtension) {
             logError(
               `Unsupported image format for potential vault path: .${potentialExtension}. Supported formats: ${this.IMAGE_EXTENSIONS.join(", ")}`,
-              url
+              url,
             );
           }
           return false;
@@ -356,11 +356,11 @@ export class ImageBatchProcessor {
   static async processUrlBatch(
     urls: string[],
     failedImages: string[],
-    vault: Vault
+    vault: Vault,
   ): Promise<ImageProcessingResult> {
     try {
       const results = await Promise.all(
-        urls.map((url) => ImageBatchProcessor.processSingleUrl(url, failedImages, vault))
+        urls.map((url) => ImageBatchProcessor.processSingleUrl(url, failedImages, vault)),
       );
 
       const successfulImages = results.filter((item): item is ImageContent => item !== null);
@@ -382,7 +382,7 @@ export class ImageBatchProcessor {
   static async processSingleUrl(
     url: string,
     failedImages: string[],
-    vault: Vault
+    vault: Vault,
   ): Promise<ImageContent | null> {
     try {
       if (!(await ImageProcessor.isImageUrl(url, vault))) {
@@ -408,17 +408,17 @@ export class ImageBatchProcessor {
   static async processChatImageBatch(
     content: MessageContent[],
     failedImages: string[],
-    vault: Vault
+    vault: Vault,
   ): Promise<ImageProcessingResult> {
     try {
       const imageItems = content.filter(
-        (item): item is ImageContent => item.type === "image_url" && !!item.image_url?.url
+        (item): item is ImageContent => item.type === "image_url" && !!item.image_url?.url,
       );
 
       const results = await Promise.all(
         imageItems.map((item) =>
-          ImageBatchProcessor.processChatSingleImage(item, failedImages, vault)
-        )
+          ImageBatchProcessor.processChatSingleImage(item, failedImages, vault),
+        ),
       );
 
       const successfulImages = results.filter((item): item is ImageContent => item !== null);
@@ -443,7 +443,7 @@ export class ImageBatchProcessor {
   static async processChatSingleImage(
     item: ImageContent,
     failedImages: string[],
-    vault: Vault
+    vault: Vault,
   ): Promise<ImageContent | null> {
     try {
       const processedContent = await ImageProcessor.convertToBase64(item.image_url.url, vault);

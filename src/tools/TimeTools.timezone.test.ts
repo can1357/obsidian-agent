@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { getCurrentTimeTool, convertTimeBetweenTimezonesTool } from "./TimeTools";
+import { convertTimeBetweenTimezonesTool, getCurrentTimeTool } from "./TimeTools";
 
 // Helper to invoke tool and parse result
 const invokeGetCurrentTime = async (args: { timezoneOffset?: string }) => {
@@ -51,13 +51,13 @@ describe("TimeTools Timezone Tests", () => {
 
     it("should throw error for invalid timezone offset", async () => {
       await expect(invokeGetCurrentTime({ timezoneOffset: "Asia/Tokyo" })).rejects.toThrow(
-        "Invalid timezone offset format"
+        "Invalid timezone offset format",
       );
     });
 
     it("should throw error for out of range offset", async () => {
       await expect(invokeGetCurrentTime({ timezoneOffset: "+25" })).rejects.toThrow(
-        "Invalid timezone offset"
+        "Invalid timezone offset",
       );
     });
 
@@ -144,7 +144,7 @@ describe("TimeTools Timezone Tests", () => {
           time: "invalid time",
           fromOffset: "-8",
           toOffset: "+0",
-        })
+        }),
       ).rejects.toThrow("Could not parse time");
     });
 

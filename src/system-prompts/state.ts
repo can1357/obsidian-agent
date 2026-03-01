@@ -1,7 +1,6 @@
-import { atom, createStore, useAtom } from "jotai";
-import { useAtomValue, useSetAtom } from "jotai";
-import { UserSystemPrompt } from "@/system-prompts/type";
+import { atom, createStore, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { getSettings, updateSetting } from "@/settings/model";
+import { UserSystemPrompt } from "@/system-prompts/type";
 
 // Create independent store for system prompts (similar to custom commands)
 const systemPromptsStore = createStore();
@@ -93,7 +92,7 @@ export function deleteCachedSystemPrompt(title: string): void {
   const prompts = systemPromptsStore.get(systemPromptsAtom);
   systemPromptsStore.set(
     systemPromptsAtom,
-    prompts.filter((p) => p.title !== title)
+    prompts.filter((p) => p.title !== title),
   );
 }
 

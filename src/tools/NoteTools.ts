@@ -114,8 +114,8 @@ async function resolveNoteFile(notePath: string): Promise<ResolveNoteOutcome> {
 
   const attemptedPaths = Array.from(
     new Set<string>(
-      [trimmedInput, innerTarget, canonicalTarget].map((value) => value.trim()).filter(Boolean)
-    )
+      [trimmedInput, innerTarget, canonicalTarget].map((value) => value.trim()).filter(Boolean),
+    ),
   );
 
   for (const candidate of attemptedPaths) {
@@ -183,7 +183,7 @@ async function resolveNoteFile(notePath: string): Promise<ResolveNoteOutcome> {
   if (basename) {
     const normalizedBasename = basename.toLowerCase();
     const basenameMatches = markdownFiles.filter(
-      (file) => file.basename.toLowerCase() === normalizedBasename
+      (file) => file.basename.toLowerCase() === normalizedBasename,
     );
 
     if (basenameMatches.length === 1) {
@@ -201,7 +201,7 @@ async function resolveNoteFile(notePath: string): Promise<ResolveNoteOutcome> {
   }
 
   const partialMatches = markdownFiles.filter((file) =>
-    pathSegmentsMatchTail(file.path, targetSegments)
+    pathSegmentsMatchTail(file.path, targetSegments),
   );
 
   if (partialMatches.length === 1) {
@@ -242,7 +242,7 @@ function buildBasenameIndex(): Map<string, TFile[]> {
 function resolveWikiLinkTargets(
   rawTarget: string,
   sourcePath: string,
-  basenameIndex: Map<string, TFile[]>
+  basenameIndex: Map<string, TFile[]>,
 ): TFile[] {
   const target = rawTarget.trim();
   if (!target) {
@@ -362,7 +362,7 @@ const readNoteSchema = z.object({
     .string()
     .min(1)
     .describe(
-      "Full path to the note (relative to the vault root) that needs to be read, such as 'Projects/plan.md'."
+      "Full path to the note (relative to the vault root) that needs to be read, such as 'Projects/plan.md'.",
     ),
   chunkIndex: z
     .preprocess((value) => {
@@ -409,7 +409,7 @@ const readNoteTool = createLangChainTool({
     if (resolution.type === "not_unique") {
       logWarn(
         `readNote: ambiguous note path "${sanitizedPath}" matched multiple files`,
-        resolution.matches.map((file) => file.path)
+        resolution.matches.map((file) => file.path),
       );
       return {
         notePath: sanitizedPath,

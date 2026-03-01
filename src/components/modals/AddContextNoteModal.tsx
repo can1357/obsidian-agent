@@ -1,6 +1,6 @@
 import { App, FuzzyMatch, TFile } from "obsidian";
-import { BaseNoteModal } from "./BaseNoteModal";
 import { ChainType } from "@/chainFactory";
+import { BaseNoteModal } from "./BaseNoteModal";
 
 interface AddContextNoteModalProps {
   app: App;
@@ -57,7 +57,7 @@ export class AddContextNoteModal extends BaseNoteModal<TFile> {
       const titleEl = suggestionEl.createDiv();
       const file = match.item;
       titleEl.setText(
-        this.formatNoteTitle(file.basename, file === this.activeNote, file.extension)
+        this.formatNoteTitle(file.basename, file === this.activeNote, file.extension),
       );
       if (!this.titleOnly) {
         const pathEl = suggestionEl.createDiv({ cls: "mt-1 text-muted text-xs" });

@@ -57,7 +57,7 @@ export function TypeaheadMenuPortal({
   onKeyDown,
 }: TypeaheadMenuPortalProps) {
   const [position, setPosition] = useState<{ top: number; left: number; width: number } | null>(
-    null
+    null,
   );
 
   // Calculate dynamic width based on content

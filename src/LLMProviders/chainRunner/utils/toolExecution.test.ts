@@ -1,7 +1,7 @@
-import { executeSequentialToolCall } from "./toolExecution";
+import { z } from "zod";
 import { createLangChainTool } from "@/tools/createLangChainTool";
 import { ToolRegistry } from "@/tools/ToolRegistry";
-import { z } from "zod";
+import { executeSequentialToolCall } from "./toolExecution";
 
 // Mock dependencies
 jest.mock("@/logger", () => ({
@@ -51,7 +51,7 @@ describe("toolExecution", () => {
 
       const result = await executeSequentialToolCall(
         { name: "testTool", args: { input: "test" } },
-        [testTool]
+        [testTool],
       );
 
       expect(result).toEqual({

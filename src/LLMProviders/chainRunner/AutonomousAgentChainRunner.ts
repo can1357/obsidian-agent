@@ -1,19 +1,40 @@
-import { getSettings } from "@/settings/model";
+import { AIMessage, BaseMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { Runnable } from "@langchain/core/runnables";
+import { StructuredTool } from "@langchain/core/tools";
 import { AGENT_LOOP_TIMEOUT_MS } from "@/constants";
+import { LayerToMessagesConverter } from "@/context/LayerToMessagesConverter";
 import { MessageContent } from "@/imageProcessing/imageProcessor";
 import { logError, logInfo, logWarn } from "@/logger";
 import { UserMemoryManager } from "@/memory/UserMemoryManager";
+import { QueryExpander } from "@/search/v3/QueryExpander";
+import { getSettings } from "@/settings/model";
 import { getSystemPromptWithMemory } from "@/system-prompts/systemPromptBuilder";
 import { initializeBuiltinTools } from "@/tools/builtinTools";
 import { ToolRegistry } from "@/tools/ToolRegistry";
-import { StructuredTool } from "@langchain/core/tools";
-import { Runnable } from "@langchain/core/runnables";
 import { ChatMessage, ResponseMetadata, StreamingResult } from "@/types/message";
 import { err2String, withSuppressedTokenWarnings } from "@/utils";
-import { AIMessage, BaseMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { CopilotPlusChainRunner } from "./CopilotPlusChainRunner";
+import {
+  AgentReasoningState,
+  createInitialReasoningState,
+  extractFirstSentence,
+  LocalSearchSourceInfo,
+  QueryExpansionInfo,
+  serializeReasoningBlock,
+  summarizeToolCall,
+  summarizeToolResult,
+} from "./utils/AgentReasoningState";
 import { loadAndAddChatHistory } from "./utils/chatHistoryUtils";
+import { ensureCiCOrderingWithQuestion } from "./utils/cicPromptUtils";
 import { ModelAdapter, ModelAdapterFactory } from "./utils/modelAdapter";
+import {
+  buildToolCallsFromChunks,
+  createToolResultMessage,
+  generateToolCallId,
+  ToolCallChunk,
+} from "./utils/nativeToolCalling";
+import { buildAgentPromptDebugReport } from "./utils/promptDebugService";
+import { recordPromptPayload } from "./utils/promptPayloadRecorder";
 import { ThinkBlockStreamer } from "./utils/ThinkBlockStreamer";
 import {
   deduplicateSources,
@@ -21,29 +42,7 @@ import {
   logToolCall,
   logToolResult,
 } from "./utils/toolExecution";
-import {
-  createToolResultMessage,
-  generateToolCallId,
-  buildToolCallsFromChunks,
-  ToolCallChunk,
-} from "./utils/nativeToolCalling";
-
-import { ensureCiCOrderingWithQuestion } from "./utils/cicPromptUtils";
-import { LayerToMessagesConverter } from "@/context/LayerToMessagesConverter";
-import { buildAgentPromptDebugReport } from "./utils/promptDebugService";
-import { recordPromptPayload } from "./utils/promptPayloadRecorder";
 import { PromptDebugReport } from "./utils/toolPromptDebugger";
-import {
-  AgentReasoningState,
-  createInitialReasoningState,
-  extractFirstSentence,
-  LocalSearchSourceInfo,
-  serializeReasoningBlock,
-  summarizeToolCall,
-  summarizeToolResult,
-  QueryExpansionInfo,
-} from "./utils/AgentReasoningState";
-import { QueryExpander } from "@/search/v3/QueryExpander";
 
 type AgentSource = {
   title: string;
@@ -60,7 +59,7 @@ interface AgentLoopDeps {
   boundModel: Runnable; // Model with tools bound via bindTools()
   processLocalSearchResult: (
     toolResult: { result: string; success: boolean },
-    timeExpression?: string
+    timeExpression?: string,
   ) => {
     formattedForLLM: string;
     formattedForDisplay: string;
@@ -68,7 +67,7 @@ interface AgentLoopDeps {
   };
   applyCiCOrderingToLocalSearchResult: (
     localSearchPayload: string,
-    originalPrompt: string
+    originalPrompt: string,
   ) => string;
 }
 
@@ -143,7 +142,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
    */
   private startReasoningTimer(
     updateFn: (message: string) => void,
-    abortController?: AbortController
+    abortController?: AbortController,
   ): void {
     this.reasoningState = {
       status: "reasoning",
@@ -204,7 +203,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
 
       if (this.reasoningState.startTime && this.reasoningState.status === "reasoning") {
         this.reasoningState.elapsedSeconds = Math.floor(
-          (Date.now() - this.reasoningState.startTime) / 1000
+          (Date.now() - this.reasoningState.startTime) / 1000,
         );
         // Always update with reasoning block + any accumulated content
         const reasoningBlock = this.buildReasoningBlockMarkup();
@@ -292,7 +291,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
   public static async generateSystemPrompt(
     availableTools: StructuredTool[],
     _adapter?: ModelAdapter, // Unused, kept for backwards compatibility with tests
-    userMemoryManager?: UserMemoryManager
+    userMemoryManager?: UserMemoryManager,
   ): Promise<string> {
     const basePrompt = await getSystemPromptWithMemory(userMemoryManager);
 
@@ -323,7 +322,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
   public async buildToolPromptDebugReport(userMessage: ChatMessage): Promise<PromptDebugReport> {
     const availableTools = this.getAvailableTools();
     const adapter = ModelAdapterFactory.createAdapter(
-      this.chainManager.chatModelManager.getChatModel()
+      this.chainManager.chatModelManager.getChatModel(),
     );
     // Tool descriptions are now handled natively by bindTools()
     const toolDescriptions = availableTools.map((t) => `${t.name}: ${t.description}`).join("\n");
@@ -347,7 +346,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
    */
   protected applyCiCOrderingToLocalSearchResult(
     localSearchPayload: string,
-    originalPrompt: string
+    originalPrompt: string,
   ): string {
     return ensureCiCOrderingWithQuestion(localSearchPayload, originalPrompt);
   }
@@ -366,7 +365,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
       ignoreSystemMessage?: boolean;
       updateLoading?: (loading: boolean) => void;
       updateLoadingMessage?: (message: string) => void;
-    }
+    },
   ): Promise<string> {
     this.llmFormattedMessages = [];
     this.lastDisplayedContent = "";
@@ -380,7 +379,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
     const envelope = userMessage.contextEnvelope;
     if (!envelope) {
       throw new Error(
-        "[Agent] Context envelope is required but not available. Cannot proceed with autonomous agent."
+        "[Agent] Context envelope is required but not available. Cannot proceed with autonomous agent.",
       );
     }
 
@@ -389,7 +388,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
     const context = await this.prepareAgentConversation(
       userMessage,
       chatModel,
-      options.updateLoadingMessage
+      options.updateLoadingMessage,
     );
 
     try {
@@ -434,7 +433,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
         updateCurrentAiMessage,
         uniqueSources.length > 0 ? uniqueSources : undefined,
         this.llmFormattedMessages.join("\n\n"),
-        loopResult.responseMetadata
+        loopResult.responseMetadata,
       );
 
       this.lastDisplayedContent = "";
@@ -458,7 +457,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
           abortController,
           updateCurrentAiMessage,
           addMessage,
-          options
+          options,
         );
       } catch (fallbackError) {
         logError("Fallback to regular Plus mode also failed:", fallbackError);
@@ -473,7 +472,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
 
         await this.handleError(
           new Error(autonomousAgentErrorMsg + fallbackErrorMsg),
-          thinkStreamer.processErrorChunk.bind(thinkStreamer)
+          thinkStreamer.processErrorChunk.bind(thinkStreamer),
         );
 
         const fullAIResponse = thinkStreamer.close().content;
@@ -484,7 +483,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
           addMessage,
           updateCurrentAiMessage,
           undefined,
-          fullAIResponse
+          fullAIResponse,
         );
       }
     }
@@ -502,7 +501,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
   private async prepareAgentConversation(
     userMessage: ChatMessage,
     chatModel: any,
-    _updateLoadingMessage?: (message: string) => void // Unused, kept for potential future use
+    _updateLoadingMessage?: (message: string) => void, // Unused, kept for potential future use
   ): Promise<AgentRunContext> {
     const messages: BaseMessage[] = [];
     const availableTools = this.getAvailableTools();
@@ -512,7 +511,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
     if (typeof chatModel.bindTools !== "function") {
       throw new Error(
         `Model ${modelName} does not support native tool calling (bindTools not available). ` +
-          `Agent mode requires a model with tool calling support.`
+          `Agent mode requires a model with tool calling support.`,
       );
     }
     const boundModel = chatModel.bindTools(availableTools);
@@ -640,7 +639,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
         boundModel,
         messages,
         abortController,
-        updateCurrentAiMessage
+        updateCurrentAiMessage,
       );
 
       responseMetadata = {
@@ -790,7 +789,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
 
           result.result = applyCiCOrderingToLocalSearchResult(
             processed.formattedForLLM,
-            originalPrompt || ""
+            originalPrompt || "",
           );
         }
 
@@ -804,7 +803,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
         const toolMessage = createToolResultMessage(
           tc.id || generateToolCallId(),
           tc.name,
-          result.result
+          result.result,
         );
         messages.push(toolMessage);
       }
@@ -872,7 +871,7 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
     boundModel: Runnable,
     messages: BaseMessage[],
     abortController: AbortController,
-    _updateCurrentAiMessage: (message: string) => void
+    _updateCurrentAiMessage: (message: string) => void,
   ): Promise<{ content: string; aiMessage: AIMessage; streamingResult: StreamingResult }> {
     const toolCallChunks: Map<number, ToolCallChunk> = new Map();
 
@@ -880,14 +879,14 @@ export class AutonomousAgentChainRunner extends CopilotPlusChainRunner {
     // Agent mode should never show thinking tokens in the response
     const thinkStreamer = new ThinkBlockStreamer(
       () => {}, // No-op update function - we don't display intermediate content
-      true // excludeThinking = true for agent mode
+      true, // excludeThinking = true for agent mode
     );
 
     try {
       const stream = await withSuppressedTokenWarnings(() =>
         boundModel.stream(messages, {
           signal: abortController.signal,
-        })
+        }),
       );
 
       for await (const chunk of stream) {

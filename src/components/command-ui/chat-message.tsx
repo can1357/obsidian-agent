@@ -1,7 +1,7 @@
+import { ClipboardCopy, Copy } from "lucide-react";
 import * as React from "react";
-import { cn } from "@/lib/utils";
-import { Copy, ClipboardCopy } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface Message {
   id: string;
@@ -27,7 +27,7 @@ export function ChatMessage({ message, isStreaming, onCopy, onInsert }: ChatMess
     <div
       className={cn(
         "tw-group tw-flex tw-flex-col tw-gap-1",
-        isUser ? "tw-items-end" : "tw-items-start"
+        isUser ? "tw-items-end" : "tw-items-start",
       )}
     >
       {/* Message bubble */}
@@ -35,7 +35,7 @@ export function ChatMessage({ message, isStreaming, onCopy, onInsert }: ChatMess
         className={cn(
           "tw-max-w-[80%] tw-rounded-lg tw-px-3 tw-py-2 tw-text-sm",
           "tw-whitespace-pre-wrap tw-leading-relaxed",
-          isUser ? "tw-bg-interactive-accent tw-text-on-accent" : "tw-bg-secondary tw-text-normal"
+          isUser ? "tw-bg-interactive-accent tw-text-on-accent" : "tw-bg-secondary tw-text-normal",
         )}
       >
         {message.content}

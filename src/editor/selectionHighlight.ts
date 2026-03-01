@@ -8,13 +8,13 @@
  * factory, preserving the original public API for backwards compatibility.
  */
 
-import { StateEffect, type Extension } from "@codemirror/state";
+import { type Extension, StateEffect } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
-import { logError } from "@/logger";
 import {
   createPersistentHighlight,
   type PersistentHighlightRange,
 } from "@/editor/persistentHighlight";
+import { logError } from "@/logger";
 
 // ============================================================================
 // Instance (isolated from Chat highlight)
@@ -61,7 +61,7 @@ function safeDispatch(view: EditorView, spec: Parameters<EditorView["dispatch"]>
  */
 export function buildSelectionHighlightEffects(
   view: EditorView,
-  range: { from: number; to: number } | null
+  range: { from: number; to: number } | null,
 ): StateEffect<unknown>[] {
   return selectionHighlight.buildEffects(view, range);
 }

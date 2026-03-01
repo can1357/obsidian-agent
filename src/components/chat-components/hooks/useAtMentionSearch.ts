@@ -1,15 +1,15 @@
-import React, { useMemo } from "react";
-import { Platform, TFolder, TFile } from "obsidian";
-import { FileText, Wrench, Folder, FileClock, Globe, CircleDashed } from "lucide-react";
 import fuzzysort from "fuzzysort";
+import { CircleDashed, FileClock, FileText, Folder, Globe, Wrench } from "lucide-react";
+import { Platform, TFile, TFolder } from "obsidian";
+import React, { useMemo } from "react";
+import { getSettings } from "@/settings/model";
 import { getToolDescription } from "@/tools/toolManager";
 import { AVAILABLE_TOOLS } from "../constants/tools";
-import { useAllNotes } from "./useAllNotes";
-import { useAllFolders } from "./useAllFolders";
-import { useOpenWebTabs } from "./useOpenWebTabs";
 import { useActiveWebTabState } from "./useActiveWebTabState";
+import { useAllFolders } from "./useAllFolders";
+import { useAllNotes } from "./useAllNotes";
 import { AtMentionCategory, AtMentionOption, CategoryOption } from "./useAtMentionCategories";
-import { getSettings } from "@/settings/model";
+import { useOpenWebTabs } from "./useOpenWebTabs";
 
 // Maximum number of results to show in @ mention search
 const MAX_SEARCH_RESULTS = 30;
@@ -22,7 +22,7 @@ export function useAtMentionSearch(
   mode: "category" | "search",
   selectedCategory: AtMentionCategory | undefined,
   availableCategoryOptions: CategoryOption[],
-  currentActiveFile: TFile | null = null
+  currentActiveFile: TFile | null = null,
 ): (CategoryOption | AtMentionOption)[] {
   // Get raw data without pre-filtering
   const allNotes = useAllNotes();
@@ -53,7 +53,7 @@ export function useAtMentionSearch(
         icon: React.createElement(FileText, { className: "tw-size-4" }),
         searchKeyword: file.path, // Search by note path
       })),
-    [allNotes]
+    [allNotes],
   );
 
   const toolItems: AtMentionOption[] = useMemo(
@@ -67,7 +67,7 @@ export function useAtMentionSearch(
         content: getToolDescription(tool),
         icon: React.createElement(Wrench, { className: "tw-size-4" }),
       })),
-    []
+    [],
   );
 
   const folderItems: AtMentionOption[] = useMemo(
@@ -82,7 +82,7 @@ export function useAtMentionSearch(
         icon: React.createElement(Folder, { className: "tw-size-4" }),
         searchKeyword: folder.path, // Search by folder path
       })),
-    [allFolders]
+    [allFolders],
   );
 
   const webTabItems: AtMentionOption[] = useMemo(
@@ -106,7 +106,7 @@ export function useAtMentionSearch(
             };
           })
         : [],
-    [openWebTabs]
+    [openWebTabs],
   );
 
   return useMemo(() => {
@@ -236,14 +236,14 @@ export function useAtMentionSearch(
                 "path" in item.data &&
                 typeof item.data.path === "string" &&
                 item.data.path.startsWith(customPromptsFolder + "/")
-              )
+              ),
           );
           const customCommandNotes = items.filter(
             (item) =>
               typeof item.data === "object" &&
               "path" in item.data &&
               typeof item.data.path === "string" &&
-              item.data.path.startsWith(customPromptsFolder + "/")
+              item.data.path.startsWith(customPromptsFolder + "/"),
           );
           return [...regularNotes, ...customCommandNotes].slice(0, MAX_SEARCH_RESULTS);
         }

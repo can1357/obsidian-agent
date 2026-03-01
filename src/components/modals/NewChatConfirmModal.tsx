@@ -7,7 +7,7 @@ export class NewChatConfirmModal extends ConfirmModal {
       app,
       onConfirm,
       "Starting a new chat will clear the current chat history. Any unsaved messages will be lost. Are you sure you want to continue?",
-      "Start New Chat"
+      "Start New Chat",
     );
   }
 }

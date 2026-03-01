@@ -1,5 +1,5 @@
-import { MiyoServiceDiscovery, type MiyoServiceConfig } from "@/miyo/MiyoServiceDiscovery";
 import { Platform } from "obsidian";
+import { type MiyoServiceConfig, MiyoServiceDiscovery } from "@/miyo/MiyoServiceDiscovery";
 
 jest.mock("obsidian", () => ({
   Platform: {
@@ -48,7 +48,7 @@ function createMockNodeRequire(
     readFileError?: Error;
     readFileByPath?: Record<string, string | Error | Array<string | Error>>;
     env?: Record<string, string | undefined>;
-  }
+  },
 ): {
   nodeRequire: NodeRequireShape;
   modules: MockNodeModules;
@@ -132,7 +132,7 @@ describe("MiyoServiceDiscovery", () => {
     expect(baseUrl).toBe("http://127.0.0.1:8742");
     expect(modules.readFile).toHaveBeenCalledWith(
       "/Users/test/Library/Application Support/Miyo/service.json",
-      "utf8"
+      "utf8",
     );
   });
 
@@ -149,7 +149,7 @@ describe("MiyoServiceDiscovery", () => {
     expect(baseUrl).toBe("http://127.0.0.1:8742");
     expect(modules.readFile).toHaveBeenCalledWith(
       "C:/Users/test/AppData/Local/Miyo/service.json",
-      "utf8"
+      "utf8",
     );
   });
 
@@ -191,7 +191,7 @@ describe("MiyoServiceDiscovery", () => {
         port: 8742,
         pid: 999,
       },
-      { readFileError: missingFileError }
+      { readFileError: missingFileError },
     );
     (globalThis as { require?: NodeRequireShape }).require = nodeRequire;
 
@@ -219,7 +219,7 @@ describe("MiyoServiceDiscovery", () => {
             JSON.stringify(discoveredConfig),
           ],
         },
-      }
+      },
     );
     (globalThis as { require?: NodeRequireShape }).require = nodeRequire;
 
@@ -251,7 +251,7 @@ describe("MiyoServiceDiscovery", () => {
             pid: 999,
           } as MiyoServiceConfig),
         },
-      }
+      },
     );
     (globalThis as { require?: NodeRequireShape }).require = nodeRequire;
 
@@ -261,12 +261,12 @@ describe("MiyoServiceDiscovery", () => {
     expect(modules.readFile).toHaveBeenNthCalledWith(
       1,
       "C:/Users/test/AppData/Local/Miyo/service.json",
-      "utf8"
+      "utf8",
     );
     expect(modules.readFile).toHaveBeenNthCalledWith(
       2,
       "C:/Users/test/AppData/Roaming/Miyo/service.json",
-      "utf8"
+      "utf8",
     );
   });
 });

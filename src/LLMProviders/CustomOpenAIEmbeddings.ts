@@ -47,7 +47,7 @@ export class CustomOpenAIEmbeddings extends OpenAIEmbeddings {
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(
-        `Embedding API request failed: ${response.status} ${response.statusText} - ${errorText}`
+        `Embedding API request failed: ${response.status} ${response.statusText} - ${errorText}`,
       );
     }
 

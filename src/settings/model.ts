@@ -1,9 +1,8 @@
-import { CustomModel, ProjectConfig } from "@/aiParams";
 import { atom, createStore, useAtomValue } from "jotai";
 import { v4 as uuidv4 } from "uuid";
+import { CustomModel, ProjectConfig } from "@/aiParams";
 
 import { type ChainType } from "@/chainFactory";
-import { type SortStrategy, isSortStrategy } from "@/utils/recentUsageManager";
 import {
   AGENT_MAX_ITERATIONS_LIMIT,
   COPILOT_FOLDER_ROOT,
@@ -13,6 +12,7 @@ import {
   EmbeddingModelProviders,
   SEND_SHORTCUT,
 } from "@/constants";
+import { isSortStrategy, type SortStrategy } from "@/utils/recentUsageManager";
 
 /**
  * We used to store commands in the settings file with the following interface.
@@ -199,7 +199,7 @@ export const settingsAtom = atom<CopilotSettings>(DEFAULT_SETTINGS);
  */
 function resolveEmbeddingModelKey(settings: CopilotSettings): string {
   const activeEmbeddingModelKeys = new Set(
-    (settings.activeEmbeddingModels || []).map((model) => getModelKeyFromModel(model))
+    (settings.activeEmbeddingModels || []).map((model) => getModelKeyFromModel(model)),
   );
 
   if (settings.embeddingModelKey && activeEmbeddingModelKeys.has(settings.embeddingModelKey)) {
@@ -281,7 +281,7 @@ export function resetSettings(): void {
  * Subscribes to changes in the settings atom.
  */
 export function subscribeToSettingsChange(
-  callback: (prev: CopilotSettings, next: CopilotSettings) => void
+  callback: (prev: CopilotSettings, next: CopilotSettings) => void,
 ): () => void {
   let previousValue = getSettings();
 
@@ -321,10 +321,10 @@ export function sanitizeSettings(settings: CopilotSettings): CopilotSettings {
     settingsToSanitize.activeEmbeddingModels = [];
   }
   settingsToSanitize.activeModels = settingsToSanitize.activeModels.filter(
-    (model) => !model.isBuiltIn && !model.core
+    (model) => !model.isBuiltIn && !model.core,
   );
   settingsToSanitize.activeEmbeddingModels = settingsToSanitize.activeEmbeddingModels.filter(
-    (model) => !model.isBuiltIn && !model.core
+    (model) => !model.isBuiltIn && !model.core,
   );
 
   const sanitizedSettings: CopilotSettings = { ...settingsToSanitize };
@@ -402,7 +402,7 @@ export function sanitizeSettings(settings: CopilotSettings): CopilotSettings {
   const validSearchProviders = ["firecrawl", "perplexity"] as const;
   if (
     !validSearchProviders.includes(
-      sanitizedSettings.selfHostSearchProvider as (typeof validSearchProviders)[number]
+      sanitizedSettings.selfHostSearchProvider as (typeof validSearchProviders)[number],
     )
   ) {
     sanitizedSettings.selfHostSearchProvider = DEFAULT_SETTINGS.selfHostSearchProvider;
@@ -480,7 +480,7 @@ export function sanitizeSettings(settings: CopilotSettings): CopilotSettings {
     // Clamp to valid range
     sanitizedSettings.autoCompactThreshold = Math.min(
       1000000,
-      Math.max(64000, autoCompactThreshold)
+      Math.max(64000, autoCompactThreshold),
     );
   }
 
@@ -559,7 +559,7 @@ export function sanitizeSettings(settings: CopilotSettings): CopilotSettings {
 function mergeAllActiveModelsWithCoreModels(settings: CopilotSettings): CopilotSettings {
   settings.activeModels = Array.isArray(settings.activeModels) ? settings.activeModels : [];
   settings.activeEmbeddingModels = filterUnsupportedEmbeddingModels(
-    Array.isArray(settings.activeEmbeddingModels) ? settings.activeEmbeddingModels : []
+    Array.isArray(settings.activeEmbeddingModels) ? settings.activeEmbeddingModels : [],
   );
   return settings;
 }
@@ -580,6 +580,6 @@ export function getModelKeyFromModel(model: CustomModel): string {
 function filterUnsupportedEmbeddingModels(models: CustomModel[]): CustomModel[] {
   const supportedProviders = new Set(Object.values(EmbeddingModelProviders));
   return models.filter((model) =>
-    supportedProviders.has(model.provider as EmbeddingModelProviders)
+    supportedProviders.has(model.provider as EmbeddingModelProviders),
   );
 }

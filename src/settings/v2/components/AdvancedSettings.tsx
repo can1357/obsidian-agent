@@ -1,11 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { SettingItem } from "@/components/ui/setting-item";
-import { ObsidianNativeSelect } from "@/components/ui/obsidian-native-select";
-import { logFileManager } from "@/logFileManager";
-import { flushRecordedPromptPayloadToLog } from "@/LLMProviders/chainRunner/utils/promptPayloadRecorder";
-import { updateSetting, useSettingsValue } from "@/settings/model";
 import { ArrowUpRight, Plus } from "lucide-react";
 import React from "react";
+import { Button } from "@/components/ui/button";
+import { ObsidianNativeSelect } from "@/components/ui/obsidian-native-select";
+import { SettingItem } from "@/components/ui/setting-item";
+import { flushRecordedPromptPayloadToLog } from "@/LLMProviders/chainRunner/utils/promptPayloadRecorder";
+import { logFileManager } from "@/logFileManager";
+import { updateSetting, useSettingsValue } from "@/settings/model";
 import { getPromptFilePath, SystemPromptAddModal } from "@/system-prompts";
 import { useSystemPrompts } from "@/system-prompts/state";
 
@@ -15,7 +15,7 @@ export const AdvancedSettings: React.FC = () => {
 
   // Check if the default system prompt exists in the current prompts list
   const defaultPromptExists = prompts.some(
-    (prompt) => prompt.title === settings.defaultSystemPromptTitle
+    (prompt) => prompt.title === settings.defaultSystemPromptTitle,
   );
 
   // Display value: use the default prompt if it exists, otherwise empty string (will show placeholder)

@@ -6,6 +6,7 @@
  */
 
 import { logError, logInfo, logWarn } from "@/logger";
+import { htmlToMarkdown, toStringSafe } from "@/services/webViewerService/webViewerServiceHelpers";
 import {
   requireWebview,
   type SaveToVaultResult,
@@ -15,7 +16,6 @@ import {
   type WebViewerPageInfo,
   WebViewerTimeoutError,
 } from "@/services/webViewerService/webViewerServiceTypes";
-import { htmlToMarkdown, toStringSafe } from "@/services/webViewerService/webViewerServiceHelpers";
 
 // ============================================================================
 // Action Function Types
@@ -24,7 +24,7 @@ import { htmlToMarkdown, toStringSafe } from "@/services/webViewerService/webVie
 /** Function type for executing Web Viewer commands. */
 export type ExecuteWebViewerCommand = (
   id: WebViewerCommandId,
-  options?: { leaf?: WebViewerLeaf; focusLeaf?: boolean }
+  options?: { leaf?: WebViewerLeaf; focusLeaf?: boolean },
 ) => Promise<void>;
 
 // ============================================================================
@@ -49,7 +49,7 @@ export function getPageInfo(leaf: WebViewerLeaf): WebViewerPageInfo {
  */
 export async function getReaderModeMarkdown(
   leaf: WebViewerLeaf,
-  options: { signal?: AbortSignal } = {}
+  options: { signal?: AbortSignal } = {},
 ): Promise<string> {
   const { signal } = options;
 
@@ -292,7 +292,7 @@ function isValidTranscriptResult(data: unknown): data is YouTubeTranscriptResult
         typeof seg === "object" &&
         seg !== null &&
         typeof (seg as Record<string, unknown>).timestamp === "string" &&
-        typeof (seg as Record<string, unknown>).text === "string"
+        typeof (seg as Record<string, unknown>).text === "string",
     )
   );
 }
@@ -305,7 +305,7 @@ function isValidTranscriptResult(data: unknown): data is YouTubeTranscriptResult
  */
 export async function getYouTubeTranscript(
   leaf: WebViewerLeaf,
-  options: { timeoutMs?: number } = {}
+  options: { timeoutMs?: number } = {},
 ): Promise<YouTubeTranscriptResult> {
   const webview = requireWebview(leaf);
   const { timeoutMs = 10000 } = options;
@@ -482,7 +482,7 @@ export async function getYouTubeTranscript(
 export async function saveToVault(
   leaf: WebViewerLeaf,
   executeCommand: ExecuteWebViewerCommand,
-  options: { preferCommand?: boolean; focusLeafBeforeCommand?: boolean } = {}
+  options: { preferCommand?: boolean; focusLeafBeforeCommand?: boolean } = {},
 ): Promise<SaveToVaultResult> {
   const { preferCommand = true, focusLeafBeforeCommand = true } = options;
 

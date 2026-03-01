@@ -4,11 +4,11 @@ import { CustomError } from "@/error";
 import { logError, logInfo, logWarn } from "@/logger";
 import { MiyoClient, MiyoUpsertDocument } from "@/miyo/MiyoClient";
 import { getMiyoSourceId } from "@/miyo/miyoUtils";
-import { getMatchingPatterns, shouldIndexFile } from "@/search/searchUtils";
 import type {
   SemanticIndexBackend,
   SemanticIndexDocument,
 } from "@/search/indexBackend/SemanticIndexBackend";
+import { getMatchingPatterns, shouldIndexFile } from "@/search/searchUtils";
 import { getSettings } from "@/settings/model";
 
 /**
@@ -177,7 +177,7 @@ export class MiyoIndexBackend implements SemanticIndexBackend {
    * @returns True when a rebuild should occur.
    */
   public async checkAndHandleEmbeddingModelChange(
-    _embeddingInstance?: Embeddings
+    _embeddingInstance?: Embeddings,
   ): Promise<boolean> {
     return false;
   }
@@ -208,12 +208,12 @@ export class MiyoIndexBackend implements SemanticIndexBackend {
       const allowedPaths = new Set(
         files
           .filter((file) => shouldIndexFile(file, inclusions, exclusions))
-          .map((file) => file.path)
+          .map((file) => file.path),
       );
 
       const indexedPaths = await this.getIndexedFiles();
       const pathsToRemove = indexedPaths.filter(
-        (path) => !filePaths.has(path) || !allowedPaths.has(path)
+        (path) => !filePaths.has(path) || !allowedPaths.has(path),
       );
 
       if (pathsToRemove.length === 0) {
@@ -303,7 +303,7 @@ export class MiyoIndexBackend implements SemanticIndexBackend {
   private logUpsertBatchRequested(
     docs: SemanticIndexDocument[],
     baseUrl: string,
-    sourceId: string
+    sourceId: string,
   ): void {
     logInfo(`Miyo upsert batch: ${docs.length} documents`, { baseUrl, sourceId });
     docs.forEach((doc) => {
@@ -388,7 +388,7 @@ export class MiyoIndexBackend implements SemanticIndexBackend {
       extension?: string;
       created_at?: number;
       nchars?: number;
-    }
+    },
   ): SemanticIndexDocument {
     const content = doc.chunk_text ?? "";
     const metadata = { ...(doc.metadata ?? {}) };

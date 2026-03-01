@@ -1,6 +1,6 @@
+import { TFile } from "obsidian";
 import { AI_SENDER, USER_SENDER } from "@/constants";
 import { MessageContext } from "@/types/message";
-import { TFile } from "obsidian";
 import { MessageRepository } from "./MessageRepository";
 
 // Mock the settings module
@@ -40,7 +40,7 @@ describe("Message Lifecycle with Context Notes - Complete Example", () => {
       userDisplayText,
       userDisplayText, // Initially same as display
       USER_SENDER,
-      context
+      context,
     );
 
     // Verify initial storage
@@ -124,7 +124,7 @@ The team appears to be taking a pragmatic approach with a focused MVP scope and 
     messageRepository.addMessage(
       aiResponse,
       aiResponse, // AI messages have same display and processed text
-      AI_SENDER
+      AI_SENDER,
     );
 
     // Step 6: Verify complete conversation
@@ -194,7 +194,7 @@ Attendees: Alice, Bob, Charlie
 </content>
 </note_context>`,
       USER_SENDER,
-      context
+      context,
     );
 
     // User edits the message
@@ -262,21 +262,21 @@ Q4: $250k
 </content>
 </note_context>`,
       USER_SENDER,
-      context
+      context,
     );
 
     // AI responds
     messageRepository.addMessage(
       "Based on the budget document, your total budget for the year is $700k ($100k + $150k + $200k + $250k).",
       "Based on the budget document, your total budget for the year is $700k ($100k + $150k + $200k + $250k).",
-      AI_SENDER
+      AI_SENDER,
     );
 
     // User asks follow-up (no new context needed)
     messageRepository.addMessage(
       "What percentage increase is Q4 over Q1?",
       "What percentage increase is Q4 over Q1?",
-      USER_SENDER
+      USER_SENDER,
     );
 
     // Verify conversation flow

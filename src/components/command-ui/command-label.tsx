@@ -1,5 +1,5 @@
-import * as React from "react";
 import { Pencil } from "lucide-react";
+import * as React from "react";
 import { cn } from "@/lib/utils";
 
 interface CommandLabelProps {
@@ -27,7 +27,7 @@ export function CommandLabel({ icon, label, className }: CommandLabelProps) {
       className={cn(
         "tw-flex tw-flex-none tw-items-center tw-justify-center tw-gap-2",
         "tw-px-4 tw-py-2",
-        className
+        className,
       )}
     >
       {iconElement}

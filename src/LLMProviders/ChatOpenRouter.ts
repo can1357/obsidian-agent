@@ -1,6 +1,6 @@
 import { BaseChatModelParams } from "@langchain/core/language_models/chat_models";
-import { AIMessageChunk } from "@langchain/core/messages";
 import type { UsageMetadata } from "@langchain/core/messages";
+import { AIMessageChunk } from "@langchain/core/messages";
 import { ChatGenerationChunk } from "@langchain/core/outputs";
 import { ChatOpenAI } from "@langchain/openai";
 import OpenAI from "openai";
@@ -117,7 +117,7 @@ export class ChatOpenRouter extends ChatOpenAI {
   override async *_streamResponseChunks(
     messages: any[],
     options: this["ParsedCallOptions"],
-    _runManager?: any
+    _runManager?: any,
   ): AsyncGenerator<ChatGenerationChunk> {
     const params = this.invocationParams(options);
     const openaiMessages = this.toOpenRouterMessages(messages);
@@ -146,7 +146,7 @@ export class ChatOpenRouter extends ChatOpenAI {
       }
 
       const reasoningText = this.normalizeReasoningChunk(
-        (delta as Record<string, unknown>)?.reasoning
+        (delta as Record<string, unknown>)?.reasoning,
       );
       const reasoningDetails = this.extractReasoningDetails(choice);
       const content = this.extractDeltaContent(delta.content);
@@ -385,7 +385,7 @@ export class ChatOpenRouter extends ChatOpenAI {
    * @returns Tool call chunk array compatible with LangChain
    */
   private extractToolCallChunks(
-    toolCalls: any
+    toolCalls: any,
   ):
     | Array<{ name?: string; args?: string; id?: string; index?: number; type: "tool_call_chunk" }>
     | undefined {
@@ -411,7 +411,7 @@ export class ChatOpenRouter extends ChatOpenAI {
    */
   private buildResponseMetadata(
     rawChunk: OpenRouterChatChunk,
-    finishReason: string | null | undefined
+    finishReason: string | null | undefined,
   ): Record<string, unknown> {
     const metadata: Record<string, unknown> = {
       model_provider: "openrouter",

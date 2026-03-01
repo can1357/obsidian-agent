@@ -181,14 +181,14 @@ export class ToolResultFormatter {
     const topResults = documents.slice(0, 10);
     const hasScoringData = topResults.some(
       (item) =>
-        typeof item?.rerank_score === "number" || typeof item?.score === "number" || item?.source
+        typeof item?.rerank_score === "number" || typeof item?.score === "number" || item?.source,
     );
 
     const formattedItems = topResults
       .map((item, index) =>
         hasScoringData
           ? this.formatSearchItem(item, index)
-          : this.formatBasicSearchItem(item, index)
+          : this.formatBasicSearchItem(item, index),
       )
       .join("\n\n");
 

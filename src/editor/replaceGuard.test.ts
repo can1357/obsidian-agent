@@ -1,10 +1,10 @@
-import {
-  createMapPosReplaceGuard,
-  createHighlightReplaceGuard,
-  getErrorMessage,
-} from "./replaceGuard";
 import type { EditorView } from "@codemirror/view";
 import type { WorkspaceLeaf } from "obsidian";
+import {
+  createHighlightReplaceGuard,
+  createMapPosReplaceGuard,
+  getErrorMessage,
+} from "./replaceGuard";
 
 // Mock dependencies
 jest.mock("./selectionHighlight", () => ({
@@ -28,25 +28,25 @@ describe("getErrorMessage", () => {
 
   it("returns correct message for content_changed", () => {
     expect(getErrorMessage("content_changed")).toBe(
-      "Selection content has changed. Please reselect and try again."
+      "Selection content has changed. Please reselect and try again.",
     );
   });
 
   it("returns correct message for file_changed", () => {
     expect(getErrorMessage("file_changed")).toBe(
-      "File has changed. Please reselect in the original file."
+      "File has changed. Please reselect in the original file.",
     );
   });
 
   it("returns correct message for editor_changed", () => {
     expect(getErrorMessage("editor_changed")).toBe(
-      "Editor has changed. Please reselect and try again."
+      "Editor has changed. Please reselect and try again.",
     );
   });
 
   it("returns correct message for leaf_changed", () => {
     expect(getErrorMessage("leaf_changed")).toBe(
-      "Editor pane has changed. Please reselect and try again."
+      "Editor pane has changed. Please reselect and try again.",
     );
   });
 

@@ -1,3 +1,5 @@
+import { MD5 } from "crypto-js";
+import { App, Notice, TFile } from "obsidian";
 import {
   flushIndexingCount,
   getIndexingProgressState,
@@ -12,8 +14,6 @@ import { RateLimiter } from "@/rateLimiter";
 import { ChunkManager, getSharedChunkManager } from "@/search/v3/chunks";
 import { getSettings, subscribeToSettingsChange } from "@/settings/model";
 import { formatDateTime } from "@/utils";
-import { MD5 } from "crypto-js";
-import { App, Notice, TFile } from "obsidian";
 import type {
   SemanticIndexBackend,
   SemanticIndexDocument,
@@ -44,7 +44,7 @@ export class IndexOperations {
   constructor(
     private app: App,
     private indexBackend: SemanticIndexBackend,
-    private embeddingsManager: EmbeddingsManager
+    private embeddingsManager: EmbeddingsManager,
   ) {
     this.refreshRuntimeIndexingConfig();
     this.chunkManager = getSharedChunkManager(app);
@@ -68,7 +68,7 @@ export class IndexOperations {
 
   public async indexVaultToVectorStore(
     overwrite?: boolean,
-    options?: { userInitiated?: boolean }
+    options?: { userInitiated?: boolean },
   ): Promise<number> {
     if (!getSettings().enableSemanticSearchV3) {
       logWarn("indexVaultToVectorStore called with semantic search disabled, skipping.");
@@ -170,13 +170,13 @@ export class IndexOperations {
           if (requiresEmbeddings && embeddingInstance) {
             await this.rateLimiter.wait();
             const embeddings = await embeddingInstance.embedDocuments(
-              batch.map((chunk) => chunk.content)
+              batch.map((chunk) => chunk.content),
             );
 
             // Validate embeddings
             if (!embeddings || embeddings.length !== batch.length) {
               throw new Error(
-                `Embedding model returned ${embeddings?.length ?? 0} embeddings for ${batch.length} documents`
+                `Embedding model returned ${embeddings?.length ?? 0} embeddings for ${batch.length} documents`,
               );
             }
 
@@ -250,7 +250,7 @@ export class IndexOperations {
 
           // Calculate if we've crossed a checkpoint threshold
           const previousCheckpoint = Math.floor(
-            (this.state.indexedCount - batch.length) / this.checkpointInterval
+            (this.state.indexedCount - batch.length) / this.checkpointInterval,
           );
           const currentCheckpoint = Math.floor(this.state.indexedCount / this.checkpointInterval);
 
@@ -313,7 +313,7 @@ export class IndexOperations {
    */
   private async prepareAllChunks(
     files: TFile[],
-    embeddingModel: string
+    embeddingModel: string,
   ): Promise<
     Array<{
       content: string;
@@ -426,7 +426,7 @@ export class IndexOperations {
         `Previously indexed: ${indexedFilePaths.size}`,
         `Empty files skipped: ${emptyFiles.size}`,
         `Files missing embeddings: ${filesMissingEmbeddings.size}`,
-      ].join("\n")
+      ].join("\n"),
     );
 
     return Array.from(filesToIndex);
@@ -504,7 +504,7 @@ export class IndexOperations {
       filePath?: string;
       errors?: string[];
       batch?: Array<{ content: string; fileInfo: any }>;
-    }
+    },
   ): void {
     const filePath = context?.filePath;
 
@@ -537,7 +537,7 @@ export class IndexOperations {
     if (this.isStringLengthError(error)) {
       new Notice(
         "Vault is too large for 1 partition, please increase the number of partitions in your Copilot QA settings!",
-        10000 // Show for 10 seconds
+        10000, // Show for 10 seconds
       );
       return;
     }
@@ -604,7 +604,7 @@ export class IndexOperations {
       if (requiresEmbeddings && embeddingInstance) {
         // Process chunks with embeddings
         const embeddings = await embeddingInstance.embedDocuments(
-          chunks.map((chunk) => chunk.content)
+          chunks.map((chunk) => chunk.content),
         );
 
         // Save to database

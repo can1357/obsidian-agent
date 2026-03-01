@@ -1,17 +1,17 @@
+import type { CallbackManagerForLLMRun } from "@langchain/core/callbacks/manager";
 import {
   BaseChatModel,
   type BaseChatModelCallOptions,
   type BaseChatModelParams,
 } from "@langchain/core/language_models/chat_models";
-import { logInfo, logWarn, logError } from "@/logger";
-import type { CallbackManagerForLLMRun } from "@langchain/core/callbacks/manager";
-import { AIMessage, AIMessageChunk, ToolMessage } from "@langchain/core/messages";
 import type { BaseMessage, UsageMetadata } from "@langchain/core/messages";
-import { ChatGenerationChunk } from "@langchain/core/outputs";
+import { AIMessage, AIMessageChunk, ToolMessage } from "@langchain/core/messages";
 import type { ChatGeneration, ChatResult } from "@langchain/core/outputs";
+import { ChatGenerationChunk } from "@langchain/core/outputs";
 import type { StructuredToolInterface } from "@langchain/core/tools";
-import { isInteropZodSchema } from "@langchain/core/utils/types";
 import { toJsonSchema } from "@langchain/core/utils/json_schema";
+import { isInteropZodSchema } from "@langchain/core/utils/types";
+import { logError, logInfo, logWarn } from "@/logger";
 
 type FetchImplementation = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 
@@ -93,7 +93,7 @@ export class BedrockChatModel extends BaseChatModel<BedrockChatModelCallOptions>
 
     if ((baseParams as { streaming?: boolean }).streaming && !streamEndpoint) {
       logWarn(
-        "Amazon Bedrock streaming requested without a streaming endpoint; falling back to non-streaming mode."
+        "Amazon Bedrock streaming requested without a streaming endpoint; falling back to non-streaming mode.",
       );
     }
 
@@ -163,7 +163,7 @@ export class BedrockChatModel extends BaseChatModel<BedrockChatModelCallOptions>
   async _generate(
     messages: BaseMessage[],
     options?: BedrockChatModelCallOptions,
-    runManager?: CallbackManagerForLLMRun
+    runManager?: CallbackManagerForLLMRun,
   ): Promise<ChatResult> {
     const requestBody = this.buildRequestBody(messages, options);
 
@@ -221,7 +221,7 @@ export class BedrockChatModel extends BaseChatModel<BedrockChatModelCallOptions>
   override async *_streamResponseChunks(
     messages: BaseMessage[],
     options: BedrockChatModelCallOptions = {},
-    runManager?: CallbackManagerForLLMRun
+    runManager?: CallbackManagerForLLMRun,
   ): AsyncGenerator<ChatGenerationChunk> {
     if (!this.streamEndpoint) {
       const result = await this._generate(messages, options, runManager);
@@ -262,7 +262,7 @@ export class BedrockChatModel extends BaseChatModel<BedrockChatModelCallOptions>
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(
-        `Amazon Bedrock streaming request failed with status ${response.status}: ${errorText}`
+        `Amazon Bedrock streaming request failed with status ${response.status}: ${errorText}`,
       );
     }
 
@@ -303,7 +303,7 @@ export class BedrockChatModel extends BaseChatModel<BedrockChatModelCallOptions>
           const outerEvent = this.safeJsonParse(messagePayload);
           if (!outerEvent) {
             logWarn(
-              `[${requestId}] Failed to parse event JSON: ${messagePayload.slice(0, 100)}...`
+              `[${requestId}] Failed to parse event JSON: ${messagePayload.slice(0, 100)}...`,
             );
             continue;
           }
@@ -322,7 +322,7 @@ export class BedrockChatModel extends BaseChatModel<BedrockChatModelCallOptions>
             eventToProcess,
             runManager,
             usage,
-            stopReason
+            stopReason,
           );
 
           usage = processed.usage ?? usage;
@@ -357,7 +357,7 @@ export class BedrockChatModel extends BaseChatModel<BedrockChatModelCallOptions>
       }
     } catch (error) {
       logError(
-        `[${requestId}] Error during stream processing: ${error instanceof Error ? error.message : String(error)}`
+        `[${requestId}] Error during stream processing: ${error instanceof Error ? error.message : String(error)}`,
       );
       throw error;
     } finally {
@@ -370,17 +370,17 @@ export class BedrockChatModel extends BaseChatModel<BedrockChatModelCallOptions>
 
     if (!hasYieldedAnswer) {
       logWarn(
-        `[${requestId}] Stream complete but no answer text yielded (only thinking or no content). Usage: ${JSON.stringify(usage)}, stopReason: ${stopReason}`
+        `[${requestId}] Stream complete but no answer text yielded (only thinking or no content). Usage: ${JSON.stringify(usage)}, stopReason: ${stopReason}`,
       );
       if (debugEvents.length > 0) {
         logInfo(
           `[${requestId}] Amazon Bedrock streaming produced no answer text. Sample events: ${debugEvents
             .slice(0, 5)
-            .join(" | ")}`
+            .join(" | ")}`,
         );
       }
       logWarn(
-        `[${requestId}] Amazon Bedrock streaming returned no answer content. Falling back to non-streaming response.`
+        `[${requestId}] Amazon Bedrock streaming returned no answer content. Falling back to non-streaming response.`,
       );
       const fallback = await this._generate(messages, options, runManager);
       const fallbackText = fallback.generations[0]?.text ?? "";
@@ -413,7 +413,7 @@ export class BedrockChatModel extends BaseChatModel<BedrockChatModelCallOptions>
    * @returns Claude-style content array or null if not classifiable
    */
   private buildContentItemsFromDelta(
-    event: any
+    event: any,
   ): Array<{ type: string; text?: string; thinking?: string }> | null {
     if (!event || typeof event !== "object") {
       return null;
@@ -454,7 +454,7 @@ export class BedrockChatModel extends BaseChatModel<BedrockChatModelCallOptions>
    * Returns tool_call_chunks format that LangChain can concatenate.
    */
   private extractToolCallChunk(
-    event: any
+    event: any,
   ): { id?: string; index: number; name?: string; args?: string } | null {
     if (!event || typeof event !== "object") {
       return null;
@@ -485,7 +485,7 @@ export class BedrockChatModel extends BaseChatModel<BedrockChatModelCallOptions>
     event: any,
     runManager: CallbackManagerForLLMRun | undefined,
     currentUsage?: Record<string, unknown>,
-    currentStopReason?: string
+    currentStopReason?: string,
   ): Promise<{
     deltaChunks: ChatGenerationChunk[];
     usage?: Record<string, unknown>;
@@ -882,7 +882,7 @@ export class BedrockChatModel extends BaseChatModel<BedrockChatModelCallOptions>
 
       if (totalLength <= 0 || headersLength < 0 || headersLength + 12 > totalLength) {
         logWarn(
-          `parseEventStreamBuffer: Invalid message structure at offset ${offset}: totalLength=${totalLength}, headersLength=${headersLength}`
+          `parseEventStreamBuffer: Invalid message structure at offset ${offset}: totalLength=${totalLength}, headersLength=${headersLength}`,
         );
         break;
       }
@@ -1126,7 +1126,7 @@ export class BedrockChatModel extends BaseChatModel<BedrockChatModelCallOptions>
 
   private buildTerminalMetadataChunk(
     stopReason?: string,
-    usage?: Record<string, unknown>
+    usage?: Record<string, unknown>,
   ): ChatGenerationChunk {
     const usageMetadata = usage ? this.normaliseUsageMetadata(usage) : undefined;
     const responseMetadata: Record<string, unknown> = {
@@ -1240,7 +1240,7 @@ export class BedrockChatModel extends BaseChatModel<BedrockChatModelCallOptions>
 
   private buildRequestBody(
     messages: BaseMessage[],
-    options?: BedrockChatModelCallOptions
+    options?: BedrockChatModelCallOptions,
   ): Record<string, unknown> {
     type ContentBlock =
       | { type: "text"; text: string }
@@ -1425,7 +1425,7 @@ export class BedrockChatModel extends BaseChatModel<BedrockChatModelCallOptions>
    * @returns Either a string (text-only) or an array of content blocks (multimodal)
    */
   private normaliseMessageContent(
-    message: BaseMessage
+    message: BaseMessage,
   ): string | Array<{ type: string; [key: string]: any }> {
     const { content } = message;
 
@@ -1441,7 +1441,7 @@ export class BedrockChatModel extends BaseChatModel<BedrockChatModelCallOptions>
         (part) =>
           typeof part === "object" &&
           part !== null &&
-          (part.type === "image_url" || part.type === "image")
+          (part.type === "image_url" || part.type === "image"),
       );
 
       // If it has images, preserve the array structure for multimodal processing

@@ -1,6 +1,6 @@
 import { App, FuzzySuggestModal, TFile } from "obsidian";
-import { isAllowedFileForChainContext } from "@/utils";
 import { ChainType } from "@/chainFactory";
+import { isAllowedFileForChainContext } from "@/utils";
 
 export abstract class BaseNoteModal<T> extends FuzzySuggestModal<T> {
   protected activeNote: TFile | null;
@@ -23,7 +23,7 @@ export abstract class BaseNoteModal<T> extends FuzzySuggestModal<T> {
           file instanceof TFile &&
           isAllowedFileForChainContext(file, this.chainType) &&
           !excludeNotePaths.includes(file.path) &&
-          file.path !== this.activeNote?.path
+          file.path !== this.activeNote?.path,
       );
 
     // Get all other files that weren't recently opened
@@ -35,7 +35,7 @@ export abstract class BaseNoteModal<T> extends FuzzySuggestModal<T> {
       (file) =>
         !recentFiles.some((recent) => recent.path === file.path) &&
         !excludeNotePaths.includes(file.path) &&
-        file.path !== this.activeNote?.path
+        file.path !== this.activeNote?.path,
     );
 
     // Combine active note (if exists and is allowed type) with recent files and other files

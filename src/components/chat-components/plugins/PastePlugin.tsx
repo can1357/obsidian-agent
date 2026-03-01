@@ -1,7 +1,7 @@
-import React from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $getSelection, $isRangeSelection, PASTE_COMMAND, COMMAND_PRIORITY_HIGH } from "lexical";
-import { parseTextForPills, createNodesFromSegments } from "../utils/lexicalTextUtils";
+import { $getSelection, $isRangeSelection, COMMAND_PRIORITY_HIGH, PASTE_COMMAND } from "lexical";
+import React from "react";
+import { createNodesFromSegments, parseTextForPills } from "../utils/lexicalTextUtils";
 
 interface PastePluginProps {
   enableURLPills?: boolean;
@@ -30,7 +30,7 @@ export function PastePlugin({ enableURLPills = false, onImagePaste }: PastePlugi
           const items = clipboardData.items;
           if (items) {
             const imageItems = Array.from(items).filter(
-              (item) => item.type.indexOf("image") !== -1
+              (item) => item.type.indexOf("image") !== -1,
             );
 
             if (imageItems.length > 0) {
@@ -41,7 +41,7 @@ export function PastePlugin({ enableURLPills = false, onImagePaste }: PastePlugi
                 imageItems.map((item) => {
                   const file = item.getAsFile();
                   return file;
-                })
+                }),
               ).then((files) => {
                 const validFiles = files.filter((file) => file !== null);
                 if (validFiles.length > 0) {
@@ -81,7 +81,7 @@ export function PastePlugin({ enableURLPills = false, onImagePaste }: PastePlugi
             segment.type === "active-note-pill" ||
             (enableURLPills && segment.type === "url-pill") ||
             segment.type === "tool-pill" ||
-            segment.type === "folder-pill"
+            segment.type === "folder-pill",
         );
 
         if (!hasValidPills) {
@@ -107,7 +107,7 @@ export function PastePlugin({ enableURLPills = false, onImagePaste }: PastePlugi
 
         return true;
       },
-      COMMAND_PRIORITY_HIGH
+      COMMAND_PRIORITY_HIGH,
     );
   }, [editor, enableURLPills, onImagePaste]);
 

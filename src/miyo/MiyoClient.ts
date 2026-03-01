@@ -1,8 +1,8 @@
+import { requestUrl } from "obsidian";
 import { logError, logInfo, logWarn } from "@/logger";
+import { MiyoServiceDiscovery } from "@/miyo/MiyoServiceDiscovery";
 import { getSettings } from "@/settings/model";
 import { err2String } from "@/utils";
-import { requestUrl } from "obsidian";
-import { MiyoServiceDiscovery } from "@/miyo/MiyoServiceDiscovery";
 
 /**
  * Request payload for upserting documents into Miyo.
@@ -188,7 +188,7 @@ export class MiyoClient {
   public async upsertDocuments(
     baseUrl: string,
     sourceId: string,
-    documents: MiyoUpsertDocument[]
+    documents: MiyoUpsertDocument[],
   ): Promise<number> {
     const payload = { vault: sourceId, documents };
     const response = await this.requestJson<{ upserted: number }>(baseUrl, "/v0/index/upsert", {
@@ -239,7 +239,7 @@ export class MiyoClient {
     baseUrl: string,
     sourceId: string,
     offset: number,
-    limit: number
+    limit: number,
   ): Promise<MiyoIndexedFilesResponse> {
     return this.requestJson<MiyoIndexedFilesResponse>(baseUrl, "/v0/index/files", {
       method: "GET",
@@ -272,7 +272,7 @@ export class MiyoClient {
   public async getDocumentsByPath(
     baseUrl: string,
     sourceId: string,
-    path: string
+    path: string,
   ): Promise<MiyoDocumentsResponse> {
     return this.requestJson<MiyoDocumentsResponse>(baseUrl, "/v0/index/documents", {
       method: "GET",
@@ -295,7 +295,7 @@ export class MiyoClient {
     sourceId: string,
     query: string,
     limit: number,
-    filters?: MiyoSearchFilter[]
+    filters?: MiyoSearchFilter[],
   ): Promise<MiyoSearchResponse> {
     const payload = {
       query,
@@ -327,7 +327,7 @@ export class MiyoClient {
       sourceId?: string;
       limit?: number;
       filters?: MiyoSearchFilter[];
-    }
+    },
   ): Promise<MiyoRelatedSearchResponse> {
     const payload = {
       file_path: filePath,
@@ -390,7 +390,7 @@ export class MiyoClient {
       method: "GET" | "POST" | "DELETE";
       body?: unknown;
       query?: Record<string, string | number | boolean | undefined>;
-    }
+    },
   ): Promise<T> {
     const url = new URL(path, baseUrl);
     if (options.query) {

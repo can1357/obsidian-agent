@@ -1,6 +1,6 @@
+import { useCallback, useEffect, useRef, useState } from "react";
 import { USER_SENDER } from "@/constants";
 import { ChatMessage } from "@/types/message";
-import { useCallback, useRef, useState, useEffect } from "react";
 
 interface UseChatScrollingOptions {
   chatHistory: ChatMessage[];
@@ -44,10 +44,10 @@ export const useChatScrolling = ({
       // Try to find the corresponding DOM element
       const lastUserMessageKey = getMessageKey(
         chatHistory[lastUserMessageIndex],
-        lastUserMessageIndex
+        lastUserMessageIndex,
       );
       const lastUserMessageElement = messagesContainer.querySelector(
-        `[data-message-key="${lastUserMessageKey}"]`
+        `[data-message-key="${lastUserMessageKey}"]`,
       );
 
       if (lastUserMessageElement) {
@@ -102,7 +102,7 @@ export const useChatScrolling = ({
         resizeObserverRef.current = resizeObserver;
       }
     },
-    [calculateDynamicMinHeight]
+    [calculateDynamicMinHeight],
   );
 
   // Recalculate min-height when chat history changes (new messages)

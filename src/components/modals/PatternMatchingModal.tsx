@@ -1,7 +1,20 @@
+import { File, FileText, Folder, Tag, Wrench, X } from "lucide-react";
 import { App, Modal } from "obsidian";
-import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import { createRoot, Root } from "react-dom/client";
+import { AddContextNoteModal } from "@/components/modals/AddContextNoteModal";
+import { CustomPatternInputModal } from "@/components/modals/CustomPatternInputModal";
+import { ExtensionInputModal } from "@/components/modals/ExtensionInputModal";
+import { FolderSearchModal } from "@/components/modals/FolderSearchModal";
+import { TagSearchModal } from "@/components/modals/TagSearchModal";
+import { TruncatedText } from "@/components/TruncatedText";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   categorizePatterns,
   createPatternSettingsValue,
@@ -10,19 +23,6 @@ import {
   getFilePattern,
   getTagPattern,
 } from "@/search/searchUtils";
-import { File, FileText, Folder, Tag, Wrench, X } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { TagSearchModal } from "@/components/modals/TagSearchModal";
-import { AddContextNoteModal } from "@/components/modals/AddContextNoteModal";
-import { FolderSearchModal } from "@/components/modals/FolderSearchModal";
-import { ExtensionInputModal } from "@/components/modals/ExtensionInputModal";
-import { CustomPatternInputModal } from "@/components/modals/CustomPatternInputModal";
-import { TruncatedText } from "@/components/TruncatedText";
 
 function PatternListGroup({
   title,
@@ -263,7 +263,7 @@ export class PatternMatchingModal extends Modal {
     private onUpdate: (value: string) => void,
     /** The raw pattern matching value, separated by commas */
     private value: string,
-    title: string
+    title: string,
   ) {
     super(app);
     // https://docs.obsidian.md/Reference/TypeScript+API/Modal/setTitle
@@ -284,7 +284,7 @@ export class PatternMatchingModal extends Modal {
         value={this.value}
         onUpdate={handleUpdate}
         container={this.contentEl}
-      />
+      />,
     );
   }
 

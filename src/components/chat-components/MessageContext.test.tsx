@@ -1,7 +1,7 @@
-import React from "react";
 import { render } from "@testing-library/react";
-import { ChatMessage } from "@/types/message";
 import { TFile } from "obsidian";
+import React from "react";
+import { ChatMessage } from "@/types/message";
 
 // Mock Tooltip components
 jest.mock("@radix-ui/react-tooltip", () => ({
@@ -109,7 +109,7 @@ describe("MessageContext", () => {
 
       // Should not have React key warnings
       expect(consoleSpy).not.toHaveBeenCalledWith(
-        expect.stringContaining("Warning: Encountered two children with the same key")
+        expect.stringContaining("Warning: Encountered two children with the same key"),
       );
 
       consoleSpy.mockRestore();

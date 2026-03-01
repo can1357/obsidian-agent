@@ -1,3 +1,6 @@
+import { Notice, TFile } from "obsidian";
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import {
   clearSelectedTextContexts,
   getCurrentProject,
@@ -5,47 +8,43 @@ import {
   ProjectConfig,
   removeSelectedTextContext,
   setCurrentProject,
-  useChainType,
   updateIndexingProgressState,
+  useChainType,
   useIndexingProgress,
   useModelKey,
   useSelectedTextContexts,
 } from "@/aiParams";
-import { resetSessionSystemPromptSettings } from "@/system-prompts";
 import { ChainType } from "@/chainFactory";
-import { useProjectContextStatus } from "@/hooks/useProjectContextStatus";
-import { logInfo, logError } from "@/logger";
-import type { WebTabContext } from "@/types/message";
-
 import { ChatControls, reloadCurrentProject } from "@/components/chat-components/ChatControls";
+import { ChatHistoryItem } from "@/components/chat-components/ChatHistoryPopover";
 import ChatInput from "@/components/chat-components/ChatInput";
 import ChatMessages from "@/components/chat-components/ChatMessages";
+import { useActiveWebTabState } from "@/components/chat-components/hooks/useActiveWebTabState";
 import { NewVersionBanner } from "@/components/chat-components/NewVersionBanner";
 import { ProjectList } from "@/components/chat-components/ProjectList";
 import IndexingProgressCard from "@/components/IndexingProgressCard";
+import { ContextManageModal } from "@/components/modals/project/context-manage-modal";
 import ProgressCard from "@/components/project/progress-card";
 import { ABORT_REASON, AI_SENDER, EVENT_NAMES, LOADING_MESSAGES, USER_SENDER } from "@/constants";
 import { AppContext, EventTargetContext } from "@/context";
 import { ChatInputProvider, useChatInput } from "@/context/ChatInputContext";
-import { useChatManager } from "@/hooks/useChatManager";
 import { useChatFileDrop } from "@/hooks/useChatFileDrop";
-import { getAIResponse } from "@/langchainStream";
+import { useChatManager } from "@/hooks/useChatManager";
+import { useProjectContextStatus } from "@/hooks/useProjectContextStatus";
 import ChainManager from "@/LLMProviders/chainManager";
 import { clearRecordedPromptPayload } from "@/LLMProviders/chainRunner/utils/promptPayloadRecorder";
+import { getAIResponse } from "@/langchainStream";
 import { logFileManager } from "@/logFileManager";
+import { logError, logInfo } from "@/logger";
 import CopilotPlugin from "@/main";
 import { updateSetting, useSettingsValue } from "@/settings/model";
 import { ChatUIState } from "@/state/ChatUIState";
+import { resetSessionSystemPromptSettings } from "@/system-prompts";
 import { FileParserManager } from "@/tools/FileParserManager";
+import type { WebTabContext } from "@/types/message";
 import { ChatMessage } from "@/types/message";
 import { err2String } from "@/utils";
 import { arrayBufferToBase64 } from "@/utils/base64";
-import { Notice, TFile } from "obsidian";
-import { ContextManageModal } from "@/components/modals/project/context-manage-modal";
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { ChatHistoryItem } from "@/components/chat-components/ChatHistoryPopover";
-import { useActiveWebTabState } from "@/components/chat-components/hooks/useActiveWebTabState";
 
 type ChatMode = "default" | "project";
 
@@ -100,7 +99,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
         setLatestTokenCount(messageToAdd.responseMetadata.tokenUsage.totalTokens);
       }
     },
-    [rawAddMessage]
+    [rawAddMessage],
   );
 
   // Function to set the abort controller ref (for getAIResponse compatibility)
@@ -145,7 +144,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
       setLoadingMessage: (value: string) => isMountedRef.current && setLoadingMessage(value),
       setLoading: (value: boolean) => isMountedRef.current && setLoading(value),
     }),
-    []
+    [],
   );
 
   const [selectedTextContexts] = useSelectedTextContexts();
@@ -284,7 +283,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
       // Prepare context notes and deduplicate by path
       const allNotes = [...(passedContextNotes || []), ...contextNotes];
       const notes = allNotes.filter(
-        (note, index, array) => array.findIndex((n) => n.path === note.path) === index
+        (note, index, array) => array.findIndex((n) => n.path === note.path) === index,
       );
 
       // Handle composer prompt
@@ -320,7 +319,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
         effectiveIncludeActiveNote,
         effectiveIncludeActiveWebTab,
         content.length > 0 ? content : undefined,
-        safeSet.setLoadingMessage
+        safeSet.setLoadingMessage,
       );
 
       // Add to user message history
@@ -342,7 +341,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
           addMessage,
           safeSet.setCurrentAiMessage,
           setAbortController,
-          { debug: settings.debug, updateLoadingMessage: safeSet.setLoadingMessage }
+          { debug: settings.debug, updateLoadingMessage: safeSet.setLoadingMessage },
         );
       }
 
@@ -386,7 +385,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
         // Don't clear setCurrentAiMessage here
       }
     },
-    [safeSet]
+    [safeSet],
   );
 
   // Cleanup on unmount - abort any ongoing streaming
@@ -422,7 +421,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
         const success = await chatUIState.regenerateMessage(
           messageToRegenerate.id!,
           safeSet.setCurrentAiMessage,
-          addMessage
+          addMessage,
         );
 
         if (!success) {
@@ -451,7 +450,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
       handleSaveAsNote,
       addMessage,
       safeSet,
-    ]
+    ],
   );
 
   const handleEdit = useCallback(
@@ -466,7 +465,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
           messageToEdit.id!,
           newMessage,
           currentChain,
-          effectiveIncludeActiveNote
+          effectiveIncludeActiveNote,
         );
 
         if (!success) {
@@ -495,7 +494,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
                   addMessage,
                   safeSet.setCurrentAiMessage,
                   setAbortController,
-                  { debug: settings.debug, updateLoadingMessage: safeSet.setLoadingMessage }
+                  { debug: settings.debug, updateLoadingMessage: safeSet.setLoadingMessage },
                 );
               }
             } catch (error) {
@@ -529,7 +528,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
       handleSaveAsNote,
       safeSet,
       setAbortController,
-    ]
+    ],
   );
 
   // Expose handleSaveAsNote to parent
@@ -569,7 +568,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
 
       return true;
     },
-    [settings.projectList]
+    [settings.projectList],
   );
 
   const handleEditProject = useCallback(
@@ -604,7 +603,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
 
       return true;
     },
-    [settings.projectList]
+    [settings.projectList],
   );
 
   const handleRemoveSelectedText = useCallback(
@@ -620,7 +619,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
       }
       // Note: highlight cleanup is now handled by the useEffect below that watches selectedTextContexts
     },
-    [plugin]
+    [plugin],
   );
 
   /**
@@ -662,7 +661,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
         new Notice("Failed to delete message. Please try again.");
       }
     },
-    [chatHistory, chatUIState]
+    [chatHistory, chatUIState],
   );
 
   const handleNewChat = useCallback(async () => {
@@ -746,7 +745,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
         throw error; // Re-throw to let the popover handle the error state
       }
     },
-    [plugin, handleLoadChatHistory]
+    [plugin, handleLoadChatHistory],
   );
 
   const handleDeleteChat = useCallback(
@@ -760,7 +759,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
         throw error; // Re-throw to let the popover handle the error state
       }
     },
-    [plugin, handleLoadChatHistory]
+    [plugin, handleLoadChatHistory],
   );
 
   const handleLoadChat = useCallback(
@@ -774,7 +773,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
         new Notice("Failed to load chat.");
       }
     },
-    [plugin]
+    [plugin],
   );
 
   const handleOpenSourceFile = useCallback(
@@ -786,7 +785,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
         new Notice("Failed to open source file.");
       }
     },
-    [plugin]
+    [plugin],
   );
 
   // Event listener for abort stream events
@@ -854,7 +853,7 @@ const ChatInternal: React.FC<ChatProps & { chatInput: ReturnType<typeof useChatI
                     (updatedProject) => {
                       handleEditProject(currentProject, updatedProject);
                     },
-                    currentProject
+                    currentProject,
                   ).open();
                 }
               }}

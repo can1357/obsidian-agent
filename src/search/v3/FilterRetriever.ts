@@ -1,9 +1,9 @@
-import { logInfo, logWarn } from "@/logger";
-import { getSettings } from "@/settings/model";
-import { isInternalExcludedFile, shouldIndexFile, getMatchingPatterns } from "@/search/searchUtils";
-import { extractNoteFiles } from "@/utils";
 import { Document } from "@langchain/core/documents";
-import { App, TFile, getAllTags } from "obsidian";
+import { App, getAllTags, TFile } from "obsidian";
+import { logInfo, logWarn } from "@/logger";
+import { getMatchingPatterns, isInternalExcludedFile, shouldIndexFile } from "@/search/searchUtils";
+import { getSettings } from "@/settings/model";
+import { extractNoteFiles } from "@/utils";
 import { RETURN_ALL_LIMIT } from "./SearchCore";
 
 /**
@@ -28,7 +28,7 @@ export interface FilterRetrieverOptions {
 export class FilterRetriever {
   constructor(
     private app: App,
-    private options: FilterRetrieverOptions
+    private options: FilterRetrieverOptions,
   ) {}
 
   /**
@@ -85,7 +85,7 @@ export class FilterRetriever {
 
     const dailyNoteQuery = dailyNoteTitles.join(", ");
     const dailyNoteFiles = extractNoteFiles(dailyNoteQuery, this.app.vault).filter((f) =>
-      shouldIndexFile(f, inclusions, exclusions)
+      shouldIndexFile(f, inclusions, exclusions),
     );
 
     const dailyNoteDocuments = await this.getTitleMatches(dailyNoteFiles);
@@ -135,7 +135,7 @@ export class FilterRetriever {
                 rerank_score: recencyScore,
                 source: "time-filtered",
               },
-            })
+            }),
           );
         } catch (error) {
           logWarn(`FilterRetriever: Failed to read file ${file.path}`, error);
@@ -254,7 +254,7 @@ export class FilterRetriever {
 
     if (daysDiff > maxDays) {
       logWarn(
-        `FilterRetriever: Date range exceeds ${maxDays} days, limiting to recent ${maxDays} days`
+        `FilterRetriever: Date range exceeds ${maxDays} days, limiting to recent ${maxDays} days`,
       );
       start.setTime(end.getTime() - maxDays * 24 * 60 * 60 * 1000);
     }
@@ -297,7 +297,7 @@ export class FilterRetriever {
               rerank_score: 1.0,
               source: "title-match",
             },
-          })
+          }),
         );
       } catch (error) {
         logWarn(`FilterRetriever: Failed to read title-matched file ${file.path}`, error);
@@ -339,7 +339,7 @@ export class FilterRetriever {
         const normalizedFileTag = fileTag.toLowerCase();
         return tagTerms.some(
           (searchTag) =>
-            normalizedFileTag === searchTag || normalizedFileTag.startsWith(searchTag + "/")
+            normalizedFileTag === searchTag || normalizedFileTag.startsWith(searchTag + "/"),
         );
       });
 
@@ -361,7 +361,7 @@ export class FilterRetriever {
               rerank_score: 1.0,
               source: "tag-match",
             },
-          })
+          }),
         );
       } catch (error) {
         logWarn(`FilterRetriever: Failed to read tag-matched file ${file.path}`, error);

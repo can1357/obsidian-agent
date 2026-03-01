@@ -123,7 +123,7 @@ describe("SearchCore retrieve", () => {
 
     // Recall queries should contain the expanded query and salient terms (lowercased)
     expect(recallQueries).toEqual(
-      expect.arrayContaining(["#projectalpha/phase1 update", "#projectalpha/phase1", "update"])
+      expect.arrayContaining(["#projectalpha/phase1 update", "#projectalpha/phase1", "update"]),
     );
   });
 

@@ -1,11 +1,10 @@
-import { ChainType } from "@/chainFactory";
 import { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
-
+import { atom, useAtom } from "jotai";
+import { ChainType } from "@/chainFactory";
 import { ModelCapability, ReasoningEffort, Verbosity } from "@/constants";
 import { settingsAtom, settingsStore } from "@/settings/model";
 import { SelectedTextContext } from "@/types/message";
-import { atom, useAtom } from "jotai";
 
 const userModelKeyAtom = atom<string | null>(null);
 const modelKeyAtom = atom(
@@ -18,7 +17,7 @@ const modelKeyAtom = atom(
   },
   (get, set, newValue) => {
     set(userModelKeyAtom, newValue);
-  }
+  },
 );
 
 const userChainTypeAtom = atom<ChainType | null>(null);
@@ -32,7 +31,7 @@ const chainTypeAtom = atom(
   },
   (get, set, newValue) => {
     set(userChainTypeAtom, newValue);
-  }
+  },
 );
 
 const currentProjectAtom = atom<ProjectConfig | null>(null);
@@ -218,7 +217,7 @@ export function getCurrentProject(): ProjectConfig | null {
 }
 
 export function subscribeToProjectChange(
-  callback: (project: ProjectConfig | null) => void
+  callback: (project: ProjectConfig | null) => void,
 ): () => void {
   return settingsStore.sub(currentProjectAtom, () => {
     callback(settingsStore.get(currentProjectAtom));
@@ -302,7 +301,7 @@ export function setProjectContextLoadState(state: ProjectContextLoadState) {
  */
 export function updateProjectContextLoadState<K extends keyof ProjectContextLoadState>(
   key: K,
-  valueFn: (prev: ProjectContextLoadState[K]) => ProjectContextLoadState[K]
+  valueFn: (prev: ProjectContextLoadState[K]) => ProjectContextLoadState[K],
 ) {
   settingsStore.set(projectContextLoadAtom, (prev) => ({
     ...prev,
@@ -314,7 +313,7 @@ export function updateProjectContextLoadState<K extends keyof ProjectContextLoad
  * Subscribes to changes in the project context load state.
  */
 export function subscribeToProjectContextLoadChange(
-  callback: (state: ProjectContextLoadState) => void
+  callback: (state: ProjectContextLoadState) => void,
 ): () => void {
   return settingsStore.sub(projectContextLoadAtom, () => {
     callback(settingsStore.get(projectContextLoadAtom));
@@ -411,7 +410,7 @@ export function throttledUpdateIndexingCount(indexedCount: number): void {
         _throttleTimer = null;
         updateIndexingProgressState({ indexedCount: _pendingCount });
       },
-      THROTTLE_INTERVAL_MS - (now - _lastUpdateTime)
+      THROTTLE_INTERVAL_MS - (now - _lastUpdateTime),
     );
   }
 }

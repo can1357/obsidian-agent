@@ -1,11 +1,11 @@
-import { selfHostYoutube4llm } from "@/LLMProviders/selfHostServices";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { logError } from "@/logger";
-import { formatYoutubeUrl, insertIntoEditor, validateYoutubeUrl } from "@/utils";
 import { App, Modal, Notice } from "obsidian";
 import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { selfHostYoutube4llm } from "@/LLMProviders/selfHostServices";
+import { logError } from "@/logger";
+import { formatYoutubeUrl, insertIntoEditor, validateYoutubeUrl } from "@/utils";
 
 interface TranscriptData {
   videoId: string;
@@ -65,7 +65,7 @@ function YoutubeTranscriptModalContent({ onClose }: { onClose: () => void }) {
 
       if (!response.response.transcript) {
         throw new Error(
-          "Transcript not available. Only English videos with auto transcript enabled are supported."
+          "Transcript not available. Only English videos with auto transcript enabled are supported.",
         );
       }
 

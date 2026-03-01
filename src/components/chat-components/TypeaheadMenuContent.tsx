@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from "react";
 import { ChevronRight } from "lucide-react";
+import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 export interface TypeaheadOption {
@@ -147,7 +147,7 @@ export function TypeaheadMenuContent({
                     isDisabled
                       ? "tw-cursor-not-allowed tw-text-muted tw-opacity-50"
                       : "tw-cursor-pointer tw-text-normal",
-                    shouldHighlight && "tw-bg-modifier-hover"
+                    shouldHighlight && "tw-bg-modifier-hover",
                   )}
                   title={isDisabled ? option.disabledReason : undefined}
                   // Use onMouseDown instead of onClick to prevent triggering

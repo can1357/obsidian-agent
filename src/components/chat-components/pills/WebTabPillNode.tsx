@@ -1,4 +1,3 @@
-import React from "react";
 import {
   $getRoot,
   DOMConversionMap,
@@ -9,6 +8,7 @@ import {
   NodeKey,
 } from "lexical";
 import { Globe } from "lucide-react";
+import React from "react";
 import { getDomainFromUrl } from "@/utils";
 import { BasePillNode, SerializedBasePillNode } from "./BasePillNode";
 import { PillBadge } from "./PillBadge";
@@ -176,7 +176,7 @@ function convertWebTabPillElement(domNode: HTMLElement): DOMConversionOutput | n
 export function $createWebTabPillNode(
   url: string,
   title?: string,
-  faviconUrl?: string
+  faviconUrl?: string,
 ): WebTabPillNode {
   return new WebTabPillNode(url, title, faviconUrl);
 }

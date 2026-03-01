@@ -75,7 +75,7 @@ export function decodeToolCallMarkerResults(message: string): string {
     (_match, id: string, encoded: string) => {
       const decoded = decodeResultFromMarker(encoded) || encoded;
       return `<!--TOOL_CALL_END:${id}:${decoded}-->`;
-    }
+    },
   );
 }
 
@@ -93,7 +93,7 @@ export function ensureEncodedToolCallMarkerResults(message: string): string {
       }
       const safe = encodeResultForMarker(content);
       return `<!--TOOL_CALL_END:${id}:${safe}-->`;
-    }
+    },
   );
 }
 
@@ -104,7 +104,7 @@ export function ensureEncodedToolCallMarkerResults(message: string): string {
 function parseErrorChunks(
   text: string,
   baseIndex: number = 0,
-  messagePrefix: string = ""
+  messagePrefix: string = "",
 ): Array<{ type: "text" | "error"; content: string; error?: ErrorMarker }> {
   const errorChunks: Array<{ type: "text" | "error"; content: string; error?: ErrorMarker }> = [];
   const errorRegex = /<errorChunk>([\s\S]*?)<\/errorChunk>/g;
@@ -300,7 +300,7 @@ export function createToolCallMarker(
   confirmationMessage: string = "",
   isExecuting: boolean = true,
   content: string = "",
-  result: string = ""
+  result: string = "",
 ): string {
   const safeResult = result ? encodeResultForMarker(result) : result;
   return `<!--TOOL_CALL_START:${id}:${toolName}:${displayName}:${emoji}:${confirmationMessage}:${isExecuting}-->${content}<!--TOOL_CALL_END:${id}:${safeResult}-->`;
@@ -318,7 +318,7 @@ export function updateToolCallMarker(message: string, id: string, result: string
   const escapedId = id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const regex = new RegExp(
     `(<!--TOOL_CALL_START:${escapedId}:[^:]+:[^:]+:[^:]+:[^:]*:)true(-->[\\s\\S]*?<!--TOOL_CALL_END:${escapedId}:)[\\s\\S]*?-->`,
-    "g"
+    "g",
   );
   const safeResult = encodeResultForMarker(result);
   return message.replace(regex, `$1false$2${safeResult}-->`);

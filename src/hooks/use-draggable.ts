@@ -92,7 +92,7 @@ export function useDraggable(options: UseDraggableOptions = {}) {
       if (el.style.left !== left) el.style.left = left;
       if (el.style.top !== top) el.style.top = top;
     },
-    [dragRef, writeToDom]
+    [dragRef, writeToDom],
   );
 
   /**
@@ -132,7 +132,7 @@ export function useDraggable(options: UseDraggableOptions = {}) {
       onPositionChange?.(next);
       return next;
     },
-    [bounds, dragRef, writePositionToDom, onPositionChange]
+    [bounds, dragRef, writePositionToDom, onPositionChange],
   );
 
   /**
@@ -167,7 +167,7 @@ export function useDraggable(options: UseDraggableOptions = {}) {
       writePositionToDom(next);
       onPositionChange?.(next);
     },
-    [writePositionToDom, onPositionChange]
+    [writePositionToDom, onPositionChange],
   );
 
   /**
@@ -263,7 +263,7 @@ export function useDraggable(options: UseDraggableOptions = {}) {
       ownerDocument.addEventListener("mousemove", handleMouseMove, true);
       ownerDocument.addEventListener("mouseup", handleMouseUp, true);
     },
-    [applyPosition, dragRef, getPosition, scheduleApply, writePositionToDom]
+    [applyPosition, dragRef, getPosition, scheduleApply, writePositionToDom],
   );
 
   useEffect(() => {

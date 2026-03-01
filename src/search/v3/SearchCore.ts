@@ -1,15 +1,15 @@
-import { LLM_TIMEOUT_MS } from "@/constants";
-import { logError, logInfo, logWarn } from "@/logger";
 import { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import { App } from "obsidian";
+import { LLM_TIMEOUT_MS } from "@/constants";
+import { logError, logInfo, logWarn } from "@/logger";
 import { ChunkManager, getSharedChunkManager } from "./chunks";
 import { FullTextEngine } from "./engines/FullTextEngine";
 import { NoteIdRank, SearchOptions } from "./interfaces";
 import { ExpandedQuery, QueryExpander } from "./QueryExpander";
 import { GrepScanner } from "./scanners/GrepScanner";
+import { adaptiveCutoff } from "./scoring/AdaptiveCutoff";
 import { FolderBoostCalculator } from "./scoring/FolderBoostCalculator";
 import { GraphBoostCalculator } from "./scoring/GraphBoostCalculator";
-import { adaptiveCutoff } from "./scoring/AdaptiveCutoff";
 import { ScoreNormalizer } from "./utils/ScoreNormalizer";
 
 // Search constants
@@ -40,7 +40,7 @@ export class SearchCore {
 
   constructor(
     private app: App,
-    private getChatModel?: () => Promise<BaseChatModel | null>
+    private getChatModel?: () => Promise<BaseChatModel | null>,
   ) {
     this.grepScanner = new GrepScanner(app);
     this.chunkManager = getSharedChunkManager(app);
@@ -155,8 +155,8 @@ export class SearchCore {
       if (queries.length > 1 || salientTerms.length > 0) {
         logInfo(
           `Query expansion: variants=${JSON.stringify(queries)}, salient=${JSON.stringify(
-            salientTerms
-          )}`
+            salientTerms,
+          )}`,
         );
       }
 
@@ -177,7 +177,7 @@ export class SearchCore {
         salientTerms,
         maxResults,
         expanded.originalQuery,
-        returnAll
+        returnAll,
       );
 
       // 6. Apply boosts to lexical results (if enabled)
@@ -202,7 +202,7 @@ export class SearchCore {
       if (finalResults.length > 0) {
         const topResult = this.app.vault.getAbstractFileByPath(finalResults[0].id);
         logInfo(
-          `SearchCore: ${finalResults.length} results found (top: ${topResult?.name || finalResults[0].id})`
+          `SearchCore: ${finalResults.length} results found (top: ${topResult?.name || finalResults[0].id})`,
         );
       } else {
         logInfo("SearchCore: No results found");
@@ -286,7 +286,7 @@ export class SearchCore {
     salientTerms: string[],
     maxResults: number,
     originalQuery?: string,
-    returnAll: boolean = false
+    returnAll: boolean = false,
   ): Promise<NoteIdRank[]> {
     try {
       // Build ephemeral full-text index
@@ -308,13 +308,13 @@ export class SearchCore {
         recallQueries,
         searchLimit,
         salientTerms,
-        originalQuery
+        originalQuery,
       );
       const searchTime = Date.now() - searchStartTime;
 
       // Single consolidated log for lexical search
       logInfo(
-        `Full-text: ${indexed} docs indexed (${buildTime}ms), ${results.length} results (${searchTime}ms)`
+        `Full-text: ${indexed} docs indexed (${buildTime}ms), ${results.length} results (${searchTime}ms)`,
       );
       return results;
     } catch (error) {

@@ -9,17 +9,17 @@
  */
 
 import {
+  CompactionConfig,
+  compactBySection,
+  DEFAULT_COMPACTION_CONFIG,
+  escapeXmlAttr,
+} from "./compactionUtils";
+import {
   extractContentFromBlock,
   extractSourceFromBlock,
   getSourceType,
   isRecoverable,
 } from "./contextBlockRegistry";
-import {
-  CompactionConfig,
-  DEFAULT_COMPACTION_CONFIG,
-  compactBySection,
-  escapeXmlAttr,
-} from "./compactionUtils";
 
 /**
  * Build regex patterns for all registered block types that appear in tool results.
@@ -56,7 +56,7 @@ const READ_NOTE_PREFIX = "Tool 'readNote' result: ";
  */
 function extractBalancedJson(
   content: string,
-  startPos: number
+  startPos: number,
 ): { json: string; endPos: number } | null {
   if (content[startPos] !== "{") return null;
 
@@ -108,7 +108,7 @@ function extractBalancedJson(
  */
 export function compactAssistantOutput(
   output: string | any[],
-  config: Partial<CompactionConfig> = {}
+  config: Partial<CompactionConfig> = {},
 ): string | any[] {
   if (Array.isArray(output)) {
     // Handle multimodal content - compact text parts
@@ -160,7 +160,7 @@ function compactOutputString(content: string, config: Partial<CompactionConfig> 
 function compactReadNoteResults(
   content: string,
   threshold: number,
-  config: Partial<CompactionConfig>
+  config: Partial<CompactionConfig>,
 ): string {
   let result = "";
   let searchPos = 0;
@@ -211,7 +211,7 @@ function compactReadNoteResults(
 function compactToolResultBlock(
   xmlBlock: string,
   tag: string,
-  config: Partial<CompactionConfig> = {}
+  config: Partial<CompactionConfig> = {},
 ): string {
   // Never compact non-recoverable content
   if (!isRecoverable(tag)) {
@@ -275,7 +275,7 @@ function compactLocalSearchBlock(xmlBlock: string, config: Partial<CompactionCon
     const compactedContent = compactBySection(
       content,
       previewChars,
-      config.maxSections ?? DEFAULT_COMPACTION_CONFIG.maxSections
+      config.maxSections ?? DEFAULT_COMPACTION_CONFIG.maxSections,
     );
     return `<prior_context source="localSearch" type="note">
 ${compactedContent}
@@ -306,7 +306,7 @@ function compactReadNoteResult(
     totalChunks?: number;
     [key: string]: unknown;
   },
-  config: Partial<CompactionConfig> = {}
+  config: Partial<CompactionConfig> = {},
 ): Record<string, unknown> {
   const { content, notePath, noteTitle, ...rest } = result;
 

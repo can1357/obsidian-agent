@@ -1,3 +1,4 @@
+import { App, TFile } from "obsidian";
 import {
   FailedItem,
   ProjectConfig,
@@ -9,7 +10,6 @@ import { ContextCache } from "@/cache/projectContextCache";
 import { logInfo } from "@/logger";
 import { settingsStore } from "@/settings/model";
 import { err2String } from "@/utils";
-import { App, TFile } from "obsidian";
 import { isRateLimitError } from "@/utils/rateLimitUtils";
 
 /**
@@ -48,7 +48,7 @@ export class ProjectLoadTracker {
   public async executeWithProcessTracking<T>(
     key: string,
     type: FailedItem["type"],
-    operation: () => Promise<T>
+    operation: () => Promise<T>,
   ): Promise<T> {
     this.setFileOrUrlStartProcess(key);
     try {
@@ -162,7 +162,7 @@ export class ProjectLoadTracker {
       const uniqueItems = [...new Set([...allItems])];
       updateProjectContextLoadState("total", (_) => uniqueItems);
       logInfo(
-        `[preComputeAllItems] Project ${project.name}: Added ${allItems.length} items to tracking (${uniqueItems.length} total unique items)`
+        `[preComputeAllItems] Project ${project.name}: Added ${allItems.length} items to tracking (${uniqueItems.length} total unique items)`,
       );
     }
   }
@@ -173,7 +173,7 @@ export class ProjectLoadTracker {
   public markAllCachedItemsAsSuccess(
     project: ProjectConfig,
     contextCache: ContextCache,
-    projectAllFiles: TFile[]
+    projectAllFiles: TFile[],
   ): void {
     logInfo(`[markAllCachedItemsAsSuccess] Starting for project: ${project.name || "default"}`);
 
@@ -187,7 +187,7 @@ export class ProjectLoadTracker {
       });
       if (cachedUrls.length > 0) {
         logInfo(
-          `[markAllCachedItemsAsSuccess] Project ${project.name}: Marked ${cachedUrls.length} cached Web URLs as successful`
+          `[markAllCachedItemsAsSuccess] Project ${project.name}: Marked ${cachedUrls.length} cached Web URLs as successful`,
         );
       }
     }
@@ -202,7 +202,7 @@ export class ProjectLoadTracker {
       });
       if (cachedUrls.length > 0) {
         logInfo(
-          `[markAllCachedItemsAsSuccess] Project ${project.name}: Marked ${cachedUrls.length} cached YouTube URLs as successful`
+          `[markAllCachedItemsAsSuccess] Project ${project.name}: Marked ${cachedUrls.length} cached YouTube URLs as successful`,
         );
       }
     }
@@ -212,11 +212,11 @@ export class ProjectLoadTracker {
     if (contextCache.fileContexts) {
       // only for markdown files
       const matchingFilesSet = new Set(
-        projectAllFiles.filter((file) => file.extension === "md").map((file: TFile) => file.path)
+        projectAllFiles.filter((file) => file.extension === "md").map((file: TFile) => file.path),
       );
 
       const cachedFilesToMark = Object.keys(contextCache.fileContexts).filter((filePath) =>
-        matchingFilesSet.has(filePath)
+        matchingFilesSet.has(filePath),
       );
 
       cachedFilesToMark.forEach((filePath) => {
@@ -227,7 +227,7 @@ export class ProjectLoadTracker {
         logInfo(
           `[markAllCachedItemsAsSuccess] Project ${project.name}: Marked ${
             cachedFilesToMark.length
-          } cached files that match current project patterns as successful.`
+          } cached files that match current project patterns as successful.`,
         );
       }
     }

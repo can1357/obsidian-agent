@@ -1,5 +1,5 @@
-import { PromptContextEnvelope } from "@/context/PromptContextTypes";
 import { TFile } from "obsidian";
+import { PromptContextEnvelope } from "@/context/PromptContextTypes";
 
 /**
  * Formatted timestamp with multiple representations
@@ -48,7 +48,7 @@ export type SelectedTextContext = NoteSelectedTextContext | WebSelectedTextConte
  * Type guard for note selected text context
  */
 export function isNoteSelectedTextContext(
-  ctx: SelectedTextContext
+  ctx: SelectedTextContext,
 ): ctx is NoteSelectedTextContext {
   return ctx.sourceType === "note";
 }

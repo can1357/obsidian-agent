@@ -1,11 +1,5 @@
-import React, { useMemo } from "react";
-import { cn } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
-import { useTab } from "@/contexts/TabContext";
-import { PasswordInput } from "@/components/ui/password-input";
-import { Textarea } from "@/components/ui/textarea";
-import { SettingSwitch } from "@/components/ui/setting-switch";
 import { ChevronDown } from "lucide-react";
+import React, { useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +8,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { SettingSlider } from "@/components/ui/setting-slider";
+import { SettingSwitch } from "@/components/ui/setting-switch";
+import { Textarea } from "@/components/ui/textarea";
+import { useTab } from "@/contexts/TabContext";
+import { cn } from "@/lib/utils";
 import { debounce } from "@/utils";
 
 // 定义输入控件的类型
@@ -188,7 +188,7 @@ export function SettingItem(props: SettingItemProps) {
                 "tw-text-sm !tw-shadow tw-transition-colors",
                 "focus:tw-outline-none focus:tw-ring-1 focus:tw-ring-ring",
                 "disabled:tw-cursor-not-allowed disabled:tw-opacity-50",
-                "hover:tw-bg-interactive-hover hover:tw-text-normal"
+                "hover:tw-bg-interactive-hover hover:tw-text-normal",
               )}
             >
               {props.placeholder && (
@@ -206,7 +206,7 @@ export function SettingItem(props: SettingItemProps) {
               className={cn(
                 "tw-pointer-events-none tw-absolute tw-inset-y-0 tw-right-0 tw-flex tw-items-center tw-pr-2",
                 "tw-transition-colors group-hover:[&>svg]:tw-text-normal",
-                disabled && "tw-opacity-50"
+                disabled && "tw-opacity-50",
               )}
             >
               <ChevronDown className="tw-size-4" />
@@ -256,7 +256,7 @@ export function SettingItem(props: SettingItemProps) {
       className={cn(
         "tw-flex tw-flex-col tw-items-start tw-justify-between tw-gap-4 tw-py-4 sm:tw-flex-row sm:tw-items-center",
         "tw-w-full",
-        className
+        className,
       )}
     >
       <div className="tw-w-full tw-space-y-1.5 sm:tw-w-[300px]">

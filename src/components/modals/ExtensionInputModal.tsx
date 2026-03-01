@@ -62,7 +62,7 @@ export class ExtensionInputModal extends Modal {
 
   constructor(
     app: App,
-    private onConfirm: (extension: string) => void
+    private onConfirm: (extension: string) => void,
   ) {
     super(app);
     // https://docs.obsidian.md/Reference/TypeScript+API/Modal/setTitle
@@ -84,7 +84,7 @@ export class ExtensionInputModal extends Modal {
     };
 
     this.root.render(
-      <ExtensionInputModalContent onConfirm={handleConfirm} onCancel={handleCancel} />
+      <ExtensionInputModalContent onConfirm={handleConfirm} onCancel={handleCancel} />,
     );
   }
 

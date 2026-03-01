@@ -1,12 +1,16 @@
+import { App, Modal, Platform } from "obsidian";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { createRoot, Root } from "react-dom/client";
 import { CustomModel } from "@/aiParams";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormField } from "@/components/ui/form-field";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { PasswordInput } from "@/components/ui/password-input";
 
 import { HelpTooltip } from "@/components/ui/help-tooltip";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ModelParametersEditor } from "@/components/ui/ModelParametersEditor";
+import { PasswordInput } from "@/components/ui/password-input";
 import {
   ChatModelProviders,
   MODEL_CAPABILITIES,
@@ -17,10 +21,6 @@ import {
 import { getSettings } from "@/settings/model";
 import { debounce, getProviderInfo, getProviderLabel } from "@/utils";
 import { getApiKeyForProvider } from "@/utils/modelUtils";
-import { App, Modal, Platform } from "obsidian";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { createRoot, Root } from "react-dom/client";
-import { ModelParametersEditor } from "@/components/ui/ModelParametersEditor";
 
 interface ModelEditModalContentProps {
   model: CustomModel;
@@ -28,7 +28,7 @@ interface ModelEditModalContentProps {
   onUpdate: (
     isEmbeddingModel: boolean,
     originalModel: CustomModel,
-    updatedModel: CustomModel
+    updatedModel: CustomModel,
   ) => void;
   onCancel: () => void;
 }
@@ -59,7 +59,7 @@ export const ModelEditModalContent: React.FC<ModelEditModalContentProps> = ({
       debounce((currentOriginalModel: CustomModel, updatedModel: CustomModel) => {
         onUpdate(isEmbeddingModel, currentOriginalModel, updatedModel);
       }, 500),
-    [isEmbeddingModel, onUpdate]
+    [isEmbeddingModel, onUpdate],
   );
 
   // Function to update local state immediately
@@ -75,7 +75,7 @@ export const ModelEditModalContent: React.FC<ModelEditModalContentProps> = ({
         return updatedModel; // Return the updated model for immediate state update
       });
     },
-    [originalModel, debouncedOnUpdate]
+    [originalModel, debouncedOnUpdate],
   );
 
   const handleLocalReset = useCallback(
@@ -88,7 +88,7 @@ export const ModelEditModalContent: React.FC<ModelEditModalContentProps> = ({
         return updatedModel; // Return the updated model for immediate state update
       });
     },
-    [debouncedOnUpdate, originalModel]
+    [debouncedOnUpdate, originalModel],
   );
 
   if (!localModel) return null;
@@ -116,7 +116,7 @@ export const ModelEditModalContent: React.FC<ModelEditModalContentProps> = ({
 
   const displayApiKey = getApiKeyForProvider(
     localModel.provider as SettingKeyProviders,
-    localModel
+    localModel,
   );
   const showOtherParameters = !isEmbeddingModel;
 
@@ -303,8 +303,8 @@ export class ModelEditModal extends Modal {
     private onUpdate: (
       isEmbeddingModel: boolean,
       originalModel: CustomModel,
-      updatedModel: CustomModel
-    ) => void
+      updatedModel: CustomModel,
+    ) => void,
   ) {
     super(app);
     // @ts-ignore
@@ -322,7 +322,7 @@ export class ModelEditModal extends Modal {
     const handleUpdate = (
       isEmbeddingModel: boolean,
       originalModel: CustomModel,
-      updatedModel: CustomModel
+      updatedModel: CustomModel,
     ) => {
       this.onUpdate(isEmbeddingModel, originalModel, updatedModel);
     };
@@ -337,7 +337,7 @@ export class ModelEditModal extends Modal {
         isEmbeddingModel={this.isEmbeddingModel}
         onUpdate={handleUpdate}
         onCancel={handleCancel}
-      />
+      />,
     );
   }
 

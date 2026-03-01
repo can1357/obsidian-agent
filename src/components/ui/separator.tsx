@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import * as SeparatorPrimitive from "@radix-ui/react-separator";
+import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -17,7 +17,7 @@ const Separator = React.forwardRef<
     className={cn(
       "tw-shrink-0 tw-bg-[var(--background-modifier-border)]",
       orientation === "horizontal" ? "tw-h-px tw-w-full" : "tw-h-full tw-w-px",
-      className
+      className,
     )}
     {...props}
   />

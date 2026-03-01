@@ -1,12 +1,12 @@
+import { App, FuzzySuggestModal, TFile } from "obsidian";
+import { getSettings } from "@/settings/model";
 import {
   extractChatDate,
   extractChatLastAccessedAtMs,
   extractChatTitle,
   getChatDisplayText,
 } from "@/utils/chatHistoryUtils";
-import { getSettings } from "@/settings/model";
 import { RecentUsageManager, sortByStrategy } from "@/utils/recentUsageManager";
-import { App, FuzzySuggestModal, TFile } from "obsidian";
 
 export class LoadChatHistoryModal extends FuzzySuggestModal<TFile> {
   private onChooseFile: (file: TFile) => void;
@@ -18,7 +18,7 @@ export class LoadChatHistoryModal extends FuzzySuggestModal<TFile> {
     app: App,
     private chatFiles: TFile[],
     private chatHistoryLastAccessedAtManager: RecentUsageManager<string>,
-    onChooseFile: (file: TFile) => void
+    onChooseFile: (file: TFile) => void,
   ) {
     super(app);
     this.onChooseFile = onChooseFile;

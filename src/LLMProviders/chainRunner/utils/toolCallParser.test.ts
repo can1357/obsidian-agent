@@ -16,7 +16,7 @@ describe("toolCallParser encoding/decoding", () => {
       true,
       "",
       // Result contains sequences that could break HTML comments without encoding
-      '{"key":"value --><script>alert(1)</script> more"}'
+      '{"key":"value --><script>alert(1)</script> more"}',
     );
 
     const parsed = parseToolCallMarkers(marker);
@@ -65,7 +65,7 @@ describe("toolCallParser encoding/decoding", () => {
       "",
       false,
       "",
-      localSearchArrayJson
+      localSearchArrayJson,
     );
 
     const parsed = parseToolCallMarkers(marker);
@@ -87,13 +87,13 @@ describe("toolCallParser encoding/decoding", () => {
       "",
       false,
       "",
-      oversizedPayload
+      oversizedPayload,
     );
 
     const parsed = parseToolCallMarkers(marker);
     const toolSegment = parsed.segments.find((s) => s.type === "toolCall")!;
     expect(toolSegment.toolCall?.result).toBe(
-      "Tool 'readNote' Result omitted to keep the UI responsive (payload exceeded 5,000 characters)."
+      "Tool 'readNote' Result omitted to keep the UI responsive (payload exceeded 5,000 characters).",
     );
   });
 
@@ -108,7 +108,7 @@ describe("toolCallParser encoding/decoding", () => {
       "",
       false,
       "",
-      mediumPayload
+      mediumPayload,
     );
 
     const parsed = parseToolCallMarkers(marker);

@@ -1,8 +1,8 @@
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { cn } from "@/lib/utils";
-import { ReasoningStatus } from "@/LLMProviders/chainRunner/utils/AgentReasoningState";
 import { ChevronRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ReasoningStatus } from "@/LLMProviders/chainRunner/utils/AgentReasoningState";
+import { cn } from "@/lib/utils";
 
 /**
  * Props for the AgentReasoningBlock component
@@ -135,7 +135,7 @@ export const AgentReasoningBlock: React.FC<AgentReasoningBlockProps> = ({
           className={cn(
             "agent-reasoning-header",
             canExpand && "tw-cursor-pointer",
-            !canExpand && "tw-cursor-default"
+            !canExpand && "tw-cursor-default",
           )}
         >
           {/* Spinner or expand chevron */}
@@ -146,7 +146,7 @@ export const AgentReasoningBlock: React.FC<AgentReasoningBlockProps> = ({
               <ChevronRight
                 className={cn(
                   "tw-size-3 tw-text-muted tw-transition-transform",
-                  isExpanded && "tw-rotate-90"
+                  isExpanded && "tw-rotate-90",
                 )}
               />
             )}

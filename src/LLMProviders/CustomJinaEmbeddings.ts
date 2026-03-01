@@ -5,7 +5,7 @@ export class CustomJinaEmbeddings extends JinaEmbeddings {
     fields?: Partial<JinaEmbeddingsParams> & {
       apiKey?: string;
       baseUrl?: string;
-    }
+    },
   ) {
     super(fields);
     if (fields?.baseUrl) {

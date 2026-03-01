@@ -83,7 +83,7 @@ function getProviderCurlBaseURL(provider: string): string {
  * Falls back to placeholder when key is missing or cannot be decrypted.
  */
 async function resolveApiKeyForCurl(
-  apiKeyInput: string | undefined
+  apiKeyInput: string | undefined,
 ): Promise<{ apiKey: string; warnings: string[] }> {
   const warnings: string[] = [];
   const trimmed = apiKeyInput?.trim() ?? "";
@@ -211,7 +211,7 @@ function formatCurlCommand(spec: CurlRequestSpec): string {
 /** Builds curl request spec for OpenAI-compatible APIs */
 async function buildOpenAICompatibleRequestSpec(
   model: CustomModel,
-  isEmbeddingModel: boolean
+  isEmbeddingModel: boolean,
 ): Promise<
   | { ok: true; spec: CurlRequestSpec; warnings: string[] }
   | { ok: false; error: string; warnings: string[] }
@@ -224,7 +224,7 @@ async function buildOpenAICompatibleRequestSpec(
 
   // Build base URL (deterministic - no guessing /v1)
   const baseCandidate = trimTrailingSlashes(
-    baseUrlOverride || providerBase || "https://api.example.com/v1"
+    baseUrlOverride || providerBase || "https://api.example.com/v1",
   );
   const apiBase = stripOpenAIEndpointSuffix(baseCandidate);
 
@@ -292,7 +292,7 @@ function buildAzureEndpointUrl(
   model: CustomModel,
   deploymentName: string,
   endpoint: string,
-  apiVersion: string
+  apiVersion: string,
 ): { url: string; warnings: string[] } {
   const warnings: string[] = [];
   const instanceName = model.azureOpenAIApiInstanceName?.trim() || "[instance]";
@@ -329,7 +329,7 @@ function buildAzureEndpointUrl(
 /** Builds curl request spec for Azure OpenAI */
 async function buildAzureOpenAIRequestSpec(
   model: CustomModel,
-  isEmbeddingModel: boolean
+  isEmbeddingModel: boolean,
 ): Promise<
   | { ok: true; spec: CurlRequestSpec; warnings: string[] }
   | { ok: false; error: string; warnings: string[] }
@@ -386,7 +386,7 @@ async function buildAzureOpenAIRequestSpec(
 
 /** Builds curl request spec for Anthropic Messages API */
 async function buildAnthropicRequestSpec(
-  model: CustomModel
+  model: CustomModel,
 ): Promise<
   | { ok: true; spec: CurlRequestSpec; warnings: string[] }
   | { ok: false; error: string; warnings: string[] }
@@ -445,7 +445,7 @@ async function buildAnthropicRequestSpec(
  */
 async function buildGoogleGenerativeAIRequestSpec(
   model: CustomModel,
-  isEmbeddingModel: boolean
+  isEmbeddingModel: boolean,
 ): Promise<
   | { ok: true; spec: CurlRequestSpec; warnings: string[] }
   | { ok: false; error: string; warnings: string[] }
@@ -539,7 +539,7 @@ async function buildBedrockCurlText(model: CustomModel): Promise<BuildCurlComman
 
   const baseOverride = model.baseUrl?.trim();
   const endpointBase = trimTrailingSlashes(
-    baseOverride || `https://bedrock-runtime.${region}.amazonaws.com`
+    baseOverride || `https://bedrock-runtime.${region}.amazonaws.com`,
   );
   const invokeUrl = `${endpointBase}/model/${encodeURIComponent(modelId)}/invoke`;
 
@@ -608,7 +608,7 @@ async function buildBedrockCurlText(model: CustomModel): Promise<BuildCurlComman
  */
 async function buildOllamaRequestSpec(
   model: CustomModel,
-  isEmbeddingModel: boolean
+  isEmbeddingModel: boolean,
 ): Promise<
   | { ok: true; spec: CurlRequestSpec; warnings: string[] }
   | { ok: false; error: string; warnings: string[] }
@@ -619,7 +619,7 @@ async function buildOllamaRequestSpec(
   const baseOverride = model.baseUrl?.trim() ?? "";
   const providerBase = getProviderCurlBaseURL(ChatModelProviders.OLLAMA);
   const apiBase = normalizeOllamaBaseUrl(
-    trimTrailingSlashes(baseOverride || providerBase || "http://localhost:11434")
+    trimTrailingSlashes(baseOverride || providerBase || "http://localhost:11434"),
   );
 
   // Model name
@@ -687,7 +687,7 @@ async function buildOllamaRequestSpec(
  * Intended for debugging connectivity and validating request formats.
  */
 export async function buildCurlCommandForModel(
-  model: CustomModel
+  model: CustomModel,
 ): Promise<BuildCurlCommandResult> {
   const warnings: string[] = [];
   const provider = model.provider?.trim();

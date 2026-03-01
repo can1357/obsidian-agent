@@ -1,19 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
   $getSelection,
   $isRangeSelection,
-  TextNode,
+  BLUR_COMMAND,
   COMMAND_PRIORITY_HIGH,
   KEY_ARROW_DOWN_COMMAND,
   KEY_ARROW_UP_COMMAND,
   KEY_ENTER_COMMAND,
   KEY_ESCAPE_COMMAND,
   KEY_TAB_COMMAND,
-  BLUR_COMMAND,
+  TextNode,
 } from "lexical";
-import { tryToPositionRange } from "../TypeaheadMenuPortal";
+import { useCallback, useEffect, useState } from "react";
 import { TypeaheadOption } from "../TypeaheadMenuContent";
+import { tryToPositionRange } from "../TypeaheadMenuPortal";
 
 export interface TypeaheadState {
   isOpen: boolean;
@@ -84,7 +84,7 @@ export function useTypeaheadPlugin<T extends TypeaheadOption>({
         onHighlight(index, options[index]);
       }
     },
-    [onHighlight, options]
+    [onHighlight, options],
   );
 
   // Handle keyboard navigation
@@ -153,7 +153,7 @@ export function useTypeaheadPlugin<T extends TypeaheadOption>({
           return false;
       }
     },
-    [state.isOpen, state.selectedIndex, options, onSelect, closeMenu, handleHighlight]
+    [state.isOpen, state.selectedIndex, options, onSelect, closeMenu, handleHighlight],
   );
 
   // Register keyboard commands
@@ -161,31 +161,31 @@ export function useTypeaheadPlugin<T extends TypeaheadOption>({
     const removeKeyDownCommand = editor.registerCommand(
       KEY_ARROW_DOWN_COMMAND,
       (event) => handleKeyDown(event),
-      COMMAND_PRIORITY_HIGH
+      COMMAND_PRIORITY_HIGH,
     );
 
     const removeKeyUpCommand = editor.registerCommand(
       KEY_ARROW_UP_COMMAND,
       (event) => handleKeyDown(event),
-      COMMAND_PRIORITY_HIGH
+      COMMAND_PRIORITY_HIGH,
     );
 
     const removeEnterCommand = editor.registerCommand(
       KEY_ENTER_COMMAND,
       (event) => handleKeyDown(event),
-      COMMAND_PRIORITY_HIGH
+      COMMAND_PRIORITY_HIGH,
     );
 
     const removeTabCommand = editor.registerCommand(
       KEY_TAB_COMMAND,
       (event) => handleKeyDown(event),
-      COMMAND_PRIORITY_HIGH
+      COMMAND_PRIORITY_HIGH,
     );
 
     const removeEscapeCommand = editor.registerCommand(
       KEY_ESCAPE_COMMAND,
       (event) => handleKeyDown(event),
-      COMMAND_PRIORITY_HIGH
+      COMMAND_PRIORITY_HIGH,
     );
 
     const removeBlurCommand = editor.registerCommand(
@@ -196,7 +196,7 @@ export function useTypeaheadPlugin<T extends TypeaheadOption>({
         }
         return false;
       },
-      COMMAND_PRIORITY_HIGH
+      COMMAND_PRIORITY_HIGH,
     );
 
     return () => {
@@ -271,7 +271,7 @@ export function useTypeaheadPlugin<T extends TypeaheadOption>({
 
       return null;
     },
-    [triggerConfig]
+    [triggerConfig],
   );
 
   // Monitor text changes to detect triggers

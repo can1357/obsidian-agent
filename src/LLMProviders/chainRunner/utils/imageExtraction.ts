@@ -251,7 +251,7 @@ function findClosingAngleBracket(source: string, openIndex: number): number | nu
 function findMatchingUnescapedQuoteFromEnd(
   source: string,
   quote: '"' | "'",
-  closeIndex: number
+  closeIndex: number,
 ): number | null {
   for (let i = closeIndex - 1; i >= 0; i--) {
     if (source[i] === quote && !isCharEscaped(source, i)) {

@@ -1,3 +1,5 @@
+import { App } from "obsidian";
+import React, { memo, useEffect, useState } from "react";
 import ChatSingleMessage from "@/components/chat-components/ChatSingleMessage";
 import { RelevantNotes } from "@/components/chat-components/RelevantNotes";
 import { SuggestedPrompts } from "@/components/chat-components/SuggestedPrompts";
@@ -5,8 +7,6 @@ import { USER_SENDER } from "@/constants";
 import { useChatScrolling } from "@/hooks/useChatScrolling";
 import { useSettingsValue } from "@/settings/model";
 import { ChatMessage } from "@/types/message";
-import { App } from "obsidian";
-import React, { memo, useEffect, useState } from "react";
 
 interface ChatMessagesProps {
   chatHistory: ChatMessage[];
@@ -138,7 +138,7 @@ const ChatMessages = memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
 ChatMessages.displayName = "ChatMessages";

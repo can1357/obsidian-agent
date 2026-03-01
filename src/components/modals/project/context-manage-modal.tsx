@@ -1,25 +1,3 @@
-import { FailedItem, ProjectConfig, useProjectContextLoad, getCurrentProject } from "@/aiParams";
-import { ContextCache, ProjectContextCache } from "@/cache/projectContextCache";
-import { FolderSearchModal } from "@/components/modals/FolderSearchModal";
-import { ProjectFileSelectModal } from "@/components/modals/ProjectFileSelectModal";
-import { TagSearchModal } from "@/components/modals/TagSearchModal";
-import { TruncatedText } from "@/components/TruncatedText";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { SearchBar } from "@/components/ui/SearchBar";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import {
-  createPatternSettingsValue,
-  getFilePattern,
-  getMatchingPatterns,
-  getTagPattern,
-  PatternCategory,
-  shouldIndexFile,
-} from "@/search/searchUtils";
-import { getTagsFromNote } from "@/utils";
 import {
   AlertCircle,
   CheckCircle,
@@ -37,7 +15,29 @@ import {
 import { App, Modal, Notice, Platform, TFile } from "obsidian";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot, Root } from "react-dom/client";
+import { FailedItem, getCurrentProject, ProjectConfig, useProjectContextLoad } from "@/aiParams";
+import { ContextCache, ProjectContextCache } from "@/cache/projectContextCache";
+import { FolderSearchModal } from "@/components/modals/FolderSearchModal";
+import { ProjectFileSelectModal } from "@/components/modals/ProjectFileSelectModal";
+import { TagSearchModal } from "@/components/modals/TagSearchModal";
+import { TruncatedText } from "@/components/TruncatedText";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { SearchBar } from "@/components/ui/SearchBar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
+import {
+  createPatternSettingsValue,
+  getFilePattern,
+  getMatchingPatterns,
+  getTagPattern,
+  PatternCategory,
+  shouldIndexFile,
+} from "@/search/searchUtils";
+import { getTagsFromNote } from "@/utils";
 
 function FileIcon({ extension, size = "tw-size-4" }: { extension: string; size?: string }) {
   const ext = extension.toLowerCase().replace("*.", "");
@@ -154,7 +154,7 @@ const SectionList: React.FC<SectionListProps> = ({
               "tw-group tw-flex tw-cursor-pointer tw-items-center tw-justify-between tw-rounded-md tw-p-2 hover:tw-bg-secondary/50",
               activeSection === sectionType &&
                 activeItem === item.id &&
-                "tw-bg-secondary tw-text-normal"
+                "tw-bg-secondary tw-text-normal",
             )}
             onClick={() => onItemClick(item.id, item.name)}
           >
@@ -211,7 +211,7 @@ interface ProjectContextLoadLookup {
  */
 function getProjectContextItemStatus(
   key: string,
-  lookup: ProjectContextLoadLookup
+  lookup: ProjectContextLoadLookup,
 ): ProjectContextItemStatusInfo {
   // For the currently loaded project, use real-time status
   if (lookup.isCurrentProject) {
@@ -287,7 +287,7 @@ function ItemCard({ item, viewMode, loadStatus, onDelete }: ItemCardProps) {
               loadStatus.status === "success" && "tw-text-success",
               loadStatus.status === "failed" && "tw-text-error",
               loadStatus.status === "processing" && "tw-text-accent",
-              loadStatus.status === "notStarted" && "tw-text-muted"
+              loadStatus.status === "notStarted" && "tw-text-muted",
             )}
             title={
               loadStatus.status === "failed" && loadStatus.failedItem?.error
@@ -439,7 +439,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
     return new Set(
       Object.entries(projectCache.fileContexts)
         .filter(([, entry]) => entry?.cacheKey)
-        .map(([filePath]) => filePath)
+        .map(([filePath]) => filePath),
     );
   }, [projectCache]);
 
@@ -479,17 +479,17 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
     (
       appFiles: TFile[],
       inclusionPatterns: PatternCategory | null,
-      exclusionPatterns: PatternCategory | null
+      exclusionPatterns: PatternCategory | null,
     ): GroupListItem => {
       const projectAllFiles = appFiles.filter((file) =>
-        shouldIndexFile(file, inclusionPatterns, exclusionPatterns, true)
+        shouldIndexFile(file, inclusionPatterns, exclusionPatterns, true),
       );
 
       const processPatternGroup = (
         file: TFile,
         patterns: string[] | undefined,
         patternType: "tagPatterns" | "folderPatterns" | "extensionPatterns",
-        targetGroup: Record<string, Array<GroupItem>>
+        targetGroup: Record<string, Array<GroupItem>>,
       ) => {
         if (patterns) {
           patterns.forEach((pattern) => {
@@ -536,7 +536,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
           file,
           inclusionPatterns?.extensionPatterns,
           "extensionPatterns",
-          extensions
+          extensions,
         );
 
         // note/file
@@ -559,7 +559,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
         notes,
       };
     },
-    []
+    [],
   );
 
   const [groupList, setGroupList] = useState<GroupListItem>(() => {
@@ -569,7 +569,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
   const [ignoreItems, setIgnoreItems] = useState<IgnoreItems>(() => {
     // init exclude files
     const excludeFiles = appAllFiles.filter(
-      (file) => exclusionPatterns && shouldIndexFile(file, exclusionPatterns, null, true)
+      (file) => exclusionPatterns && shouldIndexFile(file, exclusionPatterns, null, true),
     );
     return {
       files: new Set<TFile>(excludeFiles),
@@ -605,7 +605,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
         notePatterns,
       });
     },
-    []
+    [],
   );
 
   // ignore file items convert to exclusions format
@@ -625,7 +625,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
 
     const addFilesToItems = (
       items: Array<{ id: string; name: string }>,
-      groupItems: GroupItem[]
+      groupItems: GroupItem[],
     ): void => {
       groupItems.forEach((groupItem) => {
         if (!items.some((item) => item.id === groupItem.id)) {
@@ -708,13 +708,13 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
           const matchesTitle =
             parsedQuery.titles.length > 0 &&
             parsedQuery.titles.some((t) =>
-              fileObj.basename.toLowerCase().includes(t.toLowerCase())
+              fileObj.basename.toLowerCase().includes(t.toLowerCase()),
             );
 
           const matchesExtension =
             parsedQuery.extensions.length > 0 &&
             parsedQuery.extensions.some(
-              (ext) => `.${fileObj.extension}`.toLowerCase() === ext.toLowerCase()
+              (ext) => `.${fileObj.extension}`.toLowerCase() === ext.toLowerCase(),
             );
 
           const hasSpecificFilters =
@@ -779,7 +779,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
           type: "tag",
           originalId: tagId,
           count: files.length,
-        }))
+        })),
       );
 
       const folderItems = sortItems(
@@ -789,7 +789,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
           type: "folder",
           originalId: folderId,
           count: files.length,
-        }))
+        })),
       );
 
       const filesItem =
@@ -838,7 +838,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
   const makeSectionItem = useCallback(
     (
       groupData: Record<string, Array<GroupItem>>,
-      nameTransform?: (name: string) => string
+      nameTransform?: (name: string) => string,
     ): SectionItem[] => {
       return Object.entries(groupData)
         .sort(([a], [b]) => a.localeCompare(b))
@@ -848,14 +848,14 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
           count: itemFiles.length,
         }));
     },
-    []
+    [],
   );
 
   const addPatternToGroup = useCallback(
     (
       groupType: "tags" | "folders" | "extensions",
       pattern: string,
-      patternConfig: PatternCategory
+      patternConfig: PatternCategory,
     ) => {
       const getMatchingFilesFromApp = (patterns: PatternCategory): GroupItem[] => {
         return appAllFiles
@@ -881,7 +881,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
         },
       }));
     },
-    [appAllFiles]
+    [appAllFiles],
   );
 
   const removeFileFromGroupList = useCallback(
@@ -908,7 +908,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
 
       return newGroupList;
     },
-    []
+    [],
   );
 
   const setActiveState = useCallback(
@@ -919,7 +919,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
         setSearchTerm("");
       }
     },
-    []
+    [],
   );
 
   // Unified processor
@@ -1062,7 +1062,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
         groupHandlers.click.ignoreFiles();
       }
     },
-    [groupHandlers]
+    [groupHandlers],
   );
 
   const getDisplayTitle = () => {
@@ -1204,7 +1204,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
                   <div
                     className={cn(
                       "tw-cursor-pointer tw-rounded-md tw-p-2 tw-text-sm hover:tw-bg-secondary/50",
-                      activeSection === "files" && "tw-bg-secondary tw-text-normal"
+                      activeSection === "files" && "tw-bg-secondary tw-text-normal",
                     )}
                     onClick={groupHandlers.click.files}
                   >
@@ -1243,7 +1243,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
                   <div
                     className={cn(
                       "tw-cursor-pointer tw-rounded-md tw-p-2 tw-text-sm hover:tw-bg-secondary/50",
-                      activeSection === "ignoreFiles" && "tw-bg-secondary tw-text-normal"
+                      activeSection === "ignoreFiles" && "tw-bg-secondary tw-text-normal",
                     )}
                     onClick={groupHandlers.click.ignoreFiles}
                   >
@@ -1309,7 +1309,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
                                   : handleDeleteItem
                               }
                             />
-                          ) : null
+                          ) : null,
                         )
                         .filter(Boolean)
                     : // When no category is selected and no search, display the grouped category list.
@@ -1321,7 +1321,7 @@ function ContextManage({ initialProject, onSave, onCancel, app }: ContextManageP
                               item={item}
                               onClick={handleCategoryItemClick}
                             />
-                          ) : null
+                          ) : null,
                         )
                         .filter(Boolean)}
                 </div>
@@ -1346,7 +1346,7 @@ export class ContextManageModal extends Modal {
   constructor(
     app: App,
     private onSave: (project: ProjectConfig) => void,
-    private initialProject: ProjectConfig
+    private initialProject: ProjectConfig,
   ) {
     super(app);
   }
@@ -1372,7 +1372,7 @@ export class ContextManageModal extends Modal {
         onSave={handleSave}
         onCancel={handleCancel}
         app={this.app}
-      />
+      />,
     );
   }
 

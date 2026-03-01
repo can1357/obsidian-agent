@@ -1,7 +1,7 @@
 import { ImageProcessor } from "@/imageProcessing/imageProcessor";
 import { selfHostYoutube4llm } from "@/LLMProviders/selfHostServices";
-import { err2String, isTwitterUrl, isYoutubeUrl } from "@/utils";
 import { logError } from "@/logger";
+import { err2String, isTwitterUrl, isYoutubeUrl } from "@/utils";
 
 export interface MentionData {
   type: string;
@@ -42,7 +42,7 @@ export class Mention {
 
   /** Fetch URL content via basic HTTP request. */
   async processUrl(
-    url: string
+    url: string,
   ): Promise<{ response: string; elapsed_time_ms: number; error?: string }> {
     try {
       const start = Date.now();
@@ -70,7 +70,7 @@ export class Mention {
 
   /** Twitter content extraction is no longer available. */
   async processTwitterUrl(
-    url: string
+    url: string,
   ): Promise<{ response: string; elapsed_time_ms: number; error?: string }> {
     return {
       response: url,

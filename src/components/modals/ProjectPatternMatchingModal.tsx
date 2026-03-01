@@ -1,3 +1,7 @@
+import { File, FileText, Folder, Tag, Wrench, X } from "lucide-react";
+import { App, Modal, TFile } from "obsidian";
+import React, { useState } from "react";
+import { createRoot, Root } from "react-dom/client";
 import { TruncatedText } from "@/components/TruncatedText";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,10 +18,6 @@ import {
   getFilePattern,
   getTagPattern,
 } from "@/search/searchUtils";
-import { File, FileText, Folder, Tag, Wrench, X } from "lucide-react";
-import { App, Modal, TFile } from "obsidian";
-import React, { useState } from "react";
-import { createRoot, Root } from "react-dom/client";
 import { CustomPatternInputModal } from "./CustomPatternInputModal";
 import { ExtensionInputModal } from "./ExtensionInputModal";
 import { FolderSearchModal } from "./FolderSearchModal";
@@ -263,7 +263,7 @@ export class ProjectPatternMatchingModal extends Modal {
     private onUpdate: (value: string) => void,
     /** The raw pattern matching value, separated by commas */
     private value: string,
-    title: string
+    title: string,
   ) {
     super(app);
     // @ts-ignore
@@ -283,7 +283,7 @@ export class ProjectPatternMatchingModal extends Modal {
         value={this.value}
         onUpdate={handleUpdate}
         container={this.contentEl}
-      />
+      />,
     );
   }
 

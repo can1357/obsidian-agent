@@ -36,7 +36,7 @@ export interface CreateToolOptions<TSchema extends z.ZodType> {
  * ```
  */
 export function createLangChainTool<TSchema extends z.ZodType>(
-  options: CreateToolOptions<TSchema>
+  options: CreateToolOptions<TSchema>,
 ) {
   return tool(
     async (args: z.infer<TSchema>) => {
@@ -48,7 +48,7 @@ export function createLangChainTool<TSchema extends z.ZodType>(
       name: options.name,
       description: options.description,
       schema: options.schema,
-    }
+    },
   );
 }
 

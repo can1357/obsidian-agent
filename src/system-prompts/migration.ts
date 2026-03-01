@@ -1,4 +1,7 @@
 import { TFile, Vault } from "obsidian";
+import { ConfirmModal } from "@/components/modals/ConfirmModal";
+import { logError, logInfo, logWarn } from "@/logger";
+import { getSettings, updateSetting } from "@/settings/model";
 import {
   ensurePromptFrontmatter,
   getPromptFilePath,
@@ -6,9 +9,6 @@ import {
   loadAllSystemPrompts,
 } from "@/system-prompts/systemPromptUtils";
 import { UserSystemPrompt } from "@/system-prompts/type";
-import { logError, logInfo, logWarn } from "@/logger";
-import { getSettings, updateSetting } from "@/settings/model";
-import { ConfirmModal } from "@/components/modals/ConfirmModal";
 import { ensureFolderExists, stripFrontmatter } from "@/utils";
 
 /**
@@ -54,7 +54,7 @@ function normalizeLineEndings(content: string): string {
 async function saveFailedMigrationToUnsupported(
   vault: Vault,
   content: string,
-  reason: string
+  reason: string,
 ): Promise<string> {
   const folder = getSystemPromptsFolder();
   const unsupportedFolder = `${folder}/unsupported`;
@@ -95,7 +95,7 @@ ${content}`;
 async function verifyMigratedContent(
   vault: Vault,
   file: TFile,
-  originalContent: string
+  originalContent: string,
 ): Promise<boolean> {
   try {
     const rawContent = await vault.read(file);
@@ -110,7 +110,7 @@ async function verifyMigratedContent(
     if (savedNormalized !== originalNormalized) {
       logWarn(
         `Migration verification failed: content mismatch. ` +
-          `Expected ${originalNormalized.length} chars, got ${savedNormalized.length} chars`
+          `Expected ${originalNormalized.length} chars, got ${savedNormalized.length} chars`,
       );
       return false;
     }
@@ -206,14 +206,14 @@ export async function migrateSystemPromptsFromSettings(vault: Vault): Promise<vo
         `We have upgraded your system prompt to the new file-based format. It is now stored as "${promptName}" in ${folder}.\n\nYou can now:\n• Edit your system prompt directly in the file\n• Create multiple system prompts\n• Manage prompts through the settings UI\n\nYour migrated prompt has been set as the default system prompt.`,
         "🚀 System Prompt Upgraded",
         "OK",
-        ""
+        "",
       ).open();
     } else {
       // ❌ Verification failed - save to unsupported folder and notify user
       const unsupportedPath = await saveFailedMigrationToUnsupported(
         vault,
         legacyPrompt,
-        "content verification mismatch"
+        "content verification mismatch",
       );
 
       // Best-effort: Try to reload prompts, but don't fail if reload fails
@@ -242,7 +242,7 @@ To recover:
 3. The prompt will be available immediately`,
         "Migration Verification Failed",
         "OK",
-        ""
+        "",
       ).open();
     }
   } catch (error) {
@@ -254,7 +254,7 @@ To recover:
       const unsupportedPath = await saveFailedMigrationToUnsupported(
         vault,
         legacyPrompt,
-        error.message || String(error)
+        error.message || String(error),
       );
 
       // Clear legacy field - data is safely in unsupported folder
@@ -276,7 +276,7 @@ To recover:
 3. The prompt will be available immediately`,
         "Migration Failed",
         "OK",
-        ""
+        "",
       ).open();
     } catch (saveError) {
       // Even saving to unsupported failed - DO NOT clear userSystemPrompt (preserve data)
@@ -298,7 +298,7 @@ Please check:
 You can retry by reloading the plugin.`,
         "Migration Failed - Data Preserved",
         "OK",
-        ""
+        "",
       ).open();
     }
   }

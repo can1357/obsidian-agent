@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import { cn } from "@/lib/utils";
 import { useDraggable } from "@/hooks/use-draggable";
 import { useRafResizable } from "@/hooks/use-resizable";
-import { DragHandle } from "./drag-handle";
+import { cn } from "@/lib/utils";
 import { CloseButton } from "./close-button";
+import { DragHandle } from "./drag-handle";
 
 const DRAGGABLE_MODAL_DATA_ATTRIBUTE = "data-copilot-draggable-modal";
 const DRAGGABLE_MODAL_SELECTOR = `[${DRAGGABLE_MODAL_DATA_ATTRIBUTE}="true"]`;
@@ -108,7 +108,7 @@ export function DraggableModal({
         setPosition((prev) => (prev.x === next.x ? prev : { ...prev, x: next.x as number }));
       }
     },
-    [setPosition]
+    [setPosition],
   );
 
   const { isResizing, handleResizeStart } = useRafResizable({
@@ -149,7 +149,7 @@ export function DraggableModal({
       if (!closeOnEscapeFromOutside) return;
 
       const modals = Array.from(
-        ownerDocument.querySelectorAll<HTMLElement>(DRAGGABLE_MODAL_SELECTOR)
+        ownerDocument.querySelectorAll<HTMLElement>(DRAGGABLE_MODAL_SELECTOR),
       );
       const topmostModal = modals[modals.length - 1];
       if (topmostModal !== modalEl) return;
@@ -187,7 +187,7 @@ export function DraggableModal({
         // Interaction states
         isDragging && "tw-cursor-grabbing tw-select-none",
         isResizing && "tw-select-none",
-        className
+        className,
       )}
       style={{
         left: position.x,

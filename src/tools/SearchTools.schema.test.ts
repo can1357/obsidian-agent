@@ -111,7 +111,7 @@ describe("SearchTools Schema Validation", () => {
           z.object({
             role: z.enum(["user", "assistant"]),
             content: z.string(),
-          })
+          }),
         )
         .describe("Previous conversation turns"),
     });
@@ -278,7 +278,7 @@ describe("SearchTools Schema Validation", () => {
           z.object({
             role: z.enum(["user", "assistant"]),
             content: z.string(),
-          })
+          }),
         ),
       });
 

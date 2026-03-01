@@ -20,7 +20,7 @@ export class RemoveFromIndexModal extends Modal {
     new Setting(container)
       .setName("File paths")
       .setDesc(
-        "Paste the markdown list of file paths to remove from the index. You can get the list by running the command `List all indexed files`."
+        "Paste the markdown list of file paths to remove from the index. You can get the list by running the command `List all indexed files`.",
       )
       .setClass("remove-files-setting")
       .addTextArea((text) =>
@@ -29,7 +29,7 @@ export class RemoveFromIndexModal extends Modal {
           .setValue(this.filePaths)
           .onChange((value) => {
             this.filePaths = value;
-          })
+          }),
       );
 
     new Setting(container).addButton((btn) =>
@@ -47,7 +47,7 @@ export class RemoveFromIndexModal extends Modal {
             .filter((p) => p.length > 0);
           this.onSubmit(paths);
           this.close();
-        })
+        }),
     );
 
     // Add CSS for better layout

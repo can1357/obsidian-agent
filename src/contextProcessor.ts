@@ -1,21 +1,21 @@
+import { TFile, Vault } from "obsidian";
 import { getSelectedTextContexts } from "@/aiParams";
 import { ChainType } from "@/chainFactory";
-import { logWarn, logInfo, logError } from "@/logger";
 import { escapeXml } from "@/LLMProviders/chainRunner/utils/xmlParsing";
+import { logError, logInfo, logWarn } from "@/logger";
 import { getWebViewerService } from "@/services/webViewerService/webViewerServiceSingleton";
 import { WebViewerTimeoutError } from "@/services/webViewerService/webViewerServiceTypes";
 import { FileParserManager } from "@/tools/FileParserManager";
 import { normalizeUrlString } from "@/utils/urlNormalization";
-import { TFile, Vault } from "obsidian";
 import {
-  NOTE_CONTEXT_PROMPT_TAG,
-  EMBEDDED_PDF_TAG,
+  ACTIVE_WEB_TAB_CONTEXT_TAG,
+  DATAVIEW_BLOCK_TAG,
   EMBEDDED_NOTE_TAG,
+  EMBEDDED_PDF_TAG,
+  NOTE_CONTEXT_PROMPT_TAG,
   SELECTED_TEXT_TAG,
   WEB_SELECTED_TEXT_TAG,
-  DATAVIEW_BLOCK_TAG,
   WEB_TAB_CONTEXT_TAG,
-  ACTIVE_WEB_TAB_CONTEXT_TAG,
   YOUTUBE_VIDEO_CONTEXT_TAG,
 } from "./constants";
 
@@ -45,7 +45,7 @@ export class ContextProcessor {
   async processEmbeddedPDFs(
     content: string,
     vault: Vault,
-    fileParserManager: FileParserManager
+    fileParserManager: FileParserManager,
   ): Promise<string> {
     const pdfRegex = /!\[\[(.*?\.pdf)\]\]/g;
     const matches = [...content.matchAll(pdfRegex)];
@@ -59,13 +59,13 @@ export class ContextProcessor {
           const pdfContent = await fileParserManager.parseFile(pdfFile, vault);
           content = content.replace(
             match[0],
-            `\n\n<${EMBEDDED_PDF_TAG}>\n<name>${pdfName}</name>\n<content>\n${pdfContent}\n</content>\n</${EMBEDDED_PDF_TAG}>\n\n`
+            `\n\n<${EMBEDDED_PDF_TAG}>\n<name>${pdfName}</name>\n<content>\n${pdfContent}\n</content>\n</${EMBEDDED_PDF_TAG}>\n\n`,
           );
         } catch (error) {
           logError(`Error processing embedded PDF ${pdfName}:`, error);
           content = content.replace(
             match[0],
-            `\n\n<${EMBEDDED_PDF_TAG}>\n<name>${pdfName}</name>\n<error>Could not process PDF</error>\n</${EMBEDDED_PDF_TAG}>\n\n`
+            `\n\n<${EMBEDDED_PDF_TAG}>\n<name>${pdfName}</name>\n<error>Could not process PDF</error>\n</${EMBEDDED_PDF_TAG}>\n\n`,
           );
         }
       }
@@ -130,7 +130,7 @@ export class ContextProcessor {
     dataviewApi: any,
     query: string,
     queryType: string,
-    sourcePath: string
+    sourcePath: string,
   ): Promise<string> {
     if (queryType === "dataviewjs") {
       // DataviewJS requires more complex handling - for now, return a message
@@ -242,7 +242,7 @@ export class ContextProcessor {
     note: TFile,
     vault: Vault,
     fileParserManager: FileParserManager,
-    chainType: ChainType
+    chainType: ChainType,
   ): Promise<string> {
     let content = await fileParserManager.parseFile(note, vault);
 
@@ -272,7 +272,7 @@ export class ContextProcessor {
     sourceNote: TFile,
     vault: Vault,
     fileParserManager: FileParserManager,
-    chainType: ChainType
+    chainType: ChainType,
   ): Promise<string> {
     const embedRegex = /!\[\[([^\]]+)\]\]/g;
     let match: RegExpExecArray | null;
@@ -288,7 +288,7 @@ export class ContextProcessor {
         sourceNote,
         vault,
         fileParserManager,
-        chainType
+        chainType,
       );
       result += replacement;
       lastIndex = match.index + match[0].length;
@@ -307,7 +307,7 @@ export class ContextProcessor {
     sourceNote: TFile,
     vault: Vault,
     fileParserManager: FileParserManager,
-    chainType: ChainType
+    chainType: ChainType,
   ): Promise<string> {
     const target = this.parseEmbeddedLinkTarget(rawTarget);
     if (!target) {
@@ -417,7 +417,7 @@ export class ContextProcessor {
   private extractMarkdownSegment(
     note: TFile,
     fileContent: string,
-    focus: EmbeddedLinkTarget
+    focus: EmbeddedLinkTarget,
   ): MarkdownSegment {
     const cache = app.metadataCache.getFileCache(note);
 
@@ -440,7 +440,7 @@ export class ContextProcessor {
       const headings = cache?.headings ?? [];
       const normalizedTarget = this.normalizeHeadingForMatch(focus.heading);
       const targetIndex = headings.findIndex(
-        (headingCache) => this.normalizeHeadingForMatch(headingCache.heading) === normalizedTarget
+        (headingCache) => this.normalizeHeadingForMatch(headingCache.heading) === normalizedTarget,
       );
 
       if (targetIndex === -1) {
@@ -529,7 +529,7 @@ export class ContextProcessor {
     contextNotes: TFile[],
     includeActiveNote: boolean,
     activeNote: TFile | null,
-    currentChain: ChainType
+    currentChain: ChainType,
   ): Promise<string> {
     let additionalContext = "";
 
@@ -596,7 +596,7 @@ export class ContextProcessor {
     contextNotes: TFile[],
     activeNote: TFile | null,
     setContextNotes: (notes: TFile[] | ((prev: TFile[]) => TFile[])) => void,
-    setIncludeActiveNote: (include: boolean) => void
+    setIncludeActiveNote: (include: boolean) => void,
   ): Promise<void> {
     // Only check if the note exists in contextNotes
     if (contextNotes.some((existing) => existing.path === note.path)) {
@@ -663,7 +663,7 @@ export class ContextProcessor {
    *   context window and token costs naturally discourage excessive context.
    */
   async processContextWebTabs(
-    webTabs: Array<{ url: string; title?: string; faviconUrl?: string; isActive?: boolean }>
+    webTabs: Array<{ url: string; title?: string; faviconUrl?: string; isActive?: boolean }>,
   ): Promise<string> {
     if (!webTabs || webTabs.length === 0) {
       return "";
@@ -690,7 +690,7 @@ export class ContextProcessor {
         mode?: string;
         content?: string;
         error?: string;
-      }
+      },
     ): string => {
       const parts = [
         `\n\n<${tagName}>`,
@@ -838,7 +838,7 @@ export class ContextProcessor {
             title: activeTab.title || "Unknown",
             url: activeTab.url,
             error: reason,
-          })
+          }),
         );
       }
       for (const tab of normalTabs) {
@@ -847,7 +847,7 @@ export class ContextProcessor {
             title: tab.title || "Unknown",
             url: tab.url,
             error: reason,
-          })
+          }),
         );
       }
       return blocks.join("");
@@ -859,7 +859,7 @@ export class ContextProcessor {
      */
     const processTab = async (
       tab: { url: string; title?: string; faviconUrl?: string },
-      tagName: string
+      tagName: string,
     ): Promise<string> => {
       try {
         const url = tab.url;
@@ -947,7 +947,7 @@ export class ContextProcessor {
     const processYouTubeTab = async (
       tab: { url: string; title?: string; faviconUrl?: string },
       videoId: string,
-      isActive: boolean
+      isActive: boolean,
     ): Promise<string> => {
       try {
         // Find leaf by videoId (handles all URL formats and redirects)
@@ -1045,7 +1045,7 @@ export class ContextProcessor {
     for (let i = 0; i < normalTabs.length; i += MAX_CONCURRENCY) {
       const chunk = normalTabs.slice(i, i + MAX_CONCURRENCY);
       const chunkResults = await Promise.all(
-        chunk.map((tab) => processTab(tab, WEB_TAB_CONTEXT_TAG))
+        chunk.map((tab) => processTab(tab, WEB_TAB_CONTEXT_TAG)),
       );
       blocks.push(...chunkResults);
     }

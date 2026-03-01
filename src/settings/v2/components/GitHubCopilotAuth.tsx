@@ -1,17 +1,17 @@
+import { ChevronDown, ChevronUp, Copy, Loader2 } from "lucide-react";
+import { Notice } from "obsidian";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { ChatModelProviders } from "@/constants";
-import {
-  GitHubCopilotProvider,
-  DeviceCodeResponse,
-} from "@/LLMProviders/githubCopilot/GitHubCopilotProvider";
 import { isAuthCancelledError } from "@/LLMProviders/githubCopilot/errors";
+import {
+  DeviceCodeResponse,
+  GitHubCopilotProvider,
+} from "@/LLMProviders/githubCopilot/GitHubCopilotProvider";
 import { useSettingsValue } from "@/settings/model";
 import { ModelImporter } from "@/settings/v2/components/ModelImporter";
-import { ChevronDown, ChevronUp, Loader2, Copy } from "lucide-react";
-import { Notice } from "obsidian";
-import React, { useEffect, useRef, useState } from "react";
 
 type AuthStep = "idle" | "pending" | "polling" | "done" | "error";
 
@@ -84,7 +84,7 @@ export function GitHubCopilotAuth() {
         if (isMountedRef.current && requestId === authRequestIdRef.current) {
           setPollCount(attempt);
         }
-      }
+      },
     );
 
     await copilotProvider.fetchCopilotToken();

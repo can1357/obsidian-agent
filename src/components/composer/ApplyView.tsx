@@ -1,16 +1,16 @@
-import { cn } from "@/lib/utils";
-import { logError } from "@/logger";
-import { getSettings, updateSetting } from "@/settings/model";
 import { Change, diffArrays } from "diff";
 import { Check, X as XIcon } from "lucide-react";
 import { App, ItemView, Notice, TFile, WorkspaceLeaf } from "obsidian";
 import React, { memo, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Button } from "../ui/button";
-import { SettingSwitch } from "../ui/setting-switch";
 import { getChangeBlocks } from "@/composerUtils";
+import { cn } from "@/lib/utils";
+import { logError } from "@/logger";
+import { getSettings, updateSetting } from "@/settings/model";
 import { ApplyViewResult } from "@/types";
 import { ensureFolderExists } from "@/utils";
+import { Button } from "../ui/button";
+import { SettingSwitch } from "../ui/setting-switch";
 
 /** Represents a row in the diff view with original and modified content */
 interface DiffRow {
@@ -28,7 +28,7 @@ interface DiffRow {
  */
 function wordLevelDiff(
   original: string,
-  modified: string
+  modified: string,
 ): { value: string; added?: boolean; removed?: boolean }[] {
   // Split on whitespace boundaries while preserving delimiters
   const tokenize = (str: string): string[] => str.split(/(\s+)/).filter(Boolean);
@@ -259,7 +259,7 @@ export class ApplyView extends ItemView {
           this.result = result;
           this.leaf.detach();
         }}
-      />
+      />,
     );
   }
 }
@@ -334,7 +334,7 @@ const SplitBlock = memo(({ block }: SplitBlockProps) => {
               <div key={idx}>
                 <DiffCell row={row} side="original" />
               </div>
-            ) : null
+            ) : null,
           )}
         </div>
       </div>
@@ -348,7 +348,7 @@ const SplitBlock = memo(({ block }: SplitBlockProps) => {
               <div key={idx}>
                 <DiffCell row={row} side="modified" />
               </div>
-            ) : null
+            ) : null,
           )}
         </div>
       </div>
@@ -368,7 +368,7 @@ const ApplyViewRoot: React.FC<ApplyViewRootProps> = ({ app, state, close }) => {
 
   // View mode state with settings persistence (fallback to "split" for users with old settings)
   const [viewMode, setViewMode] = useState<"side-by-side" | "split">(
-    () => getSettings().diffViewMode ?? "split"
+    () => getSettings().diffViewMode ?? "split",
   );
 
   const handleViewModeChange = (mode: "side-by-side" | "split") => {
@@ -400,7 +400,7 @@ const ApplyViewRoot: React.FC<ApplyViewRootProps> = ({ app, state, close }) => {
     try {
       // Mark all undecided changes as accepted
       const updatedDiff = diff.map((change) =>
-        change.accepted === null ? { ...change, accepted: true } : change
+        change.accepted === null ? { ...change, accepted: true } : change,
       );
 
       const result = await applyDecidedChangesToFile(updatedDiff);
@@ -417,7 +417,7 @@ const ApplyViewRoot: React.FC<ApplyViewRootProps> = ({ app, state, close }) => {
     try {
       // Mark all undecided changes as rejected
       const updatedDiff = diff.map((change) =>
-        change.accepted === null ? { ...change, accepted: false } : change
+        change.accepted === null ? { ...change, accepted: false } : change,
       );
 
       const result = await applyDecidedChangesToFile(updatedDiff, false);
@@ -445,7 +445,7 @@ const ApplyViewRoot: React.FC<ApplyViewRootProps> = ({ app, state, close }) => {
   // Shared function to apply changes to file
   const applyDecidedChangesToFile = async (
     updatedDiff: ExtendedChange[],
-    showSuccessNotice = true
+    showSuccessNotice = true,
   ) => {
     // Apply changes based on their accepted status
     const newContent = updatedDiff
@@ -481,7 +481,8 @@ const ApplyViewRoot: React.FC<ApplyViewRootProps> = ({ app, state, close }) => {
       const block = changeBlocks[i];
       const hasChanges = block.some((change) => change.added || change.removed);
       const isUndecided = block.some(
-        (change) => (change.added || change.removed) && (change as ExtendedChange).accepted === null
+        (change) =>
+          (change.added || change.removed) && (change as ExtendedChange).accepted === null,
       );
 
       if (hasChanges && isUndecided) {
@@ -566,7 +567,7 @@ const ApplyViewRoot: React.FC<ApplyViewRootProps> = ({ app, state, close }) => {
           <span
             className={cn(
               "tw-text-xs",
-              viewMode === "split" ? "tw-font-medium tw-text-normal" : "tw-text-muted"
+              viewMode === "split" ? "tw-font-medium tw-text-normal" : "tw-text-muted",
             )}
           >
             Split
@@ -578,7 +579,7 @@ const ApplyViewRoot: React.FC<ApplyViewRootProps> = ({ app, state, close }) => {
           <span
             className={cn(
               "tw-text-xs",
-              viewMode === "side-by-side" ? "tw-font-medium tw-text-normal" : "tw-text-muted"
+              viewMode === "side-by-side" ? "tw-font-medium tw-text-normal" : "tw-text-muted",
             )}
           >
             Side-by-side
@@ -595,13 +596,14 @@ const ApplyViewRoot: React.FC<ApplyViewRootProps> = ({ app, state, close }) => {
           const blockStatus = hasChanges
             ? block.every(
                 (change) =>
-                  (!change.added && !change.removed) || (change as ExtendedChange).accepted === true
+                  (!change.added && !change.removed) ||
+                  (change as ExtendedChange).accepted === true,
               )
               ? "accepted"
               : block.every(
                     (change) =>
                       (!change.added && !change.removed) ||
-                      (change as ExtendedChange).accepted === false
+                      (change as ExtendedChange).accepted === false,
                   )
                 ? "rejected"
                 : "undecided"

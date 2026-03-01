@@ -69,7 +69,7 @@ export function hasToolCalls(message: AIMessage): boolean {
 export function createToolResultMessage(
   toolCallId: string,
   toolName: string,
-  result: string
+  result: string,
 ): ToolMessage {
   return new ToolMessage({
     content: result,
@@ -134,7 +134,7 @@ export function buildToolCallsFromChunks(chunks: Map<number, ToolCallChunk>): Na
  */
 export function createAIMessageWithToolCalls(
   content: string,
-  toolCalls: NativeToolCall[]
+  toolCalls: NativeToolCall[],
 ): AIMessage {
   return new AIMessage({
     content,

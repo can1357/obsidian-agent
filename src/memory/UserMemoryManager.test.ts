@@ -13,14 +13,14 @@ jest.mock("@/utils", () => ({
   ensureFolderExists: jest.fn(),
 }));
 
-import { UserMemoryManager } from "./UserMemoryManager";
-import { App, TFile, Vault } from "obsidian";
-import { ChatMessage } from "@/types/message";
-import { logError, logWarn } from "@/logger";
-import { getSettings } from "@/settings/model";
-import { ensureFolderExists } from "@/utils";
 import { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import { AIMessageChunk } from "@langchain/core/messages";
+import { App, TFile, Vault } from "obsidian";
+import { logError, logWarn } from "@/logger";
+import { getSettings } from "@/settings/model";
+import { ChatMessage } from "@/types/message";
+import { ensureFolderExists } from "@/utils";
+import { UserMemoryManager } from "./UserMemoryManager";
 
 // Helper to create TFile mock instances
 const createMockTFile = (path: string): TFile => {
@@ -80,7 +80,7 @@ describe("UserMemoryManager", () => {
     const createMockMessage = (
       id: string,
       message: string,
-      sender: string = "user"
+      sender: string = "user",
     ): ChatMessage => ({
       id,
       message,
@@ -96,7 +96,7 @@ describe("UserMemoryManager", () => {
       userMemoryManager.addRecentConversation(messages, mockChatModel);
 
       expect(logWarn).toHaveBeenCalledWith(
-        "[UserMemoryManager] Recent history referencing is disabled, skipping analysis"
+        "[UserMemoryManager] Recent history referencing is disabled, skipping analysis",
       );
     });
 
@@ -104,7 +104,7 @@ describe("UserMemoryManager", () => {
       userMemoryManager.addRecentConversation([], mockChatModel);
 
       expect(logWarn).toHaveBeenCalledWith(
-        "[UserMemoryManager] No messages to analyze for user memory"
+        "[UserMemoryManager] No messages to analyze for user memory",
       );
     });
 
@@ -113,16 +113,16 @@ describe("UserMemoryManager", () => {
       const messages = [
         createMockMessage(
           "1",
-          "How do I create a daily note template in Obsidian with automatic date formatting?"
+          "How do I create a daily note template in Obsidian with automatic date formatting?",
         ),
         createMockMessage(
           "2",
           "I can help you create a daily note template with automatic date formatting...",
-          "ai"
+          "ai",
         ),
         createMockMessage(
           "3",
-          "That's perfect! Can you also show me how to add tags automatically?"
+          "That's perfect! Can you also show me how to add tags automatically?",
         ),
         createMockMessage("4", "Certainly! You can add automatic tags to your template...", "ai"),
       ];
@@ -169,7 +169,7 @@ describe("UserMemoryManager", () => {
       expect(actualContent).toContain("## Daily Note Template Setup");
       expect(actualContent).toMatch(/\*\*Time:\*\* \d{4}-\d{2}-\d{2} \d{2}:\d{2}/);
       expect(actualContent).toContain(
-        "**Summary:** User asked about creating daily note templates"
+        "**Summary:** User asked about creating daily note templates",
       );
 
       // Verify previous conversations are preserved
@@ -185,7 +185,7 @@ describe("UserMemoryManager", () => {
           expect.objectContaining({
             content: expect.stringContaining("generate both a title and a summary"),
           }),
-        ])
+        ]),
       );
     });
 
@@ -211,7 +211,7 @@ describe("UserMemoryManager", () => {
       expect(actualContent).toContain("**Summary:** Summary generation failed");
       expect(logError).toHaveBeenCalledWith(
         "[UserMemoryManager] Failed to parse LLM response as JSON:",
-        expect.any(Error)
+        expect.any(Error),
       );
     });
   });
@@ -243,7 +243,7 @@ That's the JSON data.`;
 
       const result = (userMemoryManager as any).extractJsonFromResponse(content);
       expect(result).toBe(
-        '{\n  "title": "Unmarked Block",\n  "summary": "No language specified"\n}'
+        '{\n  "title": "Unmarked Block",\n  "summary": "No language specified"\n}',
       );
     });
 
@@ -452,7 +452,7 @@ The conversation covered advanced features and included code examples.`,
       expect(result).toBeNull();
       expect(logError).toHaveBeenCalledWith(
         "[UserMemoryManager] Error reading memory files:",
-        expect.any(Error)
+        expect.any(Error),
       );
     });
   });
@@ -463,7 +463,7 @@ The conversation covered advanced features and included code examples.`,
 
       const result = await userMemoryManager.updateSavedMemory(
         "Test memory content",
-        mockChatModel
+        mockChatModel,
       );
 
       expect(result).toEqual({ error: "Saved memory is disabled, skipping save" });
@@ -493,12 +493,12 @@ The conversation covered advanced features and included code examples.`,
       // Mock LLM merge result content
       const llmMergedContent = `- The user prefers concise responses`;
       (mockChatModel.invoke as jest.Mock).mockResolvedValue(
-        new AIMessageChunk({ content: llmMergedContent })
+        new AIMessageChunk({ content: llmMergedContent }),
       );
 
       const result = await userMemoryManager.updateSavedMemory(
         "I prefer concise responses",
-        mockChatModel
+        mockChatModel,
       );
 
       // Verify folder creation was called
@@ -507,7 +507,7 @@ The conversation covered advanced features and included code examples.`,
       // Verify file creation was called with proper content
       expect(mockVault.create).toHaveBeenCalledWith(
         "copilot/memory/Saved Memories.md",
-        expect.stringContaining("- The user prefers concise responses")
+        expect.stringContaining("- The user prefers concise responses"),
       );
 
       const createdContent = mockVault.create.mock.calls[0][1];
@@ -535,22 +535,22 @@ The conversation covered advanced features and included code examples.`,
       // Mock LLM to return merged full list
       const mergedContent = `- Previous memory content\n- Another important fact\n- New important information`;
       (mockChatModel.invoke as jest.Mock).mockResolvedValue(
-        new AIMessageChunk({ content: mergedContent })
+        new AIMessageChunk({ content: mergedContent }),
       );
 
       const result = await userMemoryManager.updateSavedMemory(
         "New important information",
-        mockChatModel
+        mockChatModel,
       );
 
       // Verify file modification was called with appended content
       expect(mockVault.modify).toHaveBeenCalledWith(
         mockMemoryFile,
-        expect.stringContaining("- Previous memory content")
+        expect.stringContaining("- Previous memory content"),
       );
       expect(mockVault.modify).toHaveBeenCalledWith(
         mockMemoryFile,
-        expect.stringContaining("- New important information")
+        expect.stringContaining("- New important information"),
       );
 
       const modifiedContent = mockVault.modify.mock.calls[0][1];

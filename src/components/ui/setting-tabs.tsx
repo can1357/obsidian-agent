@@ -45,7 +45,7 @@ export const TabItem: React.FC<TabItemProps> = ({ tab, isSelected, onClick, isFi
           "tw-delay-100",
         ],
         "lg:tw-max-w-32",
-        "md:tw-max-w-32"
+        "md:tw-max-w-32",
       )}
     >
       <div
@@ -55,7 +55,7 @@ export const TabItem: React.FC<TabItemProps> = ({ tab, isSelected, onClick, isFi
           "tw-transition-transform tw-duration-200 tw-ease-in-out",
           isSelected
             ? "tw-max-w-[16px] tw-translate-x-0 tw-opacity-100"
-            : "tw-max-w-0 tw--translate-x-4 tw-opacity-0"
+            : "tw-max-w-0 tw--translate-x-4 tw-opacity-0",
         )}
       >
         {tab.icon}
@@ -66,7 +66,7 @@ export const TabItem: React.FC<TabItemProps> = ({ tab, isSelected, onClick, isFi
           "tw-font-medium",
           "tw-transition-all tw-duration-200 tw-ease-in-out",
           "tw-overflow-hidden tw-whitespace-nowrap",
-          "tw-max-w-[100px] tw-translate-x-0 tw-opacity-100"
+          "tw-max-w-[100px] tw-translate-x-0 tw-opacity-100",
         )}
       >
         {tab.label}
@@ -92,7 +92,7 @@ export const TabContent: React.FC<TabContentProps> = ({ id, children, isSelected
       className={cn(
         "tw-pt-4",
         "tw-transition-all tw-duration-200 tw-ease-in-out",
-        isSelected ? "tw-translate-y-0 tw-opacity-100" : "tw-translate-y-2 tw-opacity-0"
+        isSelected ? "tw-translate-y-0 tw-opacity-100" : "tw-translate-y-2 tw-opacity-0",
       )}
     >
       {children}

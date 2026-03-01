@@ -1,6 +1,14 @@
-import { processPrompt } from "@/commands/customCommandUtils";
-import { validateCommandName } from "@/commands/customCommandUtils";
+import { Notice, TFile, Vault } from "obsidian";
+import {
+  processPrompt,
+  sortSlashCommands,
+  validateCommandName,
+} from "@/commands/customCommandUtils";
 import { CustomCommand } from "@/commands/type";
+import { DEFAULT_SETTINGS } from "@/constants";
+import { logWarn } from "@/logger";
+import * as settingsModelModule from "@/settings/model";
+import { PromptSortStrategy } from "@/types";
 import {
   extractTemplateNoteFiles,
   getFileContent,
@@ -8,12 +16,6 @@ import {
   getNotesFromPath,
   getNotesFromTags,
 } from "@/utils";
-import { Notice, TFile, Vault } from "obsidian";
-import * as settingsModelModule from "@/settings/model";
-import { PromptSortStrategy } from "@/types";
-import { sortSlashCommands } from "@/commands/customCommandUtils";
-import { DEFAULT_SETTINGS } from "@/constants";
-import { logWarn } from "@/logger";
 
 // Mock Obsidian
 jest.mock("obsidian", () => ({
@@ -89,7 +91,7 @@ describe("processedPrompt()", () => {
     const result = await processPrompt(doc.content, selectedText, mockVault, mockActiveNote);
 
     expect(result.processedPrompt).toBe(
-      'This is a {variable} and {selected_text}.\n\n<selected_text>\nhere is some selected text 12345\n</selected_text>\n\n<variable name="variable">\n<variable_note>\n<path>path/to/active/note.md</path>\n## Variable Note\n\nhere is the note content for note0\n</variable_note>\n</variable>'
+      'This is a {variable} and {selected_text}.\n\n<selected_text>\nhere is some selected text 12345\n</selected_text>\n\n<variable name="variable">\n<variable_note>\n<path>path/to/active/note.md</path>\n## Variable Note\n\nhere is the note content for note0\n</variable_note>\n</variable>',
     );
     expect(result.includedFiles).toContain(mockActiveNote);
   });
@@ -122,7 +124,7 @@ describe("processedPrompt()", () => {
     const result = await processPrompt(doc.content, selectedText, mockVault, mockActiveNote);
 
     expect(result.processedPrompt).toBe(
-      'This is a {variable1} and {variable2}.\n\n<variable name="variable1">\n<variable_note>\n<path>path/to/note1.md</path>\n## Variable1 Note\n\nhere is the note content for note0\n</variable_note>\n</variable>\n\n<variable name="variable2">\n<variable_note>\n<path>path/to/note2.md</path>\n## Variable2 Note\n\nnote content for note1\n</variable_note>\n</variable>'
+      'This is a {variable1} and {variable2}.\n\n<variable name="variable1">\n<variable_note>\n<path>path/to/note1.md</path>\n## Variable1 Note\n\nhere is the note content for note0\n</variable_note>\n</variable>\n\n<variable name="variable2">\n<variable_note>\n<path>path/to/note2.md</path>\n## Variable2 Note\n\nnote content for note1\n</variable_note>\n</variable>',
     );
     expect(result.includedFiles).toContain(mockNote1);
     expect(result.includedFiles).toContain(mockNote2);
@@ -143,7 +145,7 @@ describe("processedPrompt()", () => {
     const result = await processPrompt(doc.content, selectedText, mockVault, mockActiveNote);
 
     expect(result.processedPrompt).toBe(
-      "Rewrite the following text {selected_text}\n\n<selected_text>\nhere is some selected text 12345\n</selected_text>"
+      "Rewrite the following text {selected_text}\n\n<selected_text>\nhere is some selected text 12345\n</selected_text>",
     );
     expect(result.includedFiles).toEqual([]);
   });
@@ -180,7 +182,7 @@ describe("processedPrompt()", () => {
     const result = await processPrompt(doc.content, selectedText, mockVault, mockActiveNote);
 
     expect(result.processedPrompt).toBe(
-      'This is the active note: {activenote}\n\n<variable name="activenote">\n<variable_note>\n<path>path/to/active/note.md</path>\n## Active Note\n\nContent of the active note\n</variable_note>\n</variable>'
+      'This is the active note: {activenote}\n\n<variable name="activenote">\n<variable_note>\n<path>path/to/active/note.md</path>\n## Active Note\n\nContent of the active note\n</variable_note>\n</variable>',
     );
     expect(result.includedFiles).toContain(mockActiveNote);
     expect(getFileContent).toHaveBeenCalledWith(mockActiveNote, mockVault);
@@ -246,7 +248,7 @@ describe("processedPrompt()", () => {
     const result = await processPrompt(customPrompt, selectedText, mockVault, mockActiveNote);
 
     expect(result.processedPrompt).toBe(
-      'Notes related to {#tag} are:\n\n<variable name="#tag">\n<variable_note>\n<path>path/to/tagged/note.md</path>\n## Tagged Note\n\nNote content for #tag\n</variable_note>\n</variable>'
+      'Notes related to {#tag} are:\n\n<variable name="#tag">\n<variable_note>\n<path>path/to/tagged/note.md</path>\n## Tagged Note\n\nNote content for #tag\n</variable_note>\n</variable>',
     );
     expect(result.includedFiles).toContain(mockNoteForTag);
   });
@@ -285,7 +287,7 @@ describe("processedPrompt()", () => {
     const result = await processPrompt(customPrompt, selectedText, mockVault, mockActiveNote);
 
     expect(result.processedPrompt).toBe(
-      'Notes related to {#tag1,#tag2,#tag3} are:\n\n<variable name="#tag1,#tag2,#tag3">\n<variable_note>\n<path>path/to/tagged/note1.md</path>\n## Tagged Note 1\n\nNote content for #tag1\n</variable_note>\n\n<variable_note>\n<path>path/to/tagged/note2.md</path>\n## Tagged Note 2\n\nNote content for #tag2\n</variable_note>\n</variable>'
+      'Notes related to {#tag1,#tag2,#tag3} are:\n\n<variable name="#tag1,#tag2,#tag3">\n<variable_note>\n<path>path/to/tagged/note1.md</path>\n## Tagged Note 1\n\nNote content for #tag1\n</variable_note>\n\n<variable_note>\n<path>path/to/tagged/note2.md</path>\n## Tagged Note 2\n\nNote content for #tag2\n</variable_note>\n</variable>',
     );
     expect(result.includedFiles).toContain(mockNoteForTag1);
     expect(result.includedFiles).toContain(mockNoteForTag2);
@@ -335,7 +337,7 @@ describe("processedPrompt()", () => {
 
     // Verify the prompt text is preserved
     expect(result.processedPrompt).toContain(
-      "Content of {[[Test Note]]} is important. Look at [[Test Note]]."
+      "Content of {[[Test Note]]} is important. Look at [[Test Note]].",
     );
     // Verify note content is included in note_context format
     expect(result.processedPrompt).toContain("<note_context>");
@@ -377,7 +379,7 @@ describe("processedPrompt()", () => {
     const result = await processPrompt(customPrompt, selectedText, mockVault, mockActiveNote);
 
     expect(result.processedPrompt).toContain(
-      "{[[Note1]]} content and [[Note2]] are both important"
+      "{[[Note1]]} content and [[Note2]] are both important",
     );
     // Only Note1 content should be included (from {[[Note1]]})
     expect(result.processedPrompt).toContain("<note_context>");
@@ -415,7 +417,7 @@ describe("processedPrompt()", () => {
     const result = await processPrompt(customPrompt, selectedText, mockVault, mockActiveNote);
 
     expect(result.processedPrompt).toContain(
-      "{[[Note1]]} is related to {[[Note2]]} and {[[Note3]]}."
+      "{[[Note1]]} is related to {[[Note2]]} and {[[Note3]]}.",
     );
     // All notes should be in note_context format
     expect(result.processedPrompt).toContain("<note_context>");
@@ -468,7 +470,7 @@ describe("processedPrompt()", () => {
     // Check that getFileContent was called with the active note at least once
     expect(getFileContent).toHaveBeenCalledWith(mockActiveNote, mockVault);
     expect(result.processedPrompt).toBe(
-      'This is the active note: {activeNote}. And again: {activeNote}\n\n<variable name="activeNote">\n<variable_note>\n<path>path/to/active/note.md</path>\n## Active Note\n\nContent of the active note\n</variable_note>\n</variable>'
+      'This is the active note: {activeNote}. And again: {activeNote}\n\n<variable name="activeNote">\n<variable_note>\n<path>path/to/active/note.md</path>\n## Active Note\n\nContent of the active note\n</variable_note>\n</variable>',
     );
     expect(result.includedFiles).toContain(mockActiveNote);
   });
@@ -490,7 +492,7 @@ describe("processedPrompt()", () => {
     const result = await processPrompt(doc.content, selectedText, mockVault, mockActiveNote);
 
     expect(result.processedPrompt).toBe(
-      'Summarize this: {selected_text}\n\n<selected_text type="active_note">\nContent of the active note\n</selected_text>'
+      'Summarize this: {selected_text}\n\n<selected_text type="active_note">\nContent of the active note\n</selected_text>',
     );
     // Active note should be included because of {}
     expect(result.includedFiles).toContain(mockActiveNote);
@@ -516,7 +518,7 @@ describe("processedPrompt()", () => {
     const result = await processPrompt(doc.content, selectedText, mockVault, mockActiveNote);
 
     expect(result.processedPrompt).toBe(
-      'Summarize this: {selected_text}. Additional info: {activeNote}\n\n<selected_text type="active_note">\nContent of the active note\n</selected_text>'
+      'Summarize this: {selected_text}. Additional info: {activeNote}\n\n<selected_text type="active_note">\nContent of the active note\n</selected_text>',
     );
     // Ensure getFileContent was called for the {} replacement
     expect(getFileContent).toHaveBeenCalledWith(mockActiveNote, mockVault);
@@ -541,7 +543,7 @@ describe("processedPrompt()", () => {
     const result = await processPrompt(doc.content, selectedText, mockVault, mockActiveNote);
 
     expect(result.processedPrompt).toBe(
-      "Analyze this: {selected_text}\n\n<selected_text>\nThis is the selected text\n</selected_text>"
+      "Analyze this: {selected_text}\n\n<selected_text>\nThis is the selected text\n</selected_text>",
     );
     // Active note should not be included when selected text is present for {}
     expect(result.includedFiles).toEqual([]);
@@ -579,7 +581,7 @@ describe("processedPrompt()", () => {
     const result = await processPrompt(doc.content, selectedText, mockVault, mockActiveNote);
 
     expect(result.processedPrompt).toBe(
-      'This is a test prompt with {invalidVariable} name and {activeNote}\n\n<variable name="activeNote">\n<variable_note>\n<path>path/to/active/note.md</path>\n## Active Note\n\nActive Note Content\n</variable_note>\n</variable>'
+      'This is a test prompt with {invalidVariable} name and {activeNote}\n\n<variable name="activeNote">\n<variable_note>\n<path>path/to/active/note.md</path>\n## Active Note\n\nActive Note Content\n</variable_note>\n</variable>',
     );
     expect(result.includedFiles).toContain(mockActiveNote);
     // Expect the warning for the invalid variable
@@ -683,7 +685,7 @@ describe("parseCustomCommandFile", () => {
         read: jest
           .fn()
           .mockResolvedValue(
-            "---\ncopilot-command-context-menu-enabled: true\ncopilot-command-slash-enabled: false\ncopilot-command-context-menu-order: 42\ncopilot-command-model-key: gpt-4\ncopilot-command-last-used: 1234567890\n---\nPrompt content here."
+            "---\ncopilot-command-context-menu-enabled: true\ncopilot-command-slash-enabled: false\ncopilot-command-context-menu-order: 42\ncopilot-command-model-key: gpt-4\ncopilot-command-last-used: 1234567890\n---\nPrompt content here.",
           ) as any,
       } as any,
       metadataCache: {
@@ -771,10 +773,10 @@ describe("validateCommandName", () => {
 
   it("returns error for duplicate name (case-insensitive)", () => {
     expect(validateCommandName("command one", baseCommands)).toBe(
-      "A command with this name already exists"
+      "A command with this name already exists",
     );
     expect(validateCommandName("COMMAND TWO", baseCommands)).toBe(
-      "A command with this name already exists"
+      "A command with this name already exists",
     );
   });
 
@@ -795,7 +797,7 @@ describe("validateCommandName", () => {
     ];
     for (const name of invalids) {
       expect(validateCommandName(name, baseCommands)).toMatch(
-        /Command name contains invalid characters/
+        /Command name contains invalid characters/,
       );
     }
   });
@@ -806,13 +808,13 @@ describe("validateCommandName", () => {
 
   it("returns error for names with leading or trailing whitespace", () => {
     expect(validateCommandName("  Command One  ", baseCommands)).toBe(
-      "Command name cannot have leading or trailing spaces"
+      "Command name cannot have leading or trailing spaces",
     );
     expect(validateCommandName(" Leading", baseCommands)).toBe(
-      "Command name cannot have leading or trailing spaces"
+      "Command name cannot have leading or trailing spaces",
     );
     expect(validateCommandName("Trailing ", baseCommands)).toBe(
-      "Command name cannot have leading or trailing spaces"
+      "Command name cannot have leading or trailing spaces",
     );
   });
 });

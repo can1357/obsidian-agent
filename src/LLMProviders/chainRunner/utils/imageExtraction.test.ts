@@ -98,11 +98,11 @@ describe("Image extraction from content", () => {
       expect(result).toEqual(["attachments/screenshot.png", "images/diagram.jpg"]);
       expect(mockApp.metadataCache.getFirstLinkpathDest).toHaveBeenCalledWith(
         "screenshot.png",
-        sourcePath
+        sourcePath,
       );
       expect(mockApp.metadataCache.getFirstLinkpathDest).toHaveBeenCalledWith(
         "diagram.jpg",
-        sourcePath
+        sourcePath,
       );
     });
 
@@ -119,7 +119,7 @@ describe("Image extraction from content", () => {
       expect(result).toEqual(["resolved/folder/image.png"]);
       expect(mockApp.metadataCache.getFirstLinkpathDest).toHaveBeenCalledWith(
         "folder/image.png",
-        sourcePath
+        sourcePath,
       );
     });
 
@@ -149,11 +149,11 @@ describe("Image extraction from content", () => {
       expect(result).toEqual(["attachments/image.png", "attachments/photo.jpg"]);
       expect(mockApp.metadataCache.getFirstLinkpathDest).toHaveBeenCalledWith(
         "image.png",
-        sourcePath
+        sourcePath,
       );
       expect(mockApp.metadataCache.getFirstLinkpathDest).toHaveBeenCalledWith(
         "photo.jpg",
-        sourcePath
+        sourcePath,
       );
     });
 
@@ -170,11 +170,11 @@ describe("Image extraction from content", () => {
       expect(result).toEqual(["images/test.png", "assets/icon.svg"]);
       expect(mockApp.metadataCache.getFirstLinkpathDest).toHaveBeenCalledWith(
         "images/test.png",
-        sourcePath
+        sourcePath,
       );
       expect(mockApp.metadataCache.getFirstLinkpathDest).toHaveBeenCalledWith(
         "../assets/icon.svg",
-        sourcePath
+        sourcePath,
       );
     });
 
@@ -215,7 +215,7 @@ describe("Image extraction from content", () => {
       expect(result).toEqual(["images/absolute.png"]);
       expect(mockApp.metadataCache.getFirstLinkpathDest).toHaveBeenCalledWith(
         "images/absolute.png",
-        sourcePath
+        sourcePath,
       );
     });
   });

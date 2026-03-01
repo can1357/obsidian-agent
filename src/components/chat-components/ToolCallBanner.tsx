@@ -1,8 +1,8 @@
+import { Check, ChevronRight, X } from "lucide-react";
+import React, { useMemo, useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { ToolResultFormatter } from "@/tools/ToolResultFormatter";
-import { Check, ChevronRight, X } from "lucide-react";
-import React, { useMemo, useState } from "react";
 
 // Animation constants
 // The shimmer keyframe is defined in the global CSS (see styles.css)
@@ -91,7 +91,7 @@ export const ToolCallBanner: React.FC<ToolCallBannerProps> = ({
       <div
         className={cn(
           "tw-rounded-md tw-border tw-border-border tw-bg-secondary/50",
-          actuallyExecuting && "tw-relative tw-overflow-hidden"
+          actuallyExecuting && "tw-relative tw-overflow-hidden",
         )}
       >
         {/* Shimmer effect overlay */}
@@ -112,7 +112,7 @@ export const ToolCallBanner: React.FC<ToolCallBannerProps> = ({
           className={cn(
             "tw-flex tw-w-full tw-items-center tw-justify-between tw-px-3 tw-py-2.5 tw-text-sm sm:tw-px-4 sm:tw-py-3",
             canExpand && "hover:tw-bg-secondary/70",
-            !canExpand && "tw-cursor-default"
+            !canExpand && "tw-cursor-default",
           )}
         >
           <div className="tw-flex tw-items-center tw-gap-2">
@@ -159,7 +159,7 @@ export const ToolCallBanner: React.FC<ToolCallBannerProps> = ({
               <ChevronRight
                 className={cn(
                   "tw-size-4 tw-text-muted tw-transition-transform",
-                  isOpen && "tw-rotate-90"
+                  isOpen && "tw-rotate-90",
                 )}
               />
             )}

@@ -27,7 +27,7 @@ export const ToolSettingsSection: React.FC = () => {
 
   const renderToolsByCategory = () => {
     const categories = Array.from(toolsByCategory.entries()).filter(([_, tools]) =>
-      tools.some((t) => configurableTools.includes(t))
+      tools.some((t) => configurableTools.includes(t)),
     );
 
     return categories.map(([category, tools]) => {

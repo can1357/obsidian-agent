@@ -1,9 +1,9 @@
-import { getSettings, setSettings } from "@/settings/model";
+import { createParser, type ParsedEvent, type ReconnectInterval } from "eventsource-parser";
+import { type RequestUrlResponse, requestUrl } from "obsidian";
 import { getDecryptedKey } from "@/encryptionService";
+import { getSettings, setSettings } from "@/settings/model";
 import { GitHubCopilotModelResponse } from "@/settings/providerModels";
 import type { FetchImplementation } from "@/utils";
-import { requestUrl, type RequestUrlResponse } from "obsidian";
-import { createParser, type ParsedEvent, type ReconnectInterval } from "eventsource-parser";
 import { AuthCancelledError } from "./errors";
 
 /**
@@ -220,7 +220,7 @@ export class GitHubCopilotProvider {
       throw new Error(
         errorDetail
           ? `Failed to get device code: ${errorDetail}`
-          : `Failed to get device code: ${res.status}`
+          : `Failed to get device code: ${res.status}`,
       );
     }
 
@@ -262,7 +262,7 @@ export class GitHubCopilotProvider {
     deviceCode: string,
     interval: number,
     expiresIn: number,
-    onPoll?: (attempt: number) => void
+    onPoll?: (attempt: number) => void,
   ): Promise<string> {
     // Capture current auth generation to detect if reset was called
     const currentGeneration = this.authGeneration;
@@ -362,7 +362,7 @@ export class GitHubCopilotProvider {
           throw new Error(
             typeof data.error_description === "string" && data.error_description
               ? data.error_description
-              : data.error
+              : data.error,
           );
         }
       }
@@ -418,7 +418,7 @@ export class GitHubCopilotProvider {
       throw new Error(
         detail
           ? `Failed to get Copilot token: ${res.status} (${detail})`
-          : `Failed to get Copilot token: ${res.status}`
+          : `Failed to get Copilot token: ${res.status}`,
       );
     }
 
@@ -474,7 +474,7 @@ export class GitHubCopilotProvider {
     if (this.refreshAttempts >= MAX_REFRESH_ATTEMPTS) {
       this.refreshAttempts = 0; // Reset for next time
       throw new Error(
-        "Failed to refresh Copilot token after multiple attempts. Please try reconnecting."
+        "Failed to refresh Copilot token after multiple attempts. Please try reconnecting.",
       );
     }
 
@@ -512,7 +512,7 @@ export class GitHubCopilotProvider {
    * @returns The response from the successful request
    */
   private async executeWithTokenRetry(
-    doRequest: (token: string) => Promise<Response>
+    doRequest: (token: string) => Promise<Response>,
   ): Promise<Response> {
     let token = await this.getValidCopilotToken();
     let response = await doRequest(token);
@@ -540,7 +540,7 @@ export class GitHubCopilotProvider {
    */
   async sendChatMessage(
     messages: Array<{ role: string; content: string }>,
-    options: CopilotRequestOptions = {}
+    options: CopilotRequestOptions = {},
   ): Promise<CopilotChatResponse> {
     const { model = "gpt-4o", signal, fetchImpl } = options;
     // Use provided fetch implementation or default to native fetch
@@ -559,7 +559,7 @@ export class GitHubCopilotProvider {
           stream: false,
         }),
         signal,
-      })
+      }),
     );
 
     const responseText = await response.text();
@@ -622,7 +622,7 @@ export class GitHubCopilotProvider {
    */
   async *sendChatMessageStream(
     messages: Array<{ role: string; content: string }>,
-    options: CopilotRequestOptions = {}
+    options: CopilotRequestOptions = {},
   ): AsyncGenerator<CopilotStreamChunk> {
     const { model = "gpt-4o", signal, fetchImpl } = options;
     // Use provided fetch implementation or default to native fetch
@@ -641,7 +641,7 @@ export class GitHubCopilotProvider {
           stream: true,
         }),
         signal,
-      })
+      }),
     );
 
     if (!response.ok) {
@@ -745,7 +745,7 @@ export class GitHubCopilotProvider {
         throw new Error(
           `GitHub Copilot streaming produced no chunks. ` +
             `Content-Type: ${contentType || "(empty)"}, ` +
-            `Response preview: ${preview || "(empty)"}`
+            `Response preview: ${preview || "(empty)"}`,
         );
       }
     } finally {

@@ -1,23 +1,23 @@
+import debounce from "lodash.debounce";
+import { Editor, Plugin, TFile, Vault } from "obsidian";
+import { CustomCommandChatModal } from "@/commands/CustomCommandChatModal";
+import { CustomCommandManager } from "@/commands/customCommandManager";
 import {
+  ensureCommandFrontmatter,
   getCommandId,
+  getNextCustomCommandOrder,
+  hasOrderFrontmatter,
   isCustomCommandFile,
   loadAllCustomCommands,
   parseCustomCommandFile,
-  getNextCustomCommandOrder,
-  ensureCommandFrontmatter,
-  hasOrderFrontmatter,
 } from "@/commands/customCommandUtils";
-import { Editor, Plugin, TFile, Vault } from "obsidian";
-import { CustomCommandChatModal } from "@/commands/CustomCommandChatModal";
-import debounce from "lodash.debounce";
-import { CustomCommand } from "@/commands/type";
 import {
   deleteCachedCommand,
   getCachedCustomCommands,
   isFileWritePending,
   updateCachedCommand,
 } from "@/commands/state";
-import { CustomCommandManager } from "@/commands/customCommandManager";
+import { CustomCommand } from "@/commands/type";
 import { logError } from "@/logger";
 
 /** This manager is used to register custom commands as obsidian commands */
@@ -78,7 +78,7 @@ export class CustomCommandRegister {
       // immediately when modify event is triggered.
       leading: false,
       trailing: true,
-    }
+    },
   );
 
   // Note: This function is called when obsidian starts up.

@@ -90,7 +90,7 @@ describe("QueryExpander", () => {
       const result = await expander.expand("#project project kickoff brief");
 
       expect(result.salientTerms).toEqual(
-        expect.arrayContaining(["#project", "project", "kickoff", "brief"])
+        expect.arrayContaining(["#project", "project", "kickoff", "brief"]),
       );
     });
 
@@ -102,7 +102,7 @@ describe("QueryExpander", () => {
       // In fallback mode (LLM error), terms are extracted from original query
       // "about" is included because there's no stopword filtering in fallback
       expect(result.salientTerms).toEqual(
-        expect.arrayContaining(["#project", "updates", "about", "project", "deadlines"])
+        expect.arrayContaining(["#project", "updates", "about", "project", "deadlines"]),
       );
     });
 
@@ -132,7 +132,7 @@ describe("QueryExpander", () => {
     it("should handle LLM timeout with fallback", async () => {
       // Mock slow LLM response
       mockChatModel.invoke.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({ content: "slow" }), 1000))
+        () => new Promise((resolve) => setTimeout(() => resolve({ content: "slow" }), 1000)),
       );
 
       const expander = new QueryExpander({
@@ -165,7 +165,7 @@ describe("QueryExpander", () => {
         async (prompt: string, options?: { signal?: AbortSignal }) => {
           receivedSignal = options?.signal;
           return { content: "mocked response" };
-        }
+        },
       );
 
       const expander = new QueryExpander({
@@ -194,7 +194,7 @@ describe("QueryExpander", () => {
 
           // This should not complete due to timeout
           return { content: "slow response" };
-        }
+        },
       );
 
       const expander = new QueryExpander({

@@ -114,7 +114,7 @@ export function useRafResizable(options: UseRafResizableOptions): UseRafResizabl
         e.preventDefault();
         e.stopPropagation();
       },
-    [enabled, getRect]
+    [enabled, getRect],
   );
 
   useEffect(() => {

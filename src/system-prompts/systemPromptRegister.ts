@@ -1,24 +1,24 @@
+import debounce from "lodash.debounce";
 import { Notice, Plugin, TAbstractFile, Vault } from "obsidian";
+import { logError, logInfo } from "@/logger";
+import { getSettings, subscribeToSettingsChange, updateSetting } from "@/settings/model";
 import {
-  isSystemPromptFile,
-  getSystemPromptsFolder,
-  parseSystemPromptFile,
+  deleteCachedSystemPrompt,
+  getSelectedPromptTitle,
+  initializeSessionPromptFromDefault,
+  isPendingFileWrite,
+  setSelectedPromptTitle,
+  updateCachedSystemPrompts,
+  upsertCachedSystemPrompt,
+} from "@/system-prompts/state";
+import { SystemPromptManager } from "@/system-prompts/systemPromptManager";
+import {
   ensurePromptFrontmatter,
+  getSystemPromptsFolder,
+  isSystemPromptFile,
+  parseSystemPromptFile,
   updatePromptDefaultFlag,
 } from "@/system-prompts/systemPromptUtils";
-import {
-  isPendingFileWrite,
-  initializeSessionPromptFromDefault,
-  upsertCachedSystemPrompt,
-  deleteCachedSystemPrompt,
-  updateCachedSystemPrompts,
-  getSelectedPromptTitle,
-  setSelectedPromptTitle,
-} from "@/system-prompts/state";
-import { getSettings, subscribeToSettingsChange, updateSetting } from "@/settings/model";
-import { SystemPromptManager } from "@/system-prompts/systemPromptManager";
-import debounce from "lodash.debounce";
-import { logError, logInfo } from "@/logger";
 
 /**
  * Manages vault event listeners for system prompts
@@ -79,7 +79,7 @@ export class SystemPromptRegister {
    */
   private handleSettingsChange = (
     prev: ReturnType<typeof getSettings>,
-    next: ReturnType<typeof getSettings>
+    next: ReturnType<typeof getSettings>,
   ): void => {
     const folderChanged = prev.userSystemPromptsFolder !== next.userSystemPromptsFolder;
     const defaultChanged = prev.defaultSystemPromptTitle !== next.defaultSystemPromptTitle;
@@ -91,7 +91,7 @@ export class SystemPromptRegister {
       void this.handleDefaultPromptChange(
         prev.defaultSystemPromptTitle,
         next.defaultSystemPromptTitle,
-        oldFolder
+        oldFolder,
       );
     }
 
@@ -109,7 +109,7 @@ export class SystemPromptRegister {
       void this.handleSystemPromptsFolderChange(nextFolder);
     },
     300,
-    { leading: false, trailing: true }
+    { leading: false, trailing: true },
   );
 
   /**
@@ -120,7 +120,7 @@ export class SystemPromptRegister {
   private async handleDefaultPromptChange(
     oldTitle: string,
     newTitle: string,
-    oldFolder?: string
+    oldFolder?: string,
   ): Promise<void> {
     try {
       if (oldTitle) {
@@ -155,7 +155,7 @@ export class SystemPromptRegister {
       // Check if this is still the latest request
       if (currentRequestId !== this.folderChangeRequestId) {
         logInfo(
-          `Folder change request ${currentRequestId} superseded by ${this.folderChangeRequestId}, discarding results`
+          `Folder change request ${currentRequestId} superseded by ${this.folderChangeRequestId}, discarding results`,
         );
         return;
       }
@@ -190,10 +190,10 @@ export class SystemPromptRegister {
     ) {
       updateSetting("defaultSystemPromptTitle", "");
       logInfo(
-        `Cleared defaultSystemPromptTitle (not found in new folder): ${settings.defaultSystemPromptTitle}`
+        `Cleared defaultSystemPromptTitle (not found in new folder): ${settings.defaultSystemPromptTitle}`,
       );
       new Notice(
-        `Default system prompt "${settings.defaultSystemPromptTitle}" not found in new folder. Cleared default selection.`
+        `Default system prompt "${settings.defaultSystemPromptTitle}" not found in new folder. Cleared default selection.`,
       );
     }
 
@@ -202,7 +202,7 @@ export class SystemPromptRegister {
       setSelectedPromptTitle("");
       logInfo(`Cleared selectedPromptTitle (not found in new folder): ${selectedTitle}`);
       new Notice(
-        `Current system prompt "${selectedTitle}" not found in new folder. Cleared chat selection.`
+        `Current system prompt "${selectedTitle}" not found in new folder. Cleared chat selection.`,
       );
     }
   }
@@ -227,7 +227,7 @@ export class SystemPromptRegister {
     {
       leading: false,
       trailing: true,
-    }
+    },
   );
 
   /**
@@ -326,11 +326,11 @@ export class SystemPromptRegister {
             setSelectedPromptTitle(nextTitle);
             if (promptFile) {
               new Notice(
-                `System prompt "${oldFilename}" was renamed to "${promptFile.basename}". Updated current chat selection.`
+                `System prompt "${oldFilename}" was renamed to "${promptFile.basename}". Updated current chat selection.`,
               );
             } else {
               new Notice(
-                `System prompt "${oldFilename}" was moved out of the prompts folder. Cleared current chat selection.`
+                `System prompt "${oldFilename}" was moved out of the prompts folder. Cleared current chat selection.`,
               );
             }
           }

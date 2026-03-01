@@ -1,12 +1,12 @@
+import { Mutex } from "async-mutex";
+import { MD5 } from "crypto-js";
+import debounce from "lodash.debounce";
+import { TAbstractFile, TFile, Vault } from "obsidian";
 import { ProjectConfig } from "@/aiParams";
 import { FileCache } from "@/cache/fileCache";
 import { logError, logInfo, logWarn } from "@/logger";
 import { getMatchingPatterns, shouldIndexFile } from "@/search/searchUtils";
 import { getSettings } from "@/settings/model";
-import { MD5 } from "crypto-js";
-import { TAbstractFile, TFile, Vault } from "obsidian";
-import debounce from "lodash.debounce";
-import { Mutex } from "async-mutex";
 
 export interface ContextCache {
   // Markdown context
@@ -109,7 +109,7 @@ export class ProjectContextCache {
           // Only invalidate markdown context, keep other contexts
           await this.invalidateMarkdownContext(project);
           logInfo(
-            `Invalidated markdown context for project ${project.name} due to file change: ${file.path}`
+            `Invalidated markdown context for project ${project.name} due to file change: ${file.path}`,
           );
         }
       }
@@ -126,7 +126,7 @@ export class ProjectContextCache {
     {
       leading: true,
       trailing: true,
-    }
+    },
   );
 
   //===========================================================================
@@ -208,13 +208,13 @@ export class ProjectContextCache {
 
     if (initialProjectCache) {
       logInfo(
-        `[getOrInitializeCache] Project ${project.name}: Existing cache found. MarkdownNeedsReload: ${initialProjectCache.markdownNeedsReload}`
+        `[getOrInitializeCache] Project ${project.name}: Existing cache found. MarkdownNeedsReload: ${initialProjectCache.markdownNeedsReload}`,
       );
       return initialProjectCache;
     }
 
     logInfo(
-      `[getOrInitializeCache] Project ${project.name}: No existing cache found, building fresh context.`
+      `[getOrInitializeCache] Project ${project.name}: No existing cache found, building fresh context.`,
     );
 
     const newCache = this.createEmptyCache();
@@ -323,7 +323,7 @@ export class ProjectContextCache {
       }
 
       logInfo(
-        `Cleared ${allFileKeysToRemove.size} file content cache entries associated with projects`
+        `Cleared ${allFileKeysToRemove.size} file content cache entries associated with projects`,
       );
     } catch (error) {
       logError("Error clearing project context cache:", error);
@@ -345,7 +345,7 @@ export class ProjectContextCache {
         const fileContextKeys = Object.keys(projectCache.fileContexts);
         if (fileContextKeys.length > 0) {
           logInfo(
-            `[clearForProject] Project ${project.name}: Found ${fileContextKeys.length} file contexts to remove from FileCache.`
+            `[clearForProject] Project ${project.name}: Found ${fileContextKeys.length} file contexts to remove from FileCache.`,
           );
           for (const filePath in projectCache.fileContexts) {
             const fileEntry = projectCache.fileContexts[filePath];
@@ -354,34 +354,34 @@ export class ProjectContextCache {
               filesClearedCount++;
             } else {
               logWarn(
-                `[clearForProject] Project ${project.name}: Skipped removing FileCache entry for file ${filePath} due to missing cacheKey.`
+                `[clearForProject] Project ${project.name}: Skipped removing FileCache entry for file ${filePath} due to missing cacheKey.`,
               );
             }
           }
           logInfo(
-            `[clearForProject] Project ${project.name}: Attempted to clear ${filesClearedCount} entries from FileCache.`
+            `[clearForProject] Project ${project.name}: Attempted to clear ${filesClearedCount} entries from FileCache.`,
           );
         }
       } else {
         logInfo(
-          `[clearForProject] Project ${project.name}: No fileContexts found in existing project cache to clear from FileCache.`
+          `[clearForProject] Project ${project.name}: No fileContexts found in existing project cache to clear from FileCache.`,
         );
       }
 
       this.memoryCache.delete(projectCacheKey);
       logInfo(
-        `[clearForProject] Project ${project.name}: Removed from ProjectContextCache memory.`
+        `[clearForProject] Project ${project.name}: Removed from ProjectContextCache memory.`,
       );
 
       const cachePath = this.getCachePath(projectCacheKey);
       if (await this.vault.adapter.exists(cachePath)) {
         await this.vault.adapter.remove(cachePath);
         logInfo(
-          `[clearForProject] Project ${project.name}: Successfully removed main project cache file: ${cachePath}`
+          `[clearForProject] Project ${project.name}: Successfully removed main project cache file: ${cachePath}`,
         );
       } else {
         logInfo(
-          `[clearForProject] Project ${project.name}: Main project cache file not found (already deleted or never existed): ${cachePath}`
+          `[clearForProject] Project ${project.name}: Main project cache file not found (already deleted or never existed): ${cachePath}`,
         );
       }
       // Clean up the mutex for this project to prevent memory leaks
@@ -404,7 +404,7 @@ export class ProjectContextCache {
    */
   async invalidateMarkdownContext(
     project: ProjectConfig,
-    forceReloadAllRemotes: boolean = false
+    forceReloadAllRemotes: boolean = false,
   ): Promise<void> {
     await this.updateCacheSafely(
       project,
@@ -424,7 +424,7 @@ export class ProjectContextCache {
         logInfo(`Invalidated markdown context for project ${project.name}`);
         return cleanedCache;
       },
-      true
+      true,
     );
   }
 
@@ -474,7 +474,7 @@ export class ProjectContextCache {
         // Associate with current project
         await this.associateCacheWithProject(project, filePath, result.cacheKey);
         logInfo(
-          `Reused cached content from other project for: ${filePath} in project ${project.name}`
+          `Reused cached content from other project for: ${filePath} in project ${project.name}`,
         );
         return result.content;
       }
@@ -521,7 +521,7 @@ export class ProjectContextCache {
       ) {
         logWarn(
           `Missing, invalid, or empty cacheKey for filePath: ${filePath} in project ${project.name}. Entry will be treated as a cache miss.`,
-          { project: project.name, filePath, fileContextEntry }
+          { project: project.name, filePath, fileContextEntry },
         );
         // Logged as "Cache miss for file: undefined" by fileCache.get if cacheKey is undefined/null.
         // If cacheKey is an empty string, fileCache.get might also log it or handle it as a miss.
@@ -536,7 +536,7 @@ export class ProjectContextCache {
       if (typeof cacheKey !== "string") {
         logWarn(
           `cacheKey is not a string for filePath: ${filePath} in project ${project.name}. Treating as cache miss.`,
-          { project: project.name, filePath, cacheKey }
+          { project: project.name, filePath, cacheKey },
         );
         return null; // This will prevent fileCache.get from being called with a non-string.
       }
@@ -606,7 +606,7 @@ export class ProjectContextCache {
    * If found, migrate that content to universal cache and return it
    */
   private async searchOtherProjectsForFile(
-    filePath: string
+    filePath: string,
   ): Promise<{ cacheKey: string; content: string } | null> {
     try {
       const settings = getSettings();
@@ -653,7 +653,7 @@ export class ProjectContextCache {
   async associateCacheWithProject(
     project: ProjectConfig,
     filePath: string,
-    cacheKey: string
+    cacheKey: string,
   ): Promise<void> {
     return await this.updateCacheSafelyAsync(project, async (cache) => {
       if (!cache.fileContexts) {
@@ -706,7 +706,7 @@ export class ProjectContextCache {
     if (removedCount > 0) {
       cache.fileContexts = updatedFileContexts;
       logInfo(
-        `Removed ${removedCount} file references from project ${project.name} that no longer match inclusion patterns`
+        `Removed ${removedCount} file references from project ${project.name} that no longer match inclusion patterns`,
       );
     }
 
@@ -723,7 +723,7 @@ export class ProjectContextCache {
       await this.updateCacheSafely(
         project,
         (cache) => this.cleanupFileReferencesInCache(project, cache),
-        true
+        true,
       );
     } catch (error) {
       logError(`Error cleaning up project file references for ${project.name}:`, error);
@@ -736,7 +736,7 @@ export class ProjectContextCache {
    */
   async updateProjectFilesFromPatterns(
     project: ProjectConfig,
-    contextCacheToUpdate: ContextCache
+    contextCacheToUpdate: ContextCache,
   ): Promise<ContextCache> {
     try {
       logInfo(`[updateProjectFilesFromPatterns] Starting for project: ${project.name}`);
@@ -769,11 +769,11 @@ export class ProjectContextCache {
 
       if (addedCount > 0) {
         logInfo(
-          `[updateProjectFilesFromPatterns] Project ${project.name}: Added ${addedCount} new file references to context (in memory).`
+          `[updateProjectFilesFromPatterns] Project ${project.name}: Added ${addedCount} new file references to context (in memory).`,
         );
       }
       logInfo(
-        `[updateProjectFilesFromPatterns] Completed for project: ${project.name}. Total fileContexts in memory: ${Object.keys(contextCacheToUpdate.fileContexts).length}`
+        `[updateProjectFilesFromPatterns] Completed for project: ${project.name}. Total fileContexts in memory: ${Object.keys(contextCacheToUpdate.fileContexts).length}`,
       );
     } catch (error) {
       logError(`[updateProjectFilesFromPatterns] Error for project ${project.name}:`, error);
@@ -784,7 +784,7 @@ export class ProjectContextCache {
   updateProjectMarkdownFilesFromPatterns(
     project: ProjectConfig,
     contextCacheToUpdate: ContextCache,
-    projectAllFiles: TFile[]
+    projectAllFiles: TFile[],
   ): ContextCache {
     try {
       if (!contextCacheToUpdate.fileContexts) {
@@ -808,12 +808,12 @@ export class ProjectContextCache {
 
       if (addedCount > 0) {
         logInfo(
-          `[updateProjectFilesFromPatterns] Project ${project.name}: Added ${addedCount} new file references to context (in memory).`
+          `[updateProjectFilesFromPatterns] Project ${project.name}: Added ${addedCount} new file references to context (in memory).`,
         );
       }
 
       logInfo(
-        `[updateProjectFilesFromPatterns] Completed for project: ${project.name}. Total markdown fileContexts in memory: ${Object.keys(contextCacheToUpdate.fileContexts).length}`
+        `[updateProjectFilesFromPatterns] Completed for project: ${project.name}. Total markdown fileContexts in memory: ${Object.keys(contextCacheToUpdate.fileContexts).length}`,
       );
     } catch (error) {
       logError(`[updateProjectFilesFromPatterns] Error for project ${project.name}:`, error);
@@ -878,7 +878,7 @@ export class ProjectContextCache {
           }
         }
         logInfo(
-          `removeYoutubeUrls: Removed YouTube contexts for URLs ${urls.join(", ")} in project ${project.name}`
+          `removeYoutubeUrls: Removed YouTube contexts for URLs ${urls.join(", ")} in project ${project.name}`,
         );
       }
       return cache;
@@ -913,7 +913,7 @@ export class ProjectContextCache {
   async updateCacheSafely(
     project: ProjectConfig,
     updateFn: (cache: ContextCache) => ContextCache,
-    skipIfEmpty: boolean = false
+    skipIfEmpty: boolean = false,
   ): Promise<void> {
     const mutex = await this.getOrCreateProjectMutex(project);
 
@@ -925,7 +925,7 @@ export class ProjectContextCache {
             return;
           }
           throw new Error(
-            `Project: ${project.name} context cache not found, please invoke getOrInitializeCache method before invoke update context cache`
+            `Project: ${project.name} context cache not found, please invoke getOrInitializeCache method before invoke update context cache`,
           );
         }
         const updatedCache = updateFn(cache);
@@ -947,7 +947,7 @@ export class ProjectContextCache {
   async updateCacheSafelyAsync(
     project: ProjectConfig,
     updateFn: (cache: ContextCache) => Promise<ContextCache>,
-    skipIfEmpty: boolean = false
+    skipIfEmpty: boolean = false,
   ): Promise<void> {
     const mutex = await this.getOrCreateProjectMutex(project);
 
@@ -959,7 +959,7 @@ export class ProjectContextCache {
             return;
           }
           throw new Error(
-            `Project: ${project.name} context cache not found, please invoke getOrInitializeCache method before invoke update context cache`
+            `Project: ${project.name} context cache not found, please invoke getOrInitializeCache method before invoke update context cache`,
           );
         }
         const updatedCache = await updateFn(cache);

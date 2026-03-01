@@ -21,7 +21,7 @@ export interface MergedSearchOutput {
  */
 export function mergeFilterAndSearchResults(
   filterDocs: Document[],
-  searchDocs: Document[]
+  searchDocs: Document[],
 ): MergedSearchOutput {
   const filterPaths = new Set<string>();
   for (const doc of filterDocs) {

@@ -1,12 +1,12 @@
-import { TFile } from "obsidian";
-import { APPLY_VIEW_TYPE } from "@/components/composer/ApplyView";
 import { diffTrimmedLines } from "diff";
-import { ApplyViewResult } from "@/types";
+import { TFile } from "obsidian";
 import { z } from "zod";
-import { createLangChainTool } from "./createLangChainTool";
-import { ensureFolderExists, sanitizeFilePath } from "@/utils";
-import { getSettings } from "@/settings/model";
+import { APPLY_VIEW_TYPE } from "@/components/composer/ApplyView";
 import { logWarn } from "@/logger";
+import { getSettings } from "@/settings/model";
+import { ApplyViewResult } from "@/types";
+import { ensureFolderExists, sanitizeFilePath } from "@/utils";
+import { createLangChainTool } from "./createLangChainTool";
 
 async function getFile(file_path: string): Promise<TFile> {
   let file = app.vault.getAbstractFileByPath(file_path);
@@ -87,7 +87,8 @@ const writeToFileSchema = z.object({
           The path must end with explicit file extension, such as .md or .canvas .
           Prefer to create new files in existing folders or root folder unless the user's request specifies otherwise.
           The path must be relative to the root of the vault.`),
-  content: z.union([z.string(), z.object({}).passthrough()])
+  content: z
+    .union([z.string(), z.object({}).passthrough()])
     .describe(`(Required) The content to write to the file. Can be either a string or an object.
           ALWAYS provide the COMPLETE intended content of the file, without any truncation or omissions. 
           You MUST include ALL parts of the file, even if they haven't been modified.
@@ -130,7 +131,7 @@ const writeToFileSchema = z.object({
     .optional()
     .default(true)
     .describe(
-      `(Optional) Whether to ask for change confirmation with preview UI before writing changes. Default: true. Set to false to skip preview and apply changes immediately.`
+      `(Optional) Whether to ask for change confirmation with preview UI before writing changes. Default: true. Set to false to skip preview and apply changes immediately.`,
     ),
 });
 
@@ -151,7 +152,7 @@ const writeToFileTool = createLangChainTool({
     const sanitizedPath = sanitizeFilePath(path);
     if (sanitizedPath !== path) {
       logWarn(
-        `Filename too long, truncated for filesystem compatibility: "${path}" → "${sanitizedPath}"`
+        `Filename too long, truncated for filesystem compatibility: "${path}" → "${sanitizedPath}"`,
       );
       path = sanitizedPath;
     }
@@ -193,9 +194,10 @@ const replaceInFileSchema = z.object({
   path: z
     .string()
     .describe(
-      `(Required) The path of the file to modify (relative to the root of the vault and include the file extension).`
+      `(Required) The path of the file to modify (relative to the root of the vault and include the file extension).`,
     ),
-  diff: z.string()
+  diff: z
+    .string()
     .describe(`(Required) One or more SEARCH/REPLACE blocks. Each block MUST follow this exact format with these exact markers:
 
 ------- SEARCH
@@ -235,7 +237,7 @@ function normalizeLineEndings(text: string): string {
 function replaceWithLineEndingAwareness(
   content: string,
   searchText: string,
-  replaceText: string
+  replaceText: string,
 ): string {
   // Detect the predominant line ending style in the original content
   const crlfCount = (content.match(/\r\n/g) || []).length;
@@ -250,7 +252,7 @@ function replaceWithLineEndingAwareness(
   // Perform replacement on normalized content
   const resultNormalized = normalizedContent.replaceAll(
     normalizedSearchText,
-    normalizedReplaceText
+    normalizedReplaceText,
   );
 
   // Convert back to original line ending style if CRLF was predominant
@@ -402,7 +404,7 @@ const replaceInFileTool = createLangChainTool({
  * - REPLACE_MARKER: /(?:\r?\n)?\+{3,}\s*REPLACE/ → "+++REPLACE" to "\n+++++++ REPLACE"
  */
 function parseSearchReplaceBlocks(
-  diff: string
+  diff: string,
 ): Array<{ searchText: string; replaceText: string }> {
   const blocks: Array<{ searchText: string; replaceText: string }> = [];
 
@@ -416,7 +418,7 @@ function parseSearchReplaceBlocks(
       SEPARATOR.source +
       "([\\s\\S]*?)" +
       REPLACE_MARKER.source,
-    "g"
+    "g",
   );
 
   let match;

@@ -1,25 +1,25 @@
 import {
+  $createRangeSelection,
+  $createTextNode,
   $getSelection,
   $isRangeSelection,
-  $createTextNode,
   $setSelection,
-  $createRangeSelection,
-  LexicalNode,
-  TextNode,
   createCommand,
   LexicalCommand,
+  LexicalNode,
+  TextNode,
 } from "lexical";
-import { TFile, TFolder, App } from "obsidian";
-import type { WebTabContext } from "@/types/message";
-import { $createNotePillNode } from "../pills/NotePillNode";
-import { $createActiveNotePillNode } from "../pills/ActiveNotePillNode";
-import { $createURLPillNode } from "../pills/URLPillNode";
-import { $createToolPillNode } from "../pills/ToolPillNode";
-import { $createFolderPillNode } from "../pills/FolderPillNode";
-import { $createWebTabPillNode } from "../pills/WebTabPillNode";
-import { $createActiveWebTabPillNode } from "../pills/ActiveWebTabPillNode";
+import { App, TFile, TFolder } from "obsidian";
 import { logInfo } from "@/logger";
+import type { WebTabContext } from "@/types/message";
 import { AVAILABLE_TOOLS } from "../constants/tools";
+import { $createActiveNotePillNode } from "../pills/ActiveNotePillNode";
+import { $createActiveWebTabPillNode } from "../pills/ActiveWebTabPillNode";
+import { $createFolderPillNode } from "../pills/FolderPillNode";
+import { $createNotePillNode } from "../pills/NotePillNode";
+import { $createToolPillNode } from "../pills/ToolPillNode";
+import { $createURLPillNode } from "../pills/URLPillNode";
+import { $createWebTabPillNode } from "../pills/WebTabPillNode";
 
 declare const app: App;
 
@@ -113,7 +113,7 @@ export interface InsertTextOptions {
 function splitTextAtRange(
   text: string,
   startOffset: number,
-  endOffset: number
+  endOffset: number,
 ): { beforeText: string; afterText: string } {
   return {
     beforeText: text.slice(0, startOffset),
@@ -130,7 +130,7 @@ function splitTextAtRange(
 function $replaceTextNodeWithNodes(
   textNode: TextNode,
   nodes: LexicalNode[],
-  setCursorAfter: boolean = true
+  setCursorAfter: boolean = true,
 ): void {
   if (nodes.length === 1 && nodes[0].getType() === "text") {
     // Simple replacement with just text
@@ -168,7 +168,7 @@ function $insertPillWithOptionalSpace(
   beforeText: string,
   pillNode: LexicalNode,
   afterText: string,
-  addSpace: boolean
+  addSpace: boolean,
 ): void {
   // Calculate the space and after text combination
   const spaceAndAfter = addSpace ? (afterText ? " " + afterText : " ") : afterText;
@@ -345,7 +345,7 @@ function resolveNoteReference(noteName: string): TFile | null {
     // Final fallback: search by basename in PDF files
     const allFiles = app.vault.getFiles();
     const pdfFiles = allFiles.filter(
-      (file): file is TFile => file instanceof TFile && file.extension === "pdf"
+      (file): file is TFile => file instanceof TFile && file.extension === "pdf",
     );
     for (const file of pdfFiles) {
       if (file.basename === noteName || file.name === noteName) {
@@ -379,7 +379,7 @@ export function parseTextForPills(
     includeURLs?: boolean;
     includeTools?: boolean;
     includeCustomTemplates?: boolean;
-  } = {}
+  } = {},
 ): ParsedContent[] {
   const {
     includeNotes = true,
@@ -633,7 +633,7 @@ export function $replaceTextRangeWithPills(
   startOffset: number,
   endOffset: number,
   newText: string,
-  options: InsertTextOptions = {}
+  options: InsertTextOptions = {},
 ): void {
   const {
     enableURLPills = false,
@@ -704,7 +704,7 @@ export function $replaceTextRangeWithPills(
 export function $replaceTriggeredTextWithPill(
   triggerChar: string,
   pillData: PillData,
-  addSpaceAfter: boolean = true
+  addSpaceAfter: boolean = true,
 ): void {
   const selection = $getSelection();
   if (!$isRangeSelection(selection)) return;

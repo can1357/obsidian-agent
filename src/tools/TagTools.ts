@@ -24,7 +24,7 @@ export const TagListToolSchema = z
       .max(5000)
       .optional()
       .describe(
-        "Maximum number of tag entries to return, sorted by occurrences. Responses are capped at ~500KB."
+        "Maximum number of tag entries to return, sorted by occurrences. Responses are capped at ~500KB.",
       ),
   })
   .describe("Parameters for retrieving the tag list.");
@@ -105,7 +105,7 @@ function normalizeTagMap(tagMap?: Record<string, number> | null): Record<string,
 function collectTagEntries(
   cache: MetadataCache,
   includeInline: boolean,
-  maxEntries: number
+  maxEntries: number,
 ): TagListPayload {
   const cacheWithTags = cache as MetadataCacheWithTags;
   const frontmatterMap = normalizeTagMap(cacheWithTags.getFrontmatterTags?.());

@@ -1,10 +1,10 @@
-import { getTagsFromNote } from "@/utils";
 import { App, FuzzySuggestModal } from "obsidian";
+import { getTagsFromNote } from "@/utils";
 
 export class TagSearchModal extends FuzzySuggestModal<string> {
   constructor(
     app: App,
-    private onChooseTag: (tag: string) => void
+    private onChooseTag: (tag: string) => void,
   ) {
     super(app);
   }

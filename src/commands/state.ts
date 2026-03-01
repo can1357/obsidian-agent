@@ -1,5 +1,4 @@
-import { atom, createStore } from "jotai";
-import { useAtomValue } from "jotai";
+import { atom, createStore, useAtomValue } from "jotai";
 import { CustomCommand } from "./type";
 
 const customCommandsStore = createStore();
@@ -32,7 +31,7 @@ export function deleteCachedCommand(title: string) {
   const commands = customCommandsStore.get(customCommandsAtom);
   customCommandsStore.set(
     customCommandsAtom,
-    commands.filter((command) => command.title !== title)
+    commands.filter((command) => command.title !== title),
   );
 }
 

@@ -39,7 +39,7 @@ export const getMessageCollapsibleStates = (messageId: string): Map<string, bool
  */
 export const buildCopilotCollapsibleDomId = (
   messageInstanceId: string,
-  sectionKey: string
+  sectionKey: string,
 ): string => {
   // Normalize messageId to be safe for DOM id attribute
   const safeMessageId = messageInstanceId.replace(/[^a-zA-Z0-9_-]/g, "_");
@@ -53,11 +53,11 @@ export const buildCopilotCollapsibleDomId = (
 export const captureCopilotCollapsibleOpenStates = (
   root: HTMLElement,
   stateById: Map<string, boolean>,
-  options: { overwriteExisting?: boolean } = {}
+  options: { overwriteExisting?: boolean } = {},
 ): void => {
   const overwriteExisting = options.overwriteExisting ?? true;
   const detailsList = root.querySelectorAll<HTMLDetailsElement>(
-    `details[id^="${COPILOT_COLLAPSIBLE_DOM_ID_PREFIX}-"]`
+    `details[id^="${COPILOT_COLLAPSIBLE_DOM_ID_PREFIX}-"]`,
   );
   detailsList.forEach((details) => {
     const id = details.id;
@@ -78,7 +78,7 @@ export const captureCopilotCollapsibleOpenStates = (
  */
 export const getCopilotCollapsibleDetailsFromEvent = (
   event: Event,
-  root: HTMLElement
+  root: HTMLElement,
 ): HTMLDetailsElement | null => {
   const path = typeof event.composedPath === "function" ? event.composedPath() : [];
   for (const entry of path) {

@@ -29,7 +29,7 @@ export class FuzzyMatcher {
             Math.min(
               dp[i - 1][j], // deletion
               dp[i][j - 1], // insertion
-              dp[i - 1][j - 1] // substitution
+              dp[i - 1][j - 1], // substitution
             );
         }
       }

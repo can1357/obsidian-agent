@@ -1,21 +1,3 @@
-import { CustomModel } from "@/aiParams";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { MobileCard, MobileCardDropdownAction } from "@/components/ui/mobile-card";
-import { ModelCapabilityIcons } from "@/components/ui/model-display";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { HelpTooltip } from "@/components/ui/help-tooltip";
-import { MODEL_CAPABILITIES, ModelCapability } from "@/constants";
-import { cn } from "@/lib/utils";
-import { getModelKeyFromModel } from "@/settings/model";
-import { getProviderLabel } from "@/utils";
 import {
   closestCenter,
   DndContext,
@@ -48,12 +30,30 @@ import {
   Trash2,
 } from "lucide-react";
 import React, { ForwardRefExoticComponent, RefAttributes, useRef } from "react";
+import { CustomModel } from "@/aiParams";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { HelpTooltip } from "@/components/ui/help-tooltip";
+import { MobileCard, MobileCardDropdownAction } from "@/components/ui/mobile-card";
+import { ModelCapabilityIcons } from "@/components/ui/model-display";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { MODEL_CAPABILITIES, ModelCapability } from "@/constants";
+import { cn } from "@/lib/utils";
+import { getModelKeyFromModel } from "@/settings/model";
+import { getProviderLabel } from "@/utils";
 import { isRequiredChatModel } from "@/utils/modelUtils";
 
 const CAPABILITY_ICONS: Record<
@@ -268,7 +268,7 @@ const DesktopSortableTableRow: React.FC<{
       className={cn(
         "tw-transition-colors tw-duration-200 hover:tw-bg-interactive-accent/10",
         isDragging &&
-          "tw-relative tw-z-[100] tw-cursor-grabbing tw-shadow-lg tw-backdrop-blur-sm tw-border-accent/50 tw-bg-primary/90"
+          "tw-relative tw-z-[100] tw-cursor-grabbing tw-shadow-lg tw-backdrop-blur-sm tw-border-accent/50 tw-bg-primary/90",
       )}
     >
       <TableCell className="tw-w-6 tw-px-2">
@@ -388,7 +388,7 @@ export const ModelTable: React.FC<ModelTableProps> = ({
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const containerRef = useRef<HTMLDivElement>(null);

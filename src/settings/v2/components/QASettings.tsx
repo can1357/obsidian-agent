@@ -1,6 +1,5 @@
-import React from "react";
-
 import { Notice } from "obsidian";
+import React from "react";
 
 import { RebuildIndexConfirmModal } from "@/components/modals/RebuildIndexConfirmModal";
 import { SemanticSearchToggleModal } from "@/components/modals/SemanticSearchToggleModal";
@@ -67,7 +66,7 @@ export const QASettings: React.FC = () => {
                     });
                   }
                 },
-                checked // true = enabling, false = disabling
+                checked, // true = enabling, false = disabling
               ).open();
             }}
           />

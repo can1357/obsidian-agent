@@ -1,9 +1,9 @@
 import { atom } from "jotai";
-import { TFile, TFolder, TAbstractFile } from "obsidian";
 import debounce from "lodash.debounce";
+import { TAbstractFile, TFile, TFolder } from "obsidian";
+import { logInfo } from "@/logger";
 import { settingsStore } from "@/settings/model";
 import { getTagsFromNote, isAllowedFileForNoteContext } from "@/utils";
-import { logInfo } from "@/logger";
 
 /**
  * Debounce delay for vault file operations (in milliseconds).
@@ -185,7 +185,7 @@ export class VaultDataManager {
     {
       leading: true,
       trailing: true,
-    }
+    },
   );
 
   /**
@@ -205,7 +205,7 @@ export class VaultDataManager {
 
     const allFiles = app.vault.getFiles();
     const newFiles = allFiles.filter(
-      (file): file is TFile => file instanceof TFile && isAllowedFileForNoteContext(file)
+      (file): file is TFile => file instanceof TFile && isAllowedFileForNoteContext(file),
     );
 
     // Always update atom with new array reference to ensure React components re-render

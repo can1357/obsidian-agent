@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Lightbulb } from "lucide-react";
 import { App, Modal, Notice, Platform } from "obsidian";
+import React, { useState } from "react";
 import { createRoot, Root } from "react-dom/client";
-import { UserSystemPrompt } from "@/system-prompts/type";
-import { validatePromptName } from "@/system-prompts/systemPromptUtils";
-import { SystemPromptManager } from "@/system-prompts/systemPromptManager";
-import { EMPTY_SYSTEM_PROMPT } from "@/system-prompts/constants";
-import { useSettingsValue } from "@/settings/model";
 import { SystemPromptSyntaxInstruction } from "@/components/SystemPromptSyntaxInstruction";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { logError } from "@/logger";
+import { useSettingsValue } from "@/settings/model";
+import { EMPTY_SYSTEM_PROMPT } from "@/system-prompts/constants";
+import { SystemPromptManager } from "@/system-prompts/systemPromptManager";
+import { validatePromptName } from "@/system-prompts/systemPromptUtils";
+import { UserSystemPrompt } from "@/system-prompts/type";
 
 {
   /* TODO(emt-lin): May be used in the future */
@@ -225,7 +225,7 @@ export class SystemPromptAddModal extends Modal {
 
   constructor(
     app: App,
-    private prompts: UserSystemPrompt[]
+    private prompts: UserSystemPrompt[],
   ) {
     super(app);
     // @ts-ignore - setTitle exists in Obsidian Modal
@@ -268,7 +268,7 @@ export class SystemPromptAddModal extends Modal {
         onConfirm={handleConfirm}
         onCancel={() => this.close()}
         contentEl={contentEl}
-      />
+      />,
     );
   }
 

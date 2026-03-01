@@ -1,14 +1,14 @@
 import {
   COPILOT_FOLDER_ROOT,
   DEFAULT_QA_EXCLUSIONS_SETTING,
-  DEFAULT_SYSTEM_PROMPT,
   DEFAULT_SETTINGS,
+  DEFAULT_SYSTEM_PROMPT,
   SEND_SHORTCUT,
 } from "@/constants";
-import { sanitizeQaExclusions, sanitizeSettings } from "@/settings/model";
-import { getEffectiveUserPrompt, getSystemPrompt } from "@/system-prompts/systemPromptBuilder";
-import * as systemPromptsState from "@/system-prompts/state";
 import * as settingsModel from "@/settings/model";
+import { sanitizeQaExclusions, sanitizeSettings } from "@/settings/model";
+import * as systemPromptsState from "@/system-prompts/state";
+import { getEffectiveUserPrompt, getSystemPrompt } from "@/system-prompts/systemPromptBuilder";
 
 // Mock system-prompts state
 jest.mock("@/system-prompts/state", () => ({
@@ -133,7 +133,7 @@ describe("sanitizeSettings - autoAddActiveContentToContext migration", () => {
     const sanitized = sanitizeSettings(newSettings);
 
     expect(sanitized.autoAddActiveContentToContext).toBe(
-      DEFAULT_SETTINGS.autoAddActiveContentToContext
+      DEFAULT_SETTINGS.autoAddActiveContentToContext,
     );
   });
 });
@@ -262,7 +262,7 @@ ${userPrompt}
     // which is already tested in state.test.ts
     const sessionPrompt = "Session prompt content";
     (systemPromptsState.getEffectiveSystemPromptContent as jest.Mock).mockReturnValue(
-      sessionPrompt
+      sessionPrompt,
     );
     (systemPromptsState.getDisableBuiltinSystemPrompt as jest.Mock).mockReturnValue(false);
 
@@ -280,7 +280,7 @@ describe("getEffectiveUserPrompt - legacy fallback", () => {
   it("returns file-based prompt when available", () => {
     const fileBasedPrompt = "File-based prompt content";
     (systemPromptsState.getEffectiveSystemPromptContent as jest.Mock).mockReturnValue(
-      fileBasedPrompt
+      fileBasedPrompt,
     );
     (settingsModel.getSettings as jest.Mock).mockReturnValue({
       userSystemPrompt: "Legacy prompt",
@@ -318,7 +318,7 @@ describe("getEffectiveUserPrompt - legacy fallback", () => {
     const fileBasedPrompt = "File-based wins";
     const legacyPrompt = "Legacy loses";
     (systemPromptsState.getEffectiveSystemPromptContent as jest.Mock).mockReturnValue(
-      fileBasedPrompt
+      fileBasedPrompt,
     );
     (settingsModel.getSettings as jest.Mock).mockReturnValue({
       userSystemPrompt: legacyPrompt,

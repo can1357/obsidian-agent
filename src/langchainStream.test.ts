@@ -32,7 +32,7 @@ describe("getAIResponse onboarding errors", () => {
       chainManager,
       addMessage,
       updateCurrentAiMessage,
-      updateShouldAbort
+      updateShouldAbort,
     );
 
     expect(chainManager.runChain).toHaveBeenCalledTimes(1);

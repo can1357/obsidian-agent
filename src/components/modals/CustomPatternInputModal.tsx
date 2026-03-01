@@ -51,7 +51,7 @@ export class CustomPatternInputModal extends Modal {
 
   constructor(
     app: App,
-    private onConfirm: (pattern: string) => void
+    private onConfirm: (pattern: string) => void,
   ) {
     super(app);
     // https://docs.obsidian.md/Reference/TypeScript+API/Modal/setTitle
@@ -73,7 +73,7 @@ export class CustomPatternInputModal extends Modal {
     };
 
     this.root.render(
-      <CustomPatternInputModalContent onConfirm={handleConfirm} onCancel={handleCancel} />
+      <CustomPatternInputModalContent onConfirm={handleConfirm} onCancel={handleCancel} />,
     );
   }
 

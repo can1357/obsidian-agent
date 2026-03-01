@@ -1,15 +1,15 @@
-import { CustomModel } from "@/aiParams";
-import { EmbeddingModelProviders, ProviderInfo } from "@/constants";
-import { getDecryptedKey } from "@/encryptionService";
-import { CustomError } from "@/error";
-import { getModelKeyFromModel, getSettings, subscribeToSettingsChange } from "@/settings/model";
-import { err2String, safeFetch } from "@/utils";
 import { CohereEmbeddings } from "@langchain/cohere";
 import { Embeddings } from "@langchain/core/embeddings";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { OllamaEmbeddings } from "@langchain/ollama";
 import { AzureOpenAIEmbeddings, OpenAIEmbeddings } from "@langchain/openai";
 import { Notice } from "obsidian";
+import { CustomModel } from "@/aiParams";
+import { EmbeddingModelProviders, ProviderInfo } from "@/constants";
+import { getDecryptedKey } from "@/encryptionService";
+import { CustomError } from "@/error";
+import { getModelKeyFromModel, getSettings, subscribeToSettingsChange } from "@/settings/model";
+import { err2String, safeFetch } from "@/utils";
 import { CustomOpenAIEmbeddings } from "./CustomOpenAIEmbeddings";
 
 type EmbeddingConstructorType = new (config: any) => Embeddings;
@@ -89,7 +89,7 @@ export default class EmbeddingManager {
       if (model.enabled) {
         if (
           !Object.values(EmbeddingModelProviders).contains(
-            model.provider as EmbeddingModelProviders
+            model.provider as EmbeddingModelProviders,
           )
         ) {
           console.warn(`Unknown provider: ${model.provider} for embedding model: ${model.name}`);
@@ -117,7 +117,7 @@ export default class EmbeddingManager {
       return emb.modelName as string;
     } else {
       throw new Error(
-        `Embeddings instance missing model or modelName properties: ${embeddingsInstance}`
+        `Embeddings instance missing model or modelName properties: ${embeddingsInstance}`,
       );
     }
   }
@@ -143,7 +143,7 @@ export default class EmbeddingManager {
     const selectedModel = EmbeddingManager.modelMap[embeddingModelKey];
     if (!selectedModel.hasApiKey) {
       throw new CustomError(
-        `API key is not provided for the embedding model: ${embeddingModelKey}`
+        `API key is not provided for the embedding model: ${embeddingModelKey}`,
       );
     }
 
@@ -154,7 +154,7 @@ export default class EmbeddingManager {
       return EmbeddingManager.embeddingModel;
     } catch (error) {
       throw new CustomError(
-        `Error creating embedding model: ${embeddingModelKey}. ${error.message}`
+        `Error creating embedding model: ${embeddingModelKey}. ${error.message}`,
       );
     }
   }
@@ -284,7 +284,7 @@ export default class EmbeddingManager {
         // Second try with CORS
         await tryPing(true);
         new Notice(
-          "Connection successful, but requires CORS to be enabled. Please enable CORS for this model once you add it above."
+          "Connection successful, but requires CORS to be enabled. Please enable CORS for this model once you add it above.",
         );
         return true;
       } catch (error) {

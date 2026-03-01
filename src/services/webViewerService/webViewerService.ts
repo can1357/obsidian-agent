@@ -208,7 +208,7 @@ export class WebViewerService {
       () => Boolean(view.webviewMounted && view.webviewFirstLoadFinished),
       timeoutMs,
       100,
-      "Waiting for Web Viewer webview ready"
+      "Waiting for Web Viewer webview ready",
     );
   }
 
@@ -251,7 +251,7 @@ export class WebViewerService {
    * Call this in plugin onload() and register the returned EventRefs.
    */
   startActiveWebTabTracking(
-    options: StartActiveWebTabTrackingOptions = {}
+    options: StartActiveWebTabTrackingOptions = {},
   ): ActiveWebTabTrackingRefs {
     return this.stateManager.startActiveWebTabTracking(options);
   }
@@ -268,7 +268,7 @@ export class WebViewerService {
   /** Execute a Web Viewer command by ID. */
   async executeCommand(
     id: WebViewerCommandId,
-    options: { leaf?: WebViewerLeaf; focusLeaf?: boolean } = {}
+    options: { leaf?: WebViewerLeaf; focusLeaf?: boolean } = {},
   ): Promise<void> {
     const cm = getCommandManager(this.app);
     if (!cm) throw new WebViewerError("Command manager unavailable.");
@@ -305,7 +305,7 @@ export class WebViewerService {
         this.internalApiWarned = true;
         logWarn(
           "[WebViewerService] internalPlugins.plugins has unexpected structure. " +
-            "Web Viewer integration may not work correctly."
+            "Web Viewer integration may not work correctly.",
         );
       }
     });
@@ -325,7 +325,7 @@ export class WebViewerService {
   }
   async getReaderModeMarkdown(
     leaf: WebViewerLeaf,
-    options?: { signal?: AbortSignal }
+    options?: { signal?: AbortSignal },
   ): Promise<string> {
     return actions.getReaderModeMarkdown(leaf, options);
   }
@@ -365,7 +365,7 @@ export class WebViewerService {
    */
   async getYouTubeTranscript(
     leaf: WebViewerLeaf,
-    options?: { timeoutMs?: number }
+    options?: { timeoutMs?: number },
   ): Promise<actions.YouTubeTranscriptResult> {
     return actions.getYouTubeTranscript(leaf, options);
   }
@@ -376,7 +376,7 @@ export class WebViewerService {
 
   async saveToVault(
     leaf: WebViewerLeaf,
-    options: { preferCommand?: boolean; focusLeafBeforeCommand?: boolean } = {}
+    options: { preferCommand?: boolean; focusLeafBeforeCommand?: boolean } = {},
   ): Promise<SaveToVaultResult> {
     return actions.saveToVault(leaf, (id, opts) => this.executeCommand(id, opts), options);
   }

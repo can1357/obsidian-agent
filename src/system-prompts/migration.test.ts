@@ -1,8 +1,8 @@
-import { migrateSystemPromptsFromSettings } from "@/system-prompts/migration";
 import { TFile, Vault } from "obsidian";
-import * as settingsModel from "@/settings/model";
-import * as systemPromptUtils from "@/system-prompts/systemPromptUtils";
 import * as logger from "@/logger";
+import * as settingsModel from "@/settings/model";
+import { migrateSystemPromptsFromSettings } from "@/system-prompts/migration";
+import * as systemPromptUtils from "@/system-prompts/systemPromptUtils";
 import * as utils from "@/utils";
 
 // Mock Obsidian
@@ -152,7 +152,7 @@ describe("migrateSystemPromptsFromSettings", () => {
 
     expect(mockVault.create).toHaveBeenCalledWith(
       "SystemPrompts/Migrated Custom System Prompt.md",
-      legacyPrompt
+      legacyPrompt,
     );
   });
 
@@ -173,7 +173,7 @@ describe("migrateSystemPromptsFromSettings", () => {
     // Whitespace should be preserved (only line endings normalized)
     expect(mockVault.create).toHaveBeenCalledWith(
       "SystemPrompts/Migrated Custom System Prompt.md",
-      "  This is a legacy system prompt.  \n\n"
+      "  This is a legacy system prompt.  \n\n",
     );
   });
 
@@ -199,7 +199,7 @@ describe("migrateSystemPromptsFromSettings", () => {
       expect.objectContaining({
         title: "Migrated Custom System Prompt",
         content: legacyPrompt,
-      })
+      }),
     );
   });
 
@@ -242,7 +242,7 @@ describe("migrateSystemPromptsFromSettings", () => {
 
     expect(settingsModel.updateSetting).toHaveBeenCalledWith(
       "defaultSystemPromptTitle",
-      "Migrated Custom System Prompt"
+      "Migrated Custom System Prompt",
     );
   });
 
@@ -294,14 +294,14 @@ describe("migrateSystemPromptsFromSettings", () => {
     // Should create file with unique name
     expect(mockVault.create).toHaveBeenCalledWith(
       "SystemPrompts/Migrated Custom System Prompt 2.md",
-      legacyPrompt
+      legacyPrompt,
     );
     expect(logger.logInfo).toHaveBeenCalledWith(
-      'Default name already exists, using unique name: "Migrated Custom System Prompt 2"'
+      'Default name already exists, using unique name: "Migrated Custom System Prompt 2"',
     );
     expect(settingsModel.updateSetting).toHaveBeenCalledWith(
       "defaultSystemPromptTitle",
-      "Migrated Custom System Prompt 2"
+      "Migrated Custom System Prompt 2",
     );
   });
 
@@ -328,7 +328,7 @@ describe("migrateSystemPromptsFromSettings", () => {
 
     expect(mockVault.create).toHaveBeenCalledWith(
       "SystemPrompts/Migrated Custom System Prompt 3.md",
-      legacyPrompt
+      legacyPrompt,
     );
   });
 
@@ -367,7 +367,7 @@ describe("migrateSystemPromptsFromSettings", () => {
 
     expect(logger.logError).toHaveBeenCalledWith(
       "Failed to migrate legacy userSystemPrompt:",
-      error
+      error,
     );
     // Should NOT clear userSystemPrompt when all save attempts fail
     expect(settingsModel.updateSetting).not.toHaveBeenCalledWith("userSystemPrompt", "");
@@ -411,7 +411,7 @@ describe("migrateSystemPromptsFromSettings", () => {
         title: "Migrated Custom System Prompt",
         content: legacyPrompt,
         lastUsedMs: 0,
-      })
+      }),
     );
 
     const callArgs = (systemPromptUtils.ensurePromptFrontmatter as jest.Mock).mock.calls[0][1];
@@ -441,7 +441,7 @@ describe("migrateSystemPromptsFromSettings", () => {
 
       // Simulate content mismatch - vault.read returns different content
       (mockVault.read as jest.Mock).mockResolvedValueOnce(
-        `---\ntest: true\n---\nDifferent content that does not match!`
+        `---\ntest: true\n---\nDifferent content that does not match!`,
       );
 
       await migrateSystemPromptsFromSettings(mockVault);
@@ -449,7 +449,7 @@ describe("migrateSystemPromptsFromSettings", () => {
       // Should save to unsupported folder
       expect(mockVault.create).toHaveBeenCalledWith(
         "SystemPrompts/unsupported/Migrated System Prompt (Failed Verification).md",
-        expect.stringContaining("Migration failed: content verification mismatch")
+        expect.stringContaining("Migration failed: content verification mismatch"),
       );
 
       // Should clear userSystemPrompt even when verification fails (follows command pattern)
@@ -500,7 +500,7 @@ describe("migrateSystemPromptsFromSettings", () => {
       // Should save to unsupported folder
       expect(mockVault.create).toHaveBeenCalledWith(
         expect.stringContaining("unsupported/"),
-        expect.any(String)
+        expect.any(String),
       );
 
       // Should clear userSystemPrompt when saved to unsupported successfully
@@ -527,7 +527,7 @@ describe("migrateSystemPromptsFromSettings", () => {
       // Should save to unsupported folder
       expect(mockVault.create).toHaveBeenCalledWith(
         expect.stringContaining("unsupported/"),
-        expect.stringContaining("Migration failed")
+        expect.stringContaining("Migration failed"),
       );
 
       // Should clear userSystemPrompt after saving to unsupported
@@ -557,7 +557,7 @@ describe("migrateSystemPromptsFromSettings", () => {
       expect(settingsModel.updateSetting).toHaveBeenCalledWith("userSystemPrompt", "");
       expect(settingsModel.updateSetting).toHaveBeenCalledWith(
         "defaultSystemPromptTitle",
-        "Migrated Custom System Prompt"
+        "Migrated Custom System Prompt",
       );
     });
 
@@ -602,7 +602,7 @@ describe("migrateSystemPromptsFromSettings", () => {
 
       // Saved content uses LF (Unix style) - file system normalized line endings
       (mockVault.read as jest.Mock).mockResolvedValueOnce(
-        `---\ntest: true\n---\nLine 1\nLine 2\nLine 3`
+        `---\ntest: true\n---\nLine 1\nLine 2\nLine 3`,
       );
 
       await migrateSystemPromptsFromSettings(mockVault);
@@ -631,7 +631,7 @@ describe("migrateSystemPromptsFromSettings", () => {
       // stripFrontmatter({ trimStart: false }) only removes one newline,
       // but we now strip leading newlines before comparison
       (mockVault.read as jest.Mock).mockResolvedValueOnce(
-        `---\ntest: true\n---\n\n${legacyPrompt}`
+        `---\ntest: true\n---\n\n${legacyPrompt}`,
       );
 
       await migrateSystemPromptsFromSettings(mockVault);
@@ -640,7 +640,7 @@ describe("migrateSystemPromptsFromSettings", () => {
       expect(settingsModel.updateSetting).toHaveBeenCalledWith("userSystemPrompt", "");
       expect(settingsModel.updateSetting).toHaveBeenCalledWith(
         "defaultSystemPromptTitle",
-        "Migrated Custom System Prompt"
+        "Migrated Custom System Prompt",
       );
     });
   });

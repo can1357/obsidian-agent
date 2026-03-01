@@ -1,5 +1,20 @@
 import { TFile, Vault } from "obsidian";
-import { UserSystemPrompt } from "@/system-prompts/type";
+import { logInfo } from "@/logger";
+import { getSettings, updateSetting } from "@/settings/model";
+import {
+  COPILOT_SYSTEM_PROMPT_CREATED,
+  COPILOT_SYSTEM_PROMPT_LAST_USED,
+  COPILOT_SYSTEM_PROMPT_MODIFIED,
+} from "@/system-prompts/constants";
+import {
+  addPendingFileWrite,
+  deleteCachedSystemPrompt,
+  getCachedSystemPrompts,
+  getSelectedPromptTitle,
+  removePendingFileWrite,
+  setSelectedPromptTitle,
+  upsertCachedSystemPrompt,
+} from "@/system-prompts/state";
 import {
   ensurePromptFrontmatter,
   fetchAllSystemPrompts,
@@ -9,23 +24,8 @@ import {
   loadAllSystemPrompts,
   validatePromptName,
 } from "@/system-prompts/systemPromptUtils";
-import {
-  getCachedSystemPrompts,
-  upsertCachedSystemPrompt,
-  deleteCachedSystemPrompt,
-  addPendingFileWrite,
-  removePendingFileWrite,
-  getSelectedPromptTitle,
-  setSelectedPromptTitle,
-} from "@/system-prompts/state";
-import {
-  COPILOT_SYSTEM_PROMPT_CREATED,
-  COPILOT_SYSTEM_PROMPT_MODIFIED,
-  COPILOT_SYSTEM_PROMPT_LAST_USED,
-} from "@/system-prompts/constants";
-import { logInfo } from "@/logger";
+import { UserSystemPrompt } from "@/system-prompts/type";
 import { ensureFolderExists } from "@/utils";
-import { getSettings, updateSetting } from "@/settings/model";
 
 /**
  * Singleton manager for system prompts
@@ -111,7 +111,7 @@ export class SystemPromptManager {
   public async updatePrompt(
     oldTitle: string,
     newPrompt: UserSystemPrompt,
-    skipStoreUpdate = false
+    skipStoreUpdate = false,
   ): Promise<void> {
     const oldPath = getPromptFilePath(oldTitle);
     const newPath = getPromptFilePath(newPrompt.title);

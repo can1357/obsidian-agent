@@ -1,20 +1,20 @@
-import React from "react";
 import {
+  $getRoot,
   DOMConversionMap,
   DOMConversionOutput,
   DOMExportOutput,
   EditorConfig,
   LexicalNode,
   NodeKey,
-  $getRoot,
 } from "lexical";
 import { Globe } from "lucide-react";
 import { Platform } from "obsidian";
+import React from "react";
 import { ACTIVE_WEB_TAB_MARKER } from "@/constants";
-import { BasePillNode, SerializedBasePillNode } from "./BasePillNode";
-import { TruncatedPillText } from "./TruncatedPillText";
-import { PillBadge } from "./PillBadge";
 import { useActiveWebTabState } from "../hooks/useActiveWebTabState";
+import { BasePillNode, SerializedBasePillNode } from "./BasePillNode";
+import { PillBadge } from "./PillBadge";
+import { TruncatedPillText } from "./TruncatedPillText";
 
 export type SerializedActiveWebTabPillNode = SerializedBasePillNode;
 
@@ -167,7 +167,7 @@ export function $createActiveWebTabPillNode(): ActiveWebTabPillNode {
 
 /** Check if a node is an ActiveWebTabPillNode. */
 export function $isActiveWebTabPillNode(
-  node: LexicalNode | null | undefined
+  node: LexicalNode | null | undefined,
 ): node is ActiveWebTabPillNode {
   return node instanceof ActiveWebTabPillNode;
 }

@@ -1,4 +1,11 @@
 import {
+  ChatPromptTemplate,
+  HumanMessagePromptTemplate,
+  MessagesPlaceholder,
+} from "@langchain/core/prompts";
+import { RunnableSequence } from "@langchain/core/runnables";
+import { App, Notice } from "obsidian";
+import {
   getChainType,
   getCurrentProject,
   getModelKey,
@@ -7,6 +14,7 @@ import {
 } from "@/aiParams";
 import ChainFactory, { ChainType, Document } from "@/chainFactory";
 import { DEFAULT_MAX_SOURCE_CHUNKS, USER_SENDER } from "@/constants";
+import { MissingModelKeyError } from "@/error";
 import {
   AutonomousAgentChainRunner,
   ChainRunner,
@@ -16,22 +24,14 @@ import {
   VaultQAChainRunner,
 } from "@/LLMProviders/chainRunner/index";
 import { logError, logInfo } from "@/logger";
+import { UserMemoryManager } from "@/memory/UserMemoryManager";
 import { getSettings, subscribeToSettingsChange } from "@/settings/model";
 import { getSystemPrompt } from "@/system-prompts/systemPromptBuilder";
 import { ChatMessage } from "@/types/message";
 import { findCustomModel, isOSeriesModel, isSupportedChain } from "@/utils";
-import { MissingModelKeyError } from "@/error";
-import {
-  ChatPromptTemplate,
-  HumanMessagePromptTemplate,
-  MessagesPlaceholder,
-} from "@langchain/core/prompts";
-import { RunnableSequence } from "@langchain/core/runnables";
-import { App, Notice } from "obsidian";
 import ChatModelManager from "./chatModelManager";
 import MemoryManager from "./memoryManager";
 import PromptManager from "./promptManager";
-import { UserMemoryManager } from "@/memory/UserMemoryManager";
 
 export default class ChainManager {
   // TODO: These chains are deprecated since we now use direct chat model calls in chain runners
@@ -116,7 +116,7 @@ export default class ChainManager {
    */
   async createChainWithNewModel(
     options: SetChainOptions = {},
-    neededReInitChatMode: boolean = true
+    neededReInitChatMode: boolean = true,
   ): Promise<void> {
     let newModelKey: string | undefined;
     const chainType = getChainType();
@@ -140,7 +140,7 @@ export default class ChainManager {
           const fallbackModel = getSettings().activeModels.find((model) => model.enabled);
           if (!fallbackModel) {
             throw new MissingModelKeyError(
-              "No valid model is configured. Add a model in Settings → Copilot → Model settings."
+              "No valid model is configured. Add a model in Settings → Copilot → Model settings.",
             );
           }
           customModel = fallbackModel;
@@ -150,17 +150,17 @@ export default class ChainManager {
         if (chainType === ChainType.PROJECT_CHAIN && !customModel.projectEnabled) {
           // If the model is not project-enabled, find the first project-enabled model
           const projectEnabledModel = getSettings().activeModels.find(
-            (m) => m.enabled && m.projectEnabled
+            (m) => m.enabled && m.projectEnabled,
           );
           if (projectEnabledModel) {
             customModel = projectEnabledModel;
             newModelKey = projectEnabledModel.name + "|" + projectEnabledModel.provider;
             new Notice(
-              `Model ${customModel.name} is not available in project mode. Switching to ${projectEnabledModel.name}.`
+              `Model ${customModel.name} is not available in project mode. Switching to ${projectEnabledModel.name}.`,
             );
           } else {
             throw new Error(
-              "No project-enabled models available. Please enable a model for project mode in settings."
+              "No project-enabled models available. Please enable a model for project mode in settings.",
             );
           }
         }
@@ -243,7 +243,7 @@ export default class ChainManager {
             systemMessage: getSystemPrompt(),
           },
           this.storeRetrieverDocuments.bind(this),
-          getSettings().debug
+          getSettings().debug,
         );
 
         setChainType(ChainType.VAULT_QA_CHAIN);
@@ -331,14 +331,14 @@ export default class ChainManager {
       debug?: boolean;
       ignoreSystemMessage?: boolean;
       updateLoading?: (loading: boolean) => void;
-    } = {}
+    } = {},
   ) {
     const { ignoreSystemMessage = false } = options;
 
     const l5Text = userMessage.contextEnvelope?.layers.find((l) => l.id === "L5_USER")?.text;
     logInfo(
       "Step 0: Initial user message:\n",
-      l5Text || userMessage.originalMessage || userMessage.message
+      l5Text || userMessage.originalMessage || userMessage.message,
     );
 
     this.validateChatModel();
@@ -374,7 +374,7 @@ export default class ChainManager {
       abortController,
       updateCurrentAiMessage,
       addMessage,
-      options
+      options,
     );
   }
 }

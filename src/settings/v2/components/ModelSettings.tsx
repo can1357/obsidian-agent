@@ -1,3 +1,5 @@
+import { Notice } from "obsidian";
+import React, { useState } from "react";
 import { CustomModel } from "@/aiParams";
 import { SettingItem } from "@/components/ui/setting-item";
 import EmbeddingManager from "@/LLMProviders/embeddingManager";
@@ -8,8 +10,6 @@ import { ModelAddDialog } from "@/settings/v2/components/ModelAddDialog";
 import { ModelEditModal } from "@/settings/v2/components/ModelEditDialog";
 import { ModelTable } from "@/settings/v2/components/ModelTable";
 import { omit } from "@/utils";
-import { Notice } from "obsidian";
-import React, { useState } from "react";
 
 export const ModelSettings: React.FC = () => {
   const settings = useSettingsValue();
@@ -46,7 +46,7 @@ export const ModelSettings: React.FC = () => {
   const onDeleteModel = (modelKey: string) => {
     const [modelName, provider] = modelKey.split("|");
     const updatedActiveModels = settings.activeModels.filter(
-      (model) => !(model.name === modelName && model.provider === provider)
+      (model) => !(model.name === modelName && model.provider === provider),
     );
 
     let newDefaultModelKey = settings.defaultModelKey;
@@ -66,14 +66,14 @@ export const ModelSettings: React.FC = () => {
   const handleModelUpdate = (
     isEmbeddingModel: boolean,
     originalModel: CustomModel,
-    updatedModel: CustomModel
+    updatedModel: CustomModel,
   ) => {
     const settingField: keyof CopilotSettings = isEmbeddingModel
       ? "activeEmbeddingModels"
       : "activeModels";
 
     const modelIndex = settings[settingField].findIndex(
-      (m) => m.name === originalModel.name && m.provider === originalModel.provider
+      (m) => m.name === originalModel.name && m.provider === originalModel.provider,
     );
     if (modelIndex !== -1) {
       const updatedModels = [...settings[settingField]];
@@ -88,7 +88,7 @@ export const ModelSettings: React.FC = () => {
   // Handler for updates originating from the ModelTable itself (e.g., checkbox toggles)
   const handleTableUpdate = (updatedModel: CustomModel) => {
     const updatedModels = settings.activeModels.map((m) =>
-      m.name === updatedModel.name && m.provider === updatedModel.provider ? updatedModel : m
+      m.name === updatedModel.name && m.provider === updatedModel.provider ? updatedModel : m,
     );
     updateSetting("activeModels", updatedModels);
   };
@@ -96,14 +96,14 @@ export const ModelSettings: React.FC = () => {
   const onDeleteEmbeddingModel = (modelKey: string) => {
     const [modelName, provider] = modelKey.split("|");
     const updatedModels = settings.activeEmbeddingModels.filter(
-      (model) => !(model.name === modelName && model.provider === provider)
+      (model) => !(model.name === modelName && model.provider === provider),
     );
     updateSetting("activeEmbeddingModels", updatedModels);
   };
 
   const handleEmbeddingModelUpdate = (updatedModel: CustomModel) => {
     const updatedModels = settings.activeEmbeddingModels.map((m) =>
-      m.name === updatedModel.name && m.provider === updatedModel.provider ? updatedModel : m
+      m.name === updatedModel.name && m.provider === updatedModel.provider ? updatedModel : m,
     );
     updateSetting("activeEmbeddingModels", updatedModels);
   };

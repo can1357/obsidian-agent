@@ -1,5 +1,5 @@
-import { PromptSection, joinPromptSections } from "./modelAdapter";
-import { processRawChatHistory, processedMessagesToTextOnly } from "./chatHistoryUtils";
+import { processedMessagesToTextOnly, processRawChatHistory } from "./chatHistoryUtils";
+import { joinPromptSections, PromptSection } from "./modelAdapter";
 
 /**
  * Options for building prompt debug sections with annotated provenance.
@@ -28,7 +28,7 @@ export interface PromptDebugReport {
  * @returns Prompt sections with provenance metadata.
  */
 export function buildPromptDebugSections(
-  options: BuildPromptDebugSectionsOptions
+  options: BuildPromptDebugSectionsOptions,
 ): PromptSection[] {
   const { systemSections, rawHistory, adapterName, originalUserMessage, enhancedUserMessage } =
     options;
@@ -92,7 +92,7 @@ export function formatPromptSectionsWithAnnotations(sections: PromptSection[]): 
  * @returns Report including sections, annotated prompt, and the raw system prompt string.
  */
 export function buildPromptDebugReport(
-  options: BuildPromptDebugSectionsOptions
+  options: BuildPromptDebugSectionsOptions,
 ): PromptDebugReport {
   const sections = buildPromptDebugSections(options);
   const annotatedPrompt = formatPromptSectionsWithAnnotations(sections);

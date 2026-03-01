@@ -1,5 +1,6 @@
 import * as Obsidian from "obsidian";
 import { TFile } from "obsidian";
+import { TimeoutError } from "./error";
 import {
   extractNoteFiles,
   extractTemplateNoteFiles,
@@ -13,7 +14,6 @@ import {
   truncateToByteLimit,
   withTimeout,
 } from "./utils";
-import { TimeoutError } from "./error";
 
 // Mock Obsidian's TFile class
 jest.mock("obsidian", () => {
@@ -547,7 +547,7 @@ describe("withTimeout", () => {
     await expect(withTimeout(operation, 50, "Test operation")).rejects.toThrow(TimeoutError);
 
     await expect(withTimeout(operation, 50, "Test operation")).rejects.toThrow(
-      "Test operation timed out after 50ms"
+      "Test operation timed out after 50ms",
     );
   });
 

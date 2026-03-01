@@ -55,7 +55,7 @@ describe("GrepScanner", () => {
     it("should respect the limit parameter", async () => {
       const results = await scanner.batchCachedReadGrep(
         ["programming", "typescript", "javascript"],
-        2
+        2,
       );
 
       expect(results.length).toBeLessThanOrEqual(2);

@@ -22,7 +22,7 @@ export interface ProjectSearchOptions {
 function searchInProject(
   project: ProjectConfig,
   query: string,
-  options: ProjectSearchOptions = {}
+  options: ProjectSearchOptions = {},
 ): boolean {
   const { caseSensitive = false, searchInName = true, searchInDescription = true } = options;
 
@@ -63,7 +63,7 @@ function searchInProject(
 export function filterProjects(
   projects: ProjectConfig[],
   query: string,
-  options: ProjectSearchOptions = {}
+  options: ProjectSearchOptions = {},
 ): ProjectConfig[] {
   // If project list is empty, return empty array directly
   if (!projects || projects.length === 0) {

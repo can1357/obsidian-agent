@@ -36,7 +36,7 @@ Response format: Match the format implied by the user's request (e.g., if they a
  */
 export function appendIncludeNoteContextPlaceholders(
   userContent: string,
-  includeActiveNote: boolean
+  includeActiveNote: boolean,
 ): string {
   if (!includeActiveNote) {
     return userContent;

@@ -10,11 +10,11 @@ import { EditorView } from "@codemirror/view";
 import type { Editor } from "obsidian";
 import React from "react";
 import { createRoot, Root } from "react-dom/client";
-import { updateDynamicStyleClass, clearDynamicStyleClass } from "@/utils/dom/dynamicStyleManager";
-import { QuickAskPanel } from "./QuickAskPanel";
-import type CopilotPlugin from "@/main";
 import type { ReplaceGuard } from "@/editor/replaceGuard";
 import type { ResizeDirection } from "@/hooks/use-resizable";
+import type CopilotPlugin from "@/main";
+import { clearDynamicStyleClass, updateDynamicStyleClass } from "@/utils/dom/dynamicStyleManager";
+import { QuickAskPanel } from "./QuickAskPanel";
 
 // Layout constants for Quick Ask panel positioning
 const PANEL_MARGIN = 12;
@@ -225,7 +225,7 @@ export class QuickAskOverlay {
         onDragOffset={this.handleDragOffset}
         onResizeStart={this.handleResizeStart}
         hasCustomHeight={this.hasUserResizedHeight}
-      />
+      />,
     );
   }
 
@@ -393,7 +393,7 @@ export class QuickAskOverlay {
    */
   private resolveVisibleAnchorRect(
     hostRect: DOMRect,
-    scrollRect: DOMRect | undefined
+    scrollRect: DOMRect | undefined,
   ): AnchorRect | null {
     const visibleRect = scrollRect ?? hostRect;
     const positionsToTry: Array<number | null> = [this.pos, this.fallbackPos];
@@ -433,7 +433,7 @@ export class QuickAskOverlay {
     // Calculate panel dimensions using constants
     const defaultWidth = Math.min(
       PANEL_DEFAULT_WIDTH_MAX,
-      viewportWidth * PANEL_DEFAULT_WIDTH_RATIO
+      viewportWidth * PANEL_DEFAULT_WIDTH_RATIO,
     );
     const maxWidth = Math.min(PANEL_MAX_WIDTH_MAX, viewportWidth * PANEL_MAX_WIDTH_RATIO);
     // Minimum width adapts to viewport to prevent overflow in narrow panes
@@ -509,7 +509,7 @@ export class QuickAskOverlay {
    */
   private handleResizeStart = (
     direction: ResizeDirection,
-    start: { x: number; y: number }
+    start: { x: number; y: number },
   ): void => {
     if (this.isResizing) return;
 
@@ -720,7 +720,7 @@ export class QuickAskOverlay {
     // Calculate panel dimensions using constants
     const defaultWidth = Math.min(
       PANEL_DEFAULT_WIDTH_MAX,
-      viewportWidth * PANEL_DEFAULT_WIDTH_RATIO
+      viewportWidth * PANEL_DEFAULT_WIDTH_RATIO,
     );
     const maxWidth = Math.min(PANEL_MAX_WIDTH_MAX, viewportWidth * PANEL_MAX_WIDTH_RATIO);
     // Minimum width adapts to viewport to prevent overflow in narrow panes

@@ -1,53 +1,3 @@
-import ProjectManager from "@/LLMProviders/projectManager";
-import {
-  CustomModel,
-  getCurrentProject,
-  setSelectedTextContexts,
-  getSelectedTextContexts,
-} from "@/aiParams";
-import { NoteSelectedTextContext, SelectedTextContext } from "@/types/message";
-import { registerCommands } from "@/commands";
-import CopilotView from "@/components/CopilotView";
-import { APPLY_VIEW_TYPE, ApplyView } from "@/components/composer/ApplyView";
-import { LoadChatHistoryModal } from "@/components/modals/LoadChatHistoryModal";
-
-import { registerContextMenu } from "@/commands/contextMenu";
-import { CustomCommandRegister } from "@/commands/customCommandRegister";
-import { migrateCommands, suggestDefaultCommands } from "@/commands/migrator";
-import { migrateSystemPromptsFromSettings } from "@/system-prompts/migration";
-import { SystemPromptRegister } from "@/system-prompts/systemPromptRegister";
-import { ABORT_REASON, CHAT_VIEWTYPE, DEFAULT_OPEN_AREA, EVENT_NAMES } from "@/constants";
-import { ChatManager } from "@/core/ChatManager";
-import { MessageRepository } from "@/core/MessageRepository";
-import { encryptAllKeys } from "@/encryptionService";
-import { logInfo, logWarn } from "@/logger";
-import { logFileManager } from "@/logFileManager";
-import { UserMemoryManager } from "@/memory/UserMemoryManager";
-import { clearRecordedPromptPayload } from "@/LLMProviders/chainRunner/utils/promptPayloadRecorder";
-import {
-  getWebViewerService,
-  startActiveWebTabTracking,
-} from "@/services/webViewerService/webViewerServiceSingleton";
-import { WebSelectionTracker } from "@/services/webViewerService/webViewerServiceSelection";
-import VectorStoreManager from "@/search/vectorStoreManager";
-import { CopilotSettingTab } from "@/settings/SettingsPage";
-import {
-  getModelKeyFromModel,
-  getSettings,
-  sanitizeSettings,
-  setSettings,
-  subscribeToSettingsChange,
-} from "@/settings/model";
-import { ChatUIState } from "@/state/ChatUIState";
-import { VaultDataManager } from "@/state/vaultDataAtoms";
-import { FileParserManager } from "@/tools/FileParserManager";
-import { initializeBuiltinTools } from "@/tools/builtinTools";
-import {
-  ChatSelectionHighlightController,
-  hideChatSelectionHighlight,
-  QuickAskController,
-  SelectionHighlight,
-} from "@/editor";
 import {
   Editor,
   MarkdownView,
@@ -58,7 +8,57 @@ import {
   TFile,
   WorkspaceLeaf,
 } from "obsidian";
+import { v4 as uuidv4 } from "uuid";
+import {
+  CustomModel,
+  getCurrentProject,
+  getSelectedTextContexts,
+  setSelectedTextContexts,
+} from "@/aiParams";
+import { registerCommands } from "@/commands";
+import { registerContextMenu } from "@/commands/contextMenu";
+import { CustomCommandRegister } from "@/commands/customCommandRegister";
+import { migrateCommands, suggestDefaultCommands } from "@/commands/migrator";
+import CopilotView from "@/components/CopilotView";
 import { ChatHistoryItem } from "@/components/chat-components/ChatHistoryPopover";
+import { APPLY_VIEW_TYPE, ApplyView } from "@/components/composer/ApplyView";
+import { LoadChatHistoryModal } from "@/components/modals/LoadChatHistoryModal";
+import { ABORT_REASON, CHAT_VIEWTYPE, DEFAULT_OPEN_AREA, EVENT_NAMES } from "@/constants";
+import { ChatManager } from "@/core/ChatManager";
+import { MessageRepository } from "@/core/MessageRepository";
+import {
+  ChatSelectionHighlightController,
+  hideChatSelectionHighlight,
+  QuickAskController,
+  SelectionHighlight,
+} from "@/editor";
+import { encryptAllKeys } from "@/encryptionService";
+import { clearRecordedPromptPayload } from "@/LLMProviders/chainRunner/utils/promptPayloadRecorder";
+import ProjectManager from "@/LLMProviders/projectManager";
+import { logFileManager } from "@/logFileManager";
+import { logInfo, logWarn } from "@/logger";
+import { UserMemoryManager } from "@/memory/UserMemoryManager";
+import VectorStoreManager from "@/search/vectorStoreManager";
+import { WebSelectionTracker } from "@/services/webViewerService/webViewerServiceSelection";
+import {
+  getWebViewerService,
+  startActiveWebTabTracking,
+} from "@/services/webViewerService/webViewerServiceSingleton";
+import {
+  getModelKeyFromModel,
+  getSettings,
+  sanitizeSettings,
+  setSettings,
+  subscribeToSettingsChange,
+} from "@/settings/model";
+import { CopilotSettingTab } from "@/settings/SettingsPage";
+import { ChatUIState } from "@/state/ChatUIState";
+import { VaultDataManager } from "@/state/vaultDataAtoms";
+import { migrateSystemPromptsFromSettings } from "@/system-prompts/migration";
+import { SystemPromptRegister } from "@/system-prompts/systemPromptRegister";
+import { initializeBuiltinTools } from "@/tools/builtinTools";
+import { FileParserManager } from "@/tools/FileParserManager";
+import { NoteSelectedTextContext, SelectedTextContext } from "@/types/message";
 import {
   extractChatDate,
   extractChatLastAccessedAtMs,
@@ -66,7 +66,6 @@ import {
 } from "@/utils/chatHistoryUtils";
 import { RecentUsageManager } from "@/utils/recentUsageManager";
 import { listMarkdownFiles, patchFrontmatter, resolveFileByPath } from "@/utils/vaultAdapterUtils";
-import { v4 as uuidv4 } from "uuid";
 
 // Removed unused FileTrackingState interface
 
@@ -166,7 +165,7 @@ export default class CopilotPlugin extends Plugin {
     this.registerEvent(
       this.app.workspace.on("editor-menu", (menu: Menu) => {
         registerContextMenu(menu, this.app);
-      })
+      }),
     );
 
     this.registerEvent(
@@ -189,7 +188,7 @@ export default class CopilotPlugin extends Plugin {
             }
           }
         }
-      })
+      }),
     );
 
     this.customCommandRegister = new CustomCommandRegister(this, this.app.vault);
@@ -288,7 +287,7 @@ export default class CopilotPlugin extends Plugin {
     editor: Editor,
     eventType: string,
     eventSubtype?: string,
-    checkSelectedText = true
+    checkSelectedText = true,
   ) {
     const selectedText = await editor.getSelection();
 
@@ -334,7 +333,7 @@ export default class CopilotPlugin extends Plugin {
         if (leaf.getViewState().type === CHAT_VIEWTYPE) {
           this.emitChatIsVisible();
         }
-      })
+      }),
     );
   }
 
@@ -585,7 +584,7 @@ export default class CopilotPlugin extends Plugin {
 
   mergeActiveModels(
     existingActiveModels: CustomModel[],
-    builtInModels: CustomModel[]
+    builtInModels: CustomModel[],
   ): CustomModel[] {
     const modelMap = new Map<string, CustomModel>();
 
@@ -619,7 +618,7 @@ export default class CopilotPlugin extends Plugin {
       this.app,
       chatFiles,
       this.chatHistoryLastAccessedAtManager,
-      this.loadChatHistory.bind(this)
+      this.loadChatHistory.bind(this),
     ).open();
   }
 
@@ -655,7 +654,7 @@ export default class CopilotPlugin extends Plugin {
       const effectiveLastAccessedAtMs =
         this.chatHistoryLastAccessedAtManager.getEffectiveLastUsedAt(
           file.path,
-          persistedLastAccessedAtMs ?? createdAt.getTime()
+          persistedLastAccessedAtMs ?? createdAt.getTime(),
         );
       const lastAccessedAt = new Date(effectiveLastAccessedAtMs);
 
@@ -683,7 +682,7 @@ export default class CopilotPlugin extends Plugin {
       const persistedLastAccessedAtMs = extractChatLastAccessedAtMs(file);
       const timestampToPersist = this.chatHistoryLastAccessedAtManager.shouldPersist(
         file.path,
-        persistedLastAccessedAtMs
+        persistedLastAccessedAtMs,
       );
 
       if (timestampToPersist === null) {
@@ -769,7 +768,7 @@ export default class CopilotPlugin extends Plugin {
       await this.app.workspace.getLeaf(true).openFile(file);
     } else if (await this.app.vault.adapter.exists(fileId)) {
       new Notice(
-        "Cannot open source files from hidden directories. To open chat notes in the editor, save them to a non-hidden folder in settings."
+        "Cannot open source files from hidden directories. To open chat notes in the editor, save them to a non-hidden folder in settings.",
       );
     } else {
       throw new Error("Chat file not found.");
@@ -900,7 +899,7 @@ export default class CopilotPlugin extends Plugin {
             salientTerms: salientTerms,
             textWeight: textWeight,
             returnAll: false,
-          }
+          },
         )
       : new (await import("@/search/v3/TieredLexicalRetriever")).TieredLexicalRetriever(this.app, {
           minSimilarityScore: 0.3,

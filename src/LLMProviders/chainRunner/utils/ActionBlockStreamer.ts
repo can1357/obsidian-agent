@@ -1,5 +1,5 @@
-import { ToolManager } from "@/tools/toolManager";
 import { ToolResultFormatter } from "@/tools/ToolResultFormatter";
+import { ToolManager } from "@/tools/toolManager";
 
 /**
  * ActionBlockStreamer processes streaming chunks to detect and handle writeToFile blocks.
@@ -14,7 +14,7 @@ export class ActionBlockStreamer {
 
   constructor(
     private toolManager: typeof ToolManager,
-    private writeToFileTool: any
+    private writeToFileTool: any,
   ) {}
 
   private findCompleteBlock(str: string) {

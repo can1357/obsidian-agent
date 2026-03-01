@@ -4,7 +4,7 @@ import MemoryManager from "./LLMProviders/memoryManager";
 
 export async function updateChatMemory(
   messages: ChatMessage[],
-  memoryManager: MemoryManager
+  memoryManager: MemoryManager,
 ): Promise<void> {
   // Clear existing memory
   await memoryManager.clearChatMemory();

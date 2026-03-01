@@ -37,7 +37,7 @@ const SettingSwitch = React.forwardRef<HTMLDivElement, SettingSwitchProps>(
           "focus-visible:tw-outline-none focus-visible:tw-ring-2 focus-visible:tw-ring-ring focus-visible:tw-ring-offset-2",
           checked ? "tw-bg-interactive-accent" : "tw-bg-[--background-modifier-border-hover]",
           disabled && "tw-cursor-not-allowed tw-opacity-50",
-          className
+          className,
         )}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
@@ -46,12 +46,12 @@ const SettingSwitch = React.forwardRef<HTMLDivElement, SettingSwitchProps>(
         <div
           className={cn(
             "tw-pointer-events-none tw-block tw-size-4 tw-rounded-full tw-bg-toggle-thumb tw-shadow-lg tw-ring-0 tw-transition-transform",
-            checked ? "tw-translate-x-5.5" : "tw-translate-x-0.5"
+            checked ? "tw-translate-x-5.5" : "tw-translate-x-0.5",
           )}
         />
       </div>
     );
-  }
+  },
 );
 
 SettingSwitch.displayName = "SettingSwitch";

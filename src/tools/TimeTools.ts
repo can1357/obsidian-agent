@@ -22,7 +22,7 @@ function parseTimezoneOffset(offset: string): string {
   const offsetMatch = offset.match(/^(?:UTC|GMT)?([-+]?\d{1,2})(?::(\d{2}))?$/i);
   if (!offsetMatch) {
     throw new Error(
-      `Invalid timezone offset format: ${offset}. Use formats like '+8', '-5', '+5:30', 'UTC+8', 'GMT-5'`
+      `Invalid timezone offset format: ${offset}. Use formats like '+8', '-5', '+5:30', 'UTC+8', 'GMT-5'`,
     );
   }
 
@@ -32,7 +32,7 @@ function parseTimezoneOffset(offset: string): string {
   // Validate the offset range
   if (Math.abs(hours) > 14 || minutes >= 60) {
     throw new Error(
-      `Invalid timezone offset: ${offset}. Hours must be between -14 and +14, minutes must be less than 60`
+      `Invalid timezone offset: ${offset}. Hours must be between -14 and +14, minutes must be less than 60`,
     );
   }
 
@@ -104,7 +104,7 @@ COMMON TIMEZONE OFFSETS:
 - Dubai: UTC+4
 - London: UTC+0 (UTC+1 during BST)
 - New York: UTC-5 (UTC-4 during DST)
-- Los Angeles: UTC-8 (UTC-7 during DST)`
+- Los Angeles: UTC-8 (UTC-7 during DST)`,
       ),
   }),
   func: async ({ timezoneOffset }) => getCurrentTime(timezoneOffset),
@@ -147,7 +147,7 @@ const monthNames = {
 function handleRelativeTimeRange(input: string, now: DateTime) {
   // Match numeric patterns with various past-tense prefixes
   const relativeMatch = input.match(
-    /^(last|past|previous|prior)\s+(\d+)\s+(days?|weeks?|months?|years?)$/i
+    /^(last|past|previous|prior)\s+(\d+)\s+(days?|weeks?|months?|years?)$/i,
   );
 
   if (!relativeMatch) return undefined;
@@ -277,7 +277,7 @@ function handleWeekOf(input: string, now: DateTime) {
  */
 function handleMonthName(input: string, now: DateTime) {
   const monthMatch = input.match(
-    /^(jan|january|feb|february|mar|march|apr|april|may|jun|june|jul|july|aug|august|sep|sept|september|oct|october|nov|november|dec|december)$/i
+    /^(jan|january|feb|february|mar|march|apr|april|may|jun|june|jul|july|aug|august|sep|sept|september|oct|october|nov|november|dec|december)$/i,
   );
   if (!monthMatch) return undefined;
 
@@ -388,7 +388,7 @@ function handleQuarter(input: string, now: DateTime) {
  */
 function handleMonthYear(input: string, now: DateTime) {
   const monthYearMatch = input.match(
-    /^(jan|january|feb|february|mar|march|apr|april|may|jun|june|jul|july|aug|august|sep|sept|september|oct|october|nov|november|dec|december)\s+(\d{4})$/i
+    /^(jan|january|feb|february|mar|march|apr|april|may|jun|june|jul|july|aug|august|sep|sept|september|oct|october|nov|november|dec|december)\s+(\d{4})$/i,
   );
   if (!monthYearMatch) return undefined;
 
@@ -475,7 +475,8 @@ const getTimeRangeMsTool = createLangChainTool({
   name: "getTimeRangeMs",
   description: "Convert natural language time expressions to date ranges for use with localSearch",
   schema: z.object({
-    timeExpression: z.string()
+    timeExpression: z
+      .string()
       .describe(`Natural language time expression to convert to a date range.
 
 COMMON EXPRESSIONS:
@@ -527,7 +528,7 @@ const getTimeInfoByEpochTool = createLangChainTool({
 async function convertTimeBetweenTimezones(
   time: string,
   fromOffset: string,
-  toOffset: string
+  toOffset: string,
 ): Promise<TimeInfo & { originalTime: string; convertedTime: string }> {
   // Parse timezone offsets
   const sourceTz = parseTimezoneOffset(fromOffset);

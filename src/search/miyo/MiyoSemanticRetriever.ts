@@ -5,8 +5,8 @@ import { App } from "obsidian";
 import { logInfo, logWarn } from "@/logger";
 import { MiyoClient, MiyoSearchFilter, MiyoSearchResult } from "@/miyo/MiyoClient";
 import { getMiyoSourceId } from "@/miyo/miyoUtils";
-import { getSettings } from "@/settings/model";
 import { RETURN_ALL_LIMIT } from "@/search/v3/SearchCore";
+import { getSettings } from "@/settings/model";
 
 type MiyoSemanticRetrieverOptions = {
   minSimilarityScore?: number;
@@ -37,7 +37,7 @@ export class MiyoSemanticRetriever extends BaseRetriever {
    */
   constructor(
     private app: App,
-    private options: MiyoSemanticRetrieverOptions
+    private options: MiyoSemanticRetrieverOptions,
   ) {
     super();
     this.client = new MiyoClient();
@@ -56,7 +56,7 @@ export class MiyoSemanticRetriever extends BaseRetriever {
    */
   public async getRelevantDocuments(
     query: string,
-    _config?: BaseCallbackConfig
+    _config?: BaseCallbackConfig,
   ): Promise<Document[]> {
     const searchChunks = await this.searchMiyo(query);
     const dedupedChunks = this.deduplicateResults(searchChunks);
@@ -94,7 +94,7 @@ export class MiyoSemanticRetriever extends BaseRetriever {
         getMiyoSourceId(this.app),
         query,
         limit,
-        filters
+        filters,
       );
 
       const rawResults = response.results || [];
@@ -102,7 +102,7 @@ export class MiyoSemanticRetriever extends BaseRetriever {
 
       if (getSettings().debug) {
         logInfo(
-          `MiyoSemanticRetriever: received ${rawResults.length} results, ${filteredResults.length} after threshold`
+          `MiyoSemanticRetriever: received ${rawResults.length} results, ${filteredResults.length} after threshold`,
         );
       }
 
@@ -200,7 +200,7 @@ export class MiyoSemanticRetriever extends BaseRetriever {
 
     if (getSettings().debug && combined.size !== semanticChunks.length) {
       logInfo(
-        `MiyoSemanticRetriever: deduplicated semantic results from ${semanticChunks.length} to ${combined.size}`
+        `MiyoSemanticRetriever: deduplicated semantic results from ${semanticChunks.length} to ${combined.size}`,
       );
     }
 

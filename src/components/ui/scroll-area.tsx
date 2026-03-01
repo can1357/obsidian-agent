@@ -1,5 +1,5 @@
-import * as React from "react";
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
+import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -35,7 +35,7 @@ const ScrollBar = React.forwardRef<
         "tw-h-full tw-w-2.5 tw-border-l tw-border-l-transparent tw-p-px",
       orientation === "horizontal" &&
         "tw-h-2.5 tw-flex-col tw-border-t tw-border-t-transparent tw-p-px",
-      className
+      className,
     )}
     {...props}
   >

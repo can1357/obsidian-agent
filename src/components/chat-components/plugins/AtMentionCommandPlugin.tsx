@@ -1,16 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { TFile, App } from "obsidian";
-import { TypeaheadMenuPortal } from "../TypeaheadMenuPortal";
-import { useTypeaheadPlugin } from "../hooks/useTypeaheadPlugin";
-import { $replaceTriggeredTextWithPill, PillData } from "../utils/lexicalTextUtils";
+import { App, TFile } from "obsidian";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  useAtMentionCategories,
   AtMentionCategory,
   AtMentionOption,
   CategoryOption,
+  useAtMentionCategories,
 } from "../hooks/useAtMentionCategories";
 import { useAtMentionSearch } from "../hooks/useAtMentionSearch";
+import { useTypeaheadPlugin } from "../hooks/useTypeaheadPlugin";
+import { TypeaheadMenuPortal } from "../TypeaheadMenuPortal";
+import { $replaceTriggeredTextWithPill, PillData } from "../utils/lexicalTextUtils";
 
 // Get app instance
 declare const app: App;
@@ -67,7 +67,7 @@ export function AtMentionCommandPlugin({
     extendedState.mode,
     extendedState.selectedCategory,
     availableCategoryOptions,
-    currentActiveFile
+    currentActiveFile,
   );
 
   // Type guard functions
@@ -75,14 +75,14 @@ export function AtMentionCommandPlugin({
     (option: CategoryOption | AtMentionOption): option is AtMentionOption => {
       return "data" in option;
     },
-    []
+    [],
   );
 
   const isCategoryOption = useCallback(
     (option: CategoryOption | AtMentionOption): option is CategoryOption => {
       return "icon" in option && !("data" in option);
     },
-    []
+    [],
   );
 
   // Selection handler
@@ -120,7 +120,7 @@ export function AtMentionCommandPlugin({
         }
       }
     },
-    [extendedState.mode, currentQuery, isCategoryOption, isAtMentionOption, editor]
+    [extendedState.mode, currentQuery, isCategoryOption, isAtMentionOption, editor],
   );
 
   const onStateChangeCallback = useCallback((newState: any) => {

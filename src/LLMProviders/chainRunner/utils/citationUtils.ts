@@ -41,7 +41,7 @@ IMPORTANT: Each source definition must follow this exact pattern:
  */
 export function getLocalSearchGuidance(
   sourceCatalog: string[],
-  enableInlineCitations: boolean = true
+  enableInlineCitations: boolean = true,
 ): string {
   if (!enableInlineCitations) {
     return `
@@ -73,7 +73,7 @@ ${sourceCatalog.join("\n")}
  */
 export function getQACitationInstructions(
   sourceCatalog: string,
-  enableInlineCitations: boolean = true
+  enableInlineCitations: boolean = true,
 ): string {
   if (!enableInlineCitations) {
     return "";
@@ -99,7 +99,7 @@ const MAX_FALLBACK_SOURCES = 20;
 export function addFallbackSources(
   response: string,
   sources: { title?: string; path?: string }[],
-  enableInlineCitations: boolean = true
+  enableInlineCitations: boolean = true,
 ): string {
   // If inline citations are disabled, don't add fallback sources
   if (!enableInlineCitations) {
@@ -232,7 +232,7 @@ export function parseFootnoteDefinitions(sourcesBlock: string): string[] {
  */
 export function buildCitationMap(
   mainContent: string,
-  footnoteLines: string[]
+  footnoteLines: string[],
 ): Map<number, number> {
   const map = new Map<number, number>();
   const seen = new Set<number>();
@@ -322,7 +322,7 @@ export function normalizeCitations(content: string, map: Map<number, number>): s
  */
 export function convertFootnoteDefinitions(
   sourcesBlock: string,
-  map: Map<number, number>
+  map: Map<number, number>,
 ): string[] {
   const items: string[] = [];
   sourcesBlock.split("\n").forEach((line) => {
@@ -403,7 +403,7 @@ export function consolidateDuplicateSources(items: string[]): {
  */
 export function updateCitationsForConsolidation(
   content: string,
-  consolidationMap: Map<number, number>
+  consolidationMap: Map<number, number>,
 ): string {
   if (consolidationMap.size === 0) return content;
 
@@ -494,7 +494,7 @@ function buildSourcesDetails(mainContent: string, items: SourcesDisplayItem[]): 
   const listItems = nonEmptyItems
     .map(
       ({ index, html }) =>
-        `<li class="copilot-sources__item"><span class="copilot-sources__index">[${index}]</span><span class="copilot-sources__text">${html}</span></li>`
+        `<li class="copilot-sources__item"><span class="copilot-sources__index">[${index}]</span><span class="copilot-sources__text">${html}</span></li>`,
     )
     .join("\n");
 
@@ -511,7 +511,7 @@ function buildSourcesDetails(mainContent: string, items: SourcesDisplayItem[]): 
  */
 export function processInlineCitations(
   content: string,
-  enableInlineCitations: boolean = true
+  enableInlineCitations: boolean = true,
 ): string {
   // If inline citations are disabled, return content as-is
   if (!enableInlineCitations) {

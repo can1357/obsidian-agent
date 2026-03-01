@@ -1,8 +1,8 @@
-import * as React from "react";
-import { cn } from "@/lib/utils";
 import { Eye } from "lucide-react";
+import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
+import { cn } from "@/lib/utils";
 
 interface SelectedContentProps {
   content: string;
@@ -24,7 +24,7 @@ export function SelectedContent({ content, className }: SelectedContentProps) {
         "tw-group tw-flex tw-w-full tw-items-start tw-gap-2",
         "tw-border-b tw-border-border tw-bg-secondary/30",
         "tw-px-4 tw-py-2",
-        className
+        className,
       )}
     >
       {/* Truncated content (up to 3 lines) */}

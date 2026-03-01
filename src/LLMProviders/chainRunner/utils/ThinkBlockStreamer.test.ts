@@ -58,7 +58,7 @@ describe("ThinkBlockStreamer", () => {
       });
 
       expect(currentMessage).toBe(
-        "\n<think>Thinking step 1: Thinking step 2.</think>Here's the result."
+        "\n<think>Thinking step 1: Thinking step 2.</think>Here's the result.",
       );
     });
 
@@ -107,7 +107,7 @@ describe("ThinkBlockStreamer", () => {
       // Should NOT duplicate - reasoning_details should be ignored since we've seen delta.reasoning
       expect(currentMessage).toBe("\n<think>Analyzing the question carefully.");
       expect(currentMessage).not.toContain(
-        "Analyzing the question carefully.Analyzing the question carefully."
+        "Analyzing the question carefully.Analyzing the question carefully.",
       );
 
       // Regular content
@@ -117,7 +117,7 @@ describe("ThinkBlockStreamer", () => {
       });
 
       expect(currentMessage).toBe(
-        "\n<think>Analyzing the question carefully.</think>Here's my answer."
+        "\n<think>Analyzing the question carefully.</think>Here's my answer.",
       );
     });
   });
@@ -266,7 +266,7 @@ describe("ThinkBlockStreamer", () => {
         (msg) => {
           currentMessage = msg;
         },
-        true // excludeThinking = true
+        true, // excludeThinking = true
       );
 
       // Thinking content should be skipped
@@ -296,7 +296,7 @@ describe("ThinkBlockStreamer", () => {
         (msg) => {
           currentMessage = msg;
         },
-        true // excludeThinking = true
+        true, // excludeThinking = true
       );
 
       streamer.processChunk({

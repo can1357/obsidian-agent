@@ -68,7 +68,7 @@ export async function waitFor(
   predicate: () => boolean,
   timeoutMs: number,
   intervalMs: number,
-  label: string
+  label: string,
 ): Promise<void> {
   const start = Date.now();
   for (;;) {
@@ -263,7 +263,7 @@ function tryExtractPluginApi(entry: unknown): WebViewerPluginApi | null {
  */
 export function getInternalWebViewerPluginApi(
   app: App,
-  warnOnUnexpectedStructure?: () => void
+  warnOnUnexpectedStructure?: () => void,
 ): WebViewerPluginApi | null {
   const internalPlugins = (app as unknown as { internalPlugins?: unknown }).internalPlugins;
   if (!internalPlugins || !isRecord(internalPlugins)) return null;

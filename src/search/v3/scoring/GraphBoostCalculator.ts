@@ -1,5 +1,5 @@
-import { logInfo } from "@/logger";
 import { App, MetadataCache, TFile } from "obsidian";
+import { logInfo } from "@/logger";
 import { NoteIdRank } from "../interfaces";
 import { extractNotePathFromChunkId } from "../utils/chunkIdUtils";
 
@@ -296,7 +296,7 @@ export class GraphBoostCalculator {
 
     if (beforeLimit > this.config.maxCandidates) {
       logInfo(
-        `GraphBoost: Limited to top ${this.config.maxCandidates} note candidates (from ${beforeLimit} unique notes)`
+        `GraphBoost: Limited to top ${this.config.maxCandidates} note candidates (from ${beforeLimit} unique notes)`,
       );
     }
 

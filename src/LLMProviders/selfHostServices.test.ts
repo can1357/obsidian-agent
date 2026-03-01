@@ -146,7 +146,7 @@ describe("selfHostWebSearch — Firecrawl", () => {
     });
 
     await expect(selfHostWebSearch("test query")).rejects.toThrow(
-      "Firecrawl search failed (401): Unauthorized"
+      "Firecrawl search failed (401): Unauthorized",
     );
   });
 
@@ -244,7 +244,7 @@ describe("selfHostWebSearch — Perplexity Sonar", () => {
     });
 
     await expect(selfHostWebSearch("test")).rejects.toThrow(
-      "Perplexity Sonar search failed (429): Rate limited"
+      "Perplexity Sonar search failed (429): Rate limited",
     );
   });
 
@@ -288,7 +288,7 @@ describe("selfHostWebSearch — provider dispatch", () => {
 
     expect(mockFetch).toHaveBeenCalledWith(
       "https://api.firecrawl.dev/v2/search",
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
@@ -307,7 +307,7 @@ describe("selfHostWebSearch — provider dispatch", () => {
 
     expect(mockFetch).toHaveBeenCalledWith(
       "https://api.perplexity.ai/chat/completions",
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
@@ -326,7 +326,7 @@ describe("selfHostWebSearch — provider dispatch", () => {
 
     expect(mockFetch).toHaveBeenCalledWith(
       "https://api.firecrawl.dev/v2/search",
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 });

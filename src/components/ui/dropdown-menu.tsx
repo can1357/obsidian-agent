@@ -1,7 +1,7 @@
-import * as React from "react";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { Check, ChevronRight, Circle } from "lucide-react";
 import { Platform } from "obsidian";
+import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -28,7 +28,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
     className={cn(
       "tw-flex tw-cursor-default tw-select-none tw-items-center tw-gap-2 tw-rounded-sm tw-px-2 tw-py-1.5 tw-text-sm tw-outline-none focus:tw-bg-modifier-hover data-[state=open]:tw-bg-modifier-hover [&_svg]:tw-pointer-events-none [&_svg]:tw-size-4 [&_svg]:tw-shrink-0",
       inset && "tw-pl-8",
-      className
+      className,
     )}
     {...props}
   >
@@ -46,7 +46,7 @@ const DropdownMenuSubContent = React.forwardRef<
     ref={ref}
     className={cn(
       "tw-z-[50] tw-min-w-32 tw-overflow-hidden tw-rounded-md tw-border tw-bg-primary tw-p-1 tw-text-normal tw-shadow-lg data-[state=open]:tw-animate-in data-[state=closed]:tw-animate-out data-[state=closed]:tw-fade-out-0 data-[state=open]:tw-fade-in-0 data-[state=closed]:tw-zoom-out-95 data-[state=open]:tw-zoom-in-95 data-[side=bottom]:tw-slide-in-from-top-2 data-[side=left]:tw-slide-in-from-right-2 data-[side=right]:tw-slide-in-from-left-2 data-[side=top]:tw-slide-in-from-bottom-2",
-      className
+      className,
     )}
     {...props}
   />
@@ -67,7 +67,7 @@ const DropdownMenuContent = React.forwardRef<
       className={cn(
         "tw-z-[50] tw-min-w-32 tw-overflow-hidden tw-rounded-md tw-border tw-border-solid tw-border-border tw-bg-primary tw-p-1 tw-text-normal tw-shadow-md",
         "data-[state=open]:tw-animate-in data-[state=closed]:tw-animate-out data-[state=closed]:tw-fade-out-0 data-[state=open]:tw-fade-in-0 data-[state=closed]:tw-zoom-out-95 data-[state=open]:tw-zoom-in-95 data-[side=bottom]:tw-slide-in-from-top-2 data-[side=left]:tw-slide-in-from-right-2 data-[side=right]:tw-slide-in-from-left-2 data-[side=top]:tw-slide-in-from-bottom-2",
-        className
+        className,
       )}
       {...props}
     />
@@ -86,7 +86,7 @@ const DropdownMenuItem = React.forwardRef<
     className={cn(
       "tw-relative tw-flex tw-cursor-default tw-select-none tw-items-center tw-gap-2 tw-rounded-sm tw-px-2 tw-py-1.5 tw-text-sm tw-outline-none tw-transition-colors focus:tw-bg-modifier-hover focus:tw-text-normal data-[disabled]:tw-pointer-events-none data-[disabled]:tw-opacity-50 [&>svg]:tw-size-4 [&>svg]:tw-shrink-0",
       inset && "tw-pl-8",
-      className
+      className,
     )}
     {...props}
   />
@@ -101,7 +101,7 @@ const DropdownMenuCheckboxItem = React.forwardRef<
     ref={ref}
     className={cn(
       "tw-relative tw-flex tw-cursor-default tw-select-none tw-items-center tw-rounded-sm tw-py-1.5 tw-pl-8 tw-pr-2 tw-text-sm tw-outline-none tw-transition-colors focus:tw-bg-modifier-hover focus:tw-text-normal data-[disabled]:tw-pointer-events-none data-[disabled]:tw-opacity-50",
-      className
+      className,
     )}
     checked={checked}
     {...props}
@@ -124,7 +124,7 @@ const DropdownMenuRadioItem = React.forwardRef<
     ref={ref}
     className={cn(
       "tw-relative tw-flex tw-cursor-default tw-select-none tw-items-center tw-rounded-sm tw-py-1.5 tw-pl-8 tw-pr-2 tw-text-sm tw-outline-none tw-transition-colors focus:tw-bg-modifier-hover focus:tw-text-normal data-[disabled]:tw-pointer-events-none data-[disabled]:tw-opacity-50",
-      className
+      className,
     )}
     {...props}
   >

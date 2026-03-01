@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,10 +8,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ModelDisplay } from "@/components/ui/model-display";
+import { cn } from "@/lib/utils";
 import { getModelKeyFromModel, useSettingsValue } from "@/settings/model";
 import { checkModelApiKey, err2String } from "@/utils";
-import { ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
 import {
   getApiKeyForProvider,
   isRequiredChatModel,
@@ -39,7 +39,7 @@ export function ModelSelector({
   const settings = useSettingsValue();
 
   const currentModel = settings.activeModels.find(
-    (model) => model.enabled && getModelKeyFromModel(model) === value
+    (model) => model.enabled && getModelKeyFromModel(model) === value,
   );
 
   // Filter models: show required models, local models, or models with valid API keys
@@ -101,7 +101,7 @@ export function ModelSelector({
                     setModelError(msg);
                     // Restore to the last valid model
                     const lastValidModel = showModels.find(
-                      (m) => m.enabled && getModelKeyFromModel(m) === value
+                      (m) => m.enabled && getModelKeyFromModel(m) === value,
                     );
                     if (lastValidModel) {
                       onChange(getModelKeyFromModel(lastValidModel));

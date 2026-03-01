@@ -1,30 +1,30 @@
+import { TFile, Vault } from "obsidian";
+import { getChainType, getCurrentProject } from "@/aiParams";
+import { ChainType } from "@/chainFactory";
+import { updateChatMemory } from "@/chatUtils";
+import { type ProcessedPromptResult, processPrompt } from "@/commands/customCommandUtils";
+import { ACTIVE_WEB_TAB_MARKER, USER_SENDER } from "@/constants";
+import ChainManager from "@/LLMProviders/chainManager";
+import ProjectManager from "@/LLMProviders/projectManager";
+import { logInfo, logWarn } from "@/logger";
+import CopilotPlugin from "@/main";
+import { getWebViewerService } from "@/services/webViewerService/webViewerServiceSingleton";
 import { getSettings } from "@/settings/model";
 import {
   getEffectiveUserPrompt,
   getSystemPrompt,
   getSystemPromptWithMemory,
 } from "@/system-prompts/systemPromptBuilder";
-import { ChainType } from "@/chainFactory";
-import { getChainType, getCurrentProject } from "@/aiParams";
-import { logInfo, logWarn } from "@/logger";
-import { ChatMessage, MessageContext, WebTabContext } from "@/types/message";
-import { processPrompt, type ProcessedPromptResult } from "@/commands/customCommandUtils";
 import { FileParserManager } from "@/tools/FileParserManager";
-import ChainManager from "@/LLMProviders/chainManager";
-import ProjectManager from "@/LLMProviders/projectManager";
-import { updateChatMemory } from "@/chatUtils";
-import CopilotPlugin from "@/main";
-import { ContextManager } from "./ContextManager";
-import { MessageRepository } from "./MessageRepository";
-import { ChatPersistenceManager } from "./ChatPersistenceManager";
-import { ACTIVE_WEB_TAB_MARKER, USER_SENDER } from "@/constants";
-import { TFile, Vault } from "obsidian";
-import { getWebViewerService } from "@/services/webViewerService/webViewerServiceSingleton";
+import { ChatMessage, MessageContext, WebTabContext } from "@/types/message";
 import {
   normalizeUrlForMatching,
   normalizeUrlString,
   sanitizeWebTabContexts,
 } from "@/utils/urlNormalization";
+import { ChatPersistenceManager } from "./ChatPersistenceManager";
+import { ContextManager } from "./ContextManager";
+import { MessageRepository } from "./MessageRepository";
 
 /**
  * ChatManager - Central business logic coordinator
@@ -45,7 +45,7 @@ export class ChatManager {
     private messageRepo: MessageRepository,
     private chainManager: ChainManager,
     private fileParserManager: FileParserManager,
-    private plugin: CopilotPlugin
+    private plugin: CopilotPlugin,
   ) {
     this.contextManager = ContextManager.getInstance();
     // Initialize default project repository
@@ -65,7 +65,7 @@ export class ChatManager {
     // Detect if project has changed
     if (this.lastKnownProjectId !== currentProjectId) {
       logInfo(
-        `[ChatManager] Project changed from ${this.lastKnownProjectId} to ${currentProjectId}`
+        `[ChatManager] Project changed from ${this.lastKnownProjectId} to ${currentProjectId}`,
       );
       this.lastKnownProjectId = currentProjectId;
     }
@@ -83,7 +83,7 @@ export class ChatManager {
     this.persistenceManager = new ChatPersistenceManager(
       this.plugin.app,
       currentRepo,
-      this.chainManager
+      this.chainManager,
     );
 
     return currentRepo;
@@ -112,7 +112,7 @@ export class ChatManager {
   private async processSystemPromptTemplates(
     prompt: string,
     vault: Vault,
-    activeNote: TFile | null
+    activeNote: TFile | null,
   ): Promise<ProcessedPromptResult> {
     // Quick skip if no curly braces present
     if (!prompt.includes("{") || !prompt.includes("}")) {
@@ -168,7 +168,7 @@ export class ChatManager {
       return systemPromptWithoutMemory.replace(
         userInstructionsBlockRegex,
         () =>
-          `<user_custom_instructions>\n${processedUserCustomPrompt}\n</user_custom_instructions>`
+          `<user_custom_instructions>\n${processedUserCustomPrompt}\n</user_custom_instructions>`,
       );
     }
 
@@ -178,7 +178,7 @@ export class ChatManager {
     }
 
     logInfo(
-      "[ChatManager] Could not locate <user_custom_instructions> block for injection; returning original system prompt."
+      "[ChatManager] Could not locate <user_custom_instructions> block for injection; returning original system prompt.",
     );
     return systemPromptWithoutMemory;
   }
@@ -197,14 +197,14 @@ export class ChatManager {
 
     if (!basePromptWithMemory.endsWith(systemPromptWithoutMemory)) {
       logInfo(
-        "[ChatManager] basePromptWithMemory does not end with systemPromptWithoutMemory; returning original base prompt."
+        "[ChatManager] basePromptWithMemory does not end with systemPromptWithoutMemory; returning original base prompt.",
       );
       return basePromptWithMemory;
     }
 
     const prefix = basePromptWithMemory.slice(
       0,
-      basePromptWithMemory.length - systemPromptWithoutMemory.length
+      basePromptWithMemory.length - systemPromptWithoutMemory.length,
     );
     return `${prefix}${processedSystemPromptWithoutMemory}`;
   }
@@ -229,7 +229,7 @@ export class ChatManager {
   private async getSystemPromptForMessage(
     chainType: ChainType,
     vault: Vault,
-    activeNote: TFile | null
+    activeNote: TFile | null,
   ): Promise<ProcessedPromptResult> {
     // Use getEffectiveUserPrompt to ensure consistency with getSystemPrompt (includes legacy fallback)
     const userCustomPrompt = getEffectiveUserPrompt();
@@ -237,7 +237,7 @@ export class ChatManager {
 
     // Preserve original behavior (memory + system prompt) via settings/model helpers
     const basePromptWithMemory = await getSystemPromptWithMemory(
-      this.chainManager.userMemoryManager
+      this.chainManager.userMemoryManager,
     );
     const systemPromptWithoutMemory = getSystemPrompt();
 
@@ -248,7 +248,7 @@ export class ChatManager {
       const userPromptResult = await this.processSystemPromptTemplates(
         userCustomPrompt,
         vault,
-        activeNote
+        activeNote,
       );
 
       const processedSystemPromptWithoutMemory =
@@ -283,7 +283,7 @@ export class ChatManager {
         const projectPromptResult = await this.processSystemPromptTemplates(
           project.systemPrompt,
           vault,
-          activeNote
+          activeNote,
         );
         allIncludedFiles.push(...projectPromptResult.includedFiles);
 
@@ -300,7 +300,7 @@ export class ChatManager {
           if (context.length > MAX_PROJECT_CONTEXT_CHARS) {
             projectContext = context.substring(0, MAX_PROJECT_CONTEXT_CHARS);
             logWarn(
-              `Project context truncated from ${Math.round(context.length / 4000)}k to ${Math.round(MAX_PROJECT_CONTEXT_CHARS / 4000)}k estimated tokens to stay within token budget`
+              `Project context truncated from ${Math.round(context.length / 4000)}k to ${Math.round(MAX_PROJECT_CONTEXT_CHARS / 4000)}k estimated tokens to stay within token budget`,
             );
           }
           result += `\n\n<project_context>\n${projectContext}\n</project_context>`;
@@ -333,7 +333,7 @@ export class ChatManager {
    */
   private buildWebTabsWithActiveSnapshot(
     existingWebTabs: WebTabContext[],
-    shouldIncludeActiveWebTab: boolean
+    shouldIncludeActiveWebTab: boolean,
   ): WebTabContext[] {
     // Always sanitize existing webTabs (normalize URLs, dedupe, ensure single isActive)
     const sanitizedTabs = sanitizeWebTabContexts(existingWebTabs);
@@ -368,7 +368,7 @@ export class ChatManager {
 
       // Check if active URL already exists in the list (using normalized matching)
       const existingIndex = clearedTabs.findIndex(
-        (tab) => normalizeUrlForMatching(tab.url) === activeUrl
+        (tab) => normalizeUrlForMatching(tab.url) === activeUrl,
       );
 
       if (existingIndex >= 0) {
@@ -416,7 +416,7 @@ export class ChatManager {
     includeActiveNote: boolean = false,
     includeActiveWebTab: boolean = false,
     content?: any[],
-    updateLoadingMessage?: (message: string) => void
+    updateLoadingMessage?: (message: string) => void,
   ): Promise<string> {
     try {
       logInfo(`[ChatManager] Sending message: "${displayText}"`);
@@ -442,7 +442,7 @@ export class ChatManager {
         !hasAnySelection && (includeActiveWebTab || displayText.includes(ACTIVE_WEB_TAB_MARKER));
       updatedContext.webTabs = this.buildWebTabsWithActiveSnapshot(
         updatedContext.webTabs || [],
-        shouldIncludeActiveWebTab
+        shouldIncludeActiveWebTab,
       );
 
       // Create the message with initial content
@@ -452,7 +452,7 @@ export class ChatManager {
         displayText, // Will be updated with processed content
         USER_SENDER,
         updatedContext,
-        content
+        content,
       );
 
       // Notify that message was created (for immediate UI update)
@@ -481,7 +481,7 @@ export class ChatManager {
         currentRepo, // Pass MessageRepository for L2 building
         systemPrompt,
         systemPromptIncludedFiles,
-        updateLoadingMessage
+        updateLoadingMessage,
       );
 
       // Update the processed content
@@ -509,7 +509,7 @@ export class ChatManager {
     messageId: string,
     newText: string,
     chainType: ChainType,
-    includeActiveNote: boolean = false
+    includeActiveNote: boolean = false,
   ): Promise<boolean> {
     try {
       logInfo(`[ChatManager] Editing message ${messageId}: "${newText}"`);
@@ -534,7 +534,7 @@ export class ChatManager {
         includeActiveNote,
         activeNote,
         systemPrompt,
-        systemPromptIncludedFiles
+        systemPromptIncludedFiles,
       );
 
       // Update chain memory with fresh LLM messages
@@ -555,7 +555,7 @@ export class ChatManager {
     messageId: string,
     onUpdateCurrentMessage: (message: string) => void,
     onAddMessage: (message: ChatMessage) => void,
-    onTruncate?: () => void
+    onTruncate?: () => void,
   ): Promise<boolean> {
     try {
       logInfo(`[ChatManager] Regenerating message ${messageId}`);
@@ -623,7 +623,7 @@ export class ChatManager {
           false,
           activeNote,
           systemPrompt,
-          systemPromptIncludedFiles
+          systemPromptIncludedFiles,
         );
         // Re-fetch the LLM message with the newly created envelope
         llmMessage = currentRepo.getLLMMessage(userMessage.id)!;
@@ -636,7 +636,7 @@ export class ChatManager {
         abortController,
         onUpdateCurrentMessage,
         onAddMessage,
-        { debug: getSettings().debug }
+        { debug: getSettings().debug },
       );
 
       logInfo(`[ChatManager] Successfully regenerated message ${messageId}`);
@@ -801,7 +801,7 @@ export class ChatManager {
     await this.updateChainMemory();
 
     logInfo(
-      `[ChatManager] Project switch complete. Messages: ${currentRepo.getDisplayMessages().length}`
+      `[ChatManager] Project switch complete. Messages: ${currentRepo.getDisplayMessages().length}`,
     );
   }
 

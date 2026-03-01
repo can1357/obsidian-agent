@@ -1,6 +1,5 @@
-import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
-
 import { ChevronDown, ChevronUp, FileText, Folder, Hash, Plus, Tag, Wrench, X } from "lucide-react";
+import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { AddContextNoteModal } from "@/components/modals/AddContextNoteModal";
 import { CustomPatternInputModal } from "@/components/modals/CustomPatternInputModal";
@@ -66,7 +65,7 @@ export const PatternListEditor: React.FC<PatternListEditorProps> = ({
 
   const { tagPatterns, extensionPatterns, folderPatterns, notePatterns } = useMemo(
     () => categorizePatterns(patterns),
-    [patterns]
+    [patterns],
   );
 
   // Use ResizeObserver to detect overflow (responds to container size changes)
@@ -135,7 +134,7 @@ export const PatternListEditor: React.FC<PatternListEditorProps> = ({
   // Helper to add a pattern if it doesn't already exist
   const addPatternIfNew = (
     category: keyof ReturnType<typeof categorizePatterns>,
-    pattern: string
+    pattern: string,
   ) => {
     const fresh = getFreshCategories();
     if (!fresh[category].includes(pattern)) {

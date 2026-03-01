@@ -1,6 +1,6 @@
 import { Notice, Plugin, TFile, Vault } from "obsidian";
-import { SystemPromptRegister } from "@/system-prompts/systemPromptRegister";
 import * as state from "@/system-prompts/state";
+import { SystemPromptRegister } from "@/system-prompts/systemPromptRegister";
 import * as systemPromptUtils from "@/system-prompts/systemPromptUtils";
 
 // Mock obsidian
@@ -262,7 +262,7 @@ describe("SystemPromptRegister", () => {
       // Trigger folder change
       settingsChangeHandler(
         { userSystemPromptsFolder: "OldFolder" },
-        { userSystemPromptsFolder: "NewFolder" }
+        { userSystemPromptsFolder: "NewFolder" },
       );
 
       // Fast-forward debounce timer
@@ -295,7 +295,7 @@ describe("SystemPromptRegister", () => {
       // Trigger folder change
       settingsChangeHandler(
         { userSystemPromptsFolder: "OldFolder" },
-        { userSystemPromptsFolder: "NewFolder" }
+        { userSystemPromptsFolder: "NewFolder" },
       );
 
       // Fast-forward debounce timer
@@ -328,7 +328,7 @@ describe("SystemPromptRegister", () => {
       // Trigger folder change
       settingsChangeHandler(
         { userSystemPromptsFolder: "OldFolder" },
-        { userSystemPromptsFolder: "NewFolder" }
+        { userSystemPromptsFolder: "NewFolder" },
       );
 
       // Fast-forward debounce timer
@@ -348,15 +348,15 @@ describe("SystemPromptRegister", () => {
       // Trigger multiple rapid folder changes
       settingsChangeHandler(
         { userSystemPromptsFolder: "Folder1" },
-        { userSystemPromptsFolder: "Folder2" }
+        { userSystemPromptsFolder: "Folder2" },
       );
       settingsChangeHandler(
         { userSystemPromptsFolder: "Folder2" },
-        { userSystemPromptsFolder: "Folder3" }
+        { userSystemPromptsFolder: "Folder3" },
       );
       settingsChangeHandler(
         { userSystemPromptsFolder: "Folder3" },
-        { userSystemPromptsFolder: "Folder4" }
+        { userSystemPromptsFolder: "Folder4" },
       );
 
       // Fast-forward debounce timer
@@ -377,7 +377,7 @@ describe("SystemPromptRegister", () => {
       // Trigger folder change
       settingsChangeHandler(
         { userSystemPromptsFolder: "OldFolder" },
-        { userSystemPromptsFolder: "NewFolder" }
+        { userSystemPromptsFolder: "NewFolder" },
       );
 
       // Fast-forward debounce timer
@@ -424,7 +424,7 @@ describe("SystemPromptRegister", () => {
       // Trigger first folder change (request A)
       settingsChangeHandler(
         { userSystemPromptsFolder: "Original" },
-        { userSystemPromptsFolder: "FolderA" }
+        { userSystemPromptsFolder: "FolderA" },
       );
       jest.advanceTimersByTime(300);
       await Promise.resolve();
@@ -432,7 +432,7 @@ describe("SystemPromptRegister", () => {
       // Trigger second folder change (request B) before A completes
       settingsChangeHandler(
         { userSystemPromptsFolder: "FolderA" },
-        { userSystemPromptsFolder: "FolderB" }
+        { userSystemPromptsFolder: "FolderB" },
       );
       jest.advanceTimersByTime(300);
       await Promise.resolve();

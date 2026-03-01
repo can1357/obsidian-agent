@@ -1,6 +1,6 @@
+import { ChevronDown } from "lucide-react";
 import React from "react";
 import { cn } from "@/lib/utils";
-import { ChevronDown } from "lucide-react";
 
 export interface SelectOption {
   label: string;
@@ -30,7 +30,7 @@ export function ObsidianNativeSelect({
           "focus:tw-outline-none focus:tw-ring-1 focus:tw-ring-ring",
           "disabled:tw-cursor-not-allowed disabled:tw-opacity-50",
           "hover:tw-bg-interactive-hover hover:tw-text-normal",
-          className
+          className,
         )}
         {...props}
       >
@@ -49,7 +49,7 @@ export function ObsidianNativeSelect({
         className={cn(
           "tw-pointer-events-none tw-absolute tw-inset-y-0 tw-right-0 tw-flex tw-items-center tw-pr-2",
           "tw-transition-colors group-hover:[&>svg]:tw-text-normal",
-          props.disabled && "tw-opacity-50"
+          props.disabled && "tw-opacity-50",
         )}
       >
         <ChevronDown className="tw-size-4" />

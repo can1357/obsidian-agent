@@ -1,11 +1,11 @@
-import React from "react";
 import { render, waitFor } from "@testing-library/react";
+import type { App } from "obsidian";
+import React from "react";
 import ChatSingleMessage, {
   normalizeFootnoteRendering,
 } from "@/components/chat-components/ChatSingleMessage";
-import { ChatMessage } from "@/types/message";
-import type { App } from "obsidian";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ChatMessage } from "@/types/message";
 
 jest.mock("@/settings/model", () => ({
   useSettingsValue: jest.fn(() => ({
@@ -161,7 +161,7 @@ describe("ChatSingleMessage", () => {
           isStreaming={false}
           onDelete={() => {}}
         />
-      </TooltipProvider>
+      </TooltipProvider>,
     );
 
     await waitFor(() => expect(renderMarkdownMock).toHaveBeenCalled());

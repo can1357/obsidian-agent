@@ -1,7 +1,7 @@
-import { logInfo, logWarn } from "@/logger";
-import { CHUNK_SIZE } from "@/constants";
 import MiniSearch, { SearchResult } from "minisearch";
-import { App, TFile, getAllTags } from "obsidian";
+import { App, getAllTags, TFile } from "obsidian";
+import { CHUNK_SIZE } from "@/constants";
+import { logInfo, logWarn } from "@/logger";
 import { ChunkManager, getSharedChunkManager } from "../chunks";
 import { NoteIdRank } from "../interfaces";
 import { MemoryManager } from "../utils/MemoryManager";
@@ -36,7 +36,7 @@ export class FullTextEngine {
 
   constructor(
     private app: App,
-    chunkManager?: ChunkManager
+    chunkManager?: ChunkManager,
   ) {
     this.memoryManager = new MemoryManager();
     this.chunkManager = chunkManager || getSharedChunkManager(app);
@@ -168,7 +168,7 @@ export class FullTextEngine {
     }
 
     logInfo(
-      `FullTextEngine: Generated ${chunks.length} chunks from ${candidatePaths.length} notes`
+      `FullTextEngine: Generated ${chunks.length} chunks from ${candidatePaths.length} notes`,
     );
 
     // Index chunks
@@ -247,7 +247,7 @@ export class FullTextEngine {
     }
 
     logInfo(
-      `FullTextEngine: [CHUNKS] Indexed ${indexed}/${chunks.length} chunks (${this.memoryManager.getUsagePercent()}% memory)`
+      `FullTextEngine: [CHUNKS] Indexed ${indexed}/${chunks.length} chunks (${this.memoryManager.getUsagePercent()}% memory)`,
     );
     return indexed;
   }
@@ -406,7 +406,7 @@ export class FullTextEngine {
     queries: string[],
     limit: number = 30,
     salientTerms: string[] = [],
-    originalQuery?: string
+    originalQuery?: string,
   ): NoteIdRank[] {
     // Return empty results if index hasn't been created yet
     if (!this.index) {
@@ -438,7 +438,7 @@ export class FullTextEngine {
       const results = this.index.search(searchQuery, searchOptions);
 
       logInfo(
-        `FullText: Search found ${results.length} results for "${searchQuery.substring(0, 50)}..."`
+        `FullText: Search found ${results.length} results for "${searchQuery.substring(0, 50)}..."`,
       );
 
       return results.slice(0, limit).map((result) => ({
@@ -461,7 +461,7 @@ export class FullTextEngine {
    * Extract lexical match information from MiniSearch result for explanation
    */
   private extractLexicalMatches(
-    result: SearchResult
+    result: SearchResult,
   ): { field: string; query: string; weight: number }[] {
     const matches: { field: string; query: string; weight: number }[] = [];
 

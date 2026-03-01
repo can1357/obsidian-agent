@@ -1,3 +1,4 @@
+import { App, Notice, TFile } from "obsidian";
 import { getCurrentProject } from "@/aiParams";
 import { AI_SENDER, USER_SENDER } from "@/constants";
 import ChainManager from "@/LLMProviders/chainManager";
@@ -18,7 +19,6 @@ import {
   patchFrontmatter,
   readFrontmatterViaAdapter,
 } from "@/utils/vaultAdapterUtils";
-import { App, Notice, TFile } from "obsidian";
 import { MessageRepository } from "./MessageRepository";
 
 const SAFE_FILENAME_BYTE_LIMIT = 100;
@@ -44,7 +44,7 @@ export class ChatPersistenceManager {
   constructor(
     private app: App,
     private messageRepo: MessageRepository,
-    private chainManager?: ChainManager
+    private chainManager?: ChainManager,
   ) {}
 
   /**
@@ -96,7 +96,7 @@ export class ChatPersistenceManager {
         firstMessageEpoch,
         modelKey,
         existingTopic,
-        existingLastAccessedAt
+        existingLastAccessedAt,
       );
       let targetFile: TFile | null = existingFile;
 
@@ -118,7 +118,7 @@ export class ChatPersistenceManager {
         await this.app.vault.adapter.write(preferredFileName, noteContent);
         new Notice("Existing chat note found - updating it now.");
         logInfo(
-          `[ChatPersistenceManager] Updated existing chat file via adapter: ${preferredFileName}`
+          `[ChatPersistenceManager] Updated existing chat file via adapter: ${preferredFileName}`,
         );
       } else {
         // File doesn't exist, create a new one
@@ -142,20 +142,20 @@ export class ChatPersistenceManager {
                 firstMessageEpoch,
                 modelKey,
                 existingTopic,
-                conflictLastAccessedAt
+                conflictLastAccessedAt,
               );
               await this.app.vault.modify(conflictFile, updatedContent);
               targetFile = conflictFile;
               new Notice("Existing chat note found - updating it now.");
               logInfo(
-                `[ChatPersistenceManager] Resolved save conflict by updating existing chat file: ${conflictFile.path}`
+                `[ChatPersistenceManager] Resolved save conflict by updating existing chat file: ${conflictFile.path}`,
               );
             } else {
               // File exists on disk but not in vault cache (hidden directory)
               await this.app.vault.adapter.write(preferredFileName, noteContent);
               new Notice("Existing chat note found - updating it now.");
               logInfo(
-                `[ChatPersistenceManager] Resolved save conflict via adapter: ${preferredFileName}`
+                `[ChatPersistenceManager] Resolved save conflict via adapter: ${preferredFileName}`,
               );
             }
           } else if (this.isNameTooLongError(error)) {
@@ -168,7 +168,7 @@ export class ChatPersistenceManager {
               targetFile = await this.app.vault.create(fallbackName, noteContent);
               new Notice(`Chat saved as note: ${fallbackName}`);
               logWarn(
-                `[ChatPersistenceManager] Used minimal filename due to length constraints: ${fallbackName}`
+                `[ChatPersistenceManager] Used minimal filename due to length constraints: ${fallbackName}`,
               );
             } catch (fallbackError) {
               if (this.isFileAlreadyExistsError(fallbackError)) {
@@ -186,20 +186,20 @@ export class ChatPersistenceManager {
                     firstMessageEpoch,
                     modelKey,
                     conflictTopic,
-                    conflictLastAccessedAt
+                    conflictLastAccessedAt,
                   );
                   await this.app.vault.modify(conflictFile, updatedContent);
                   targetFile = conflictFile;
                   new Notice("Existing chat note found - updating it now.");
                   logInfo(
-                    `[ChatPersistenceManager] Resolved fallback save conflict by updating existing chat file: ${conflictFile.path}`
+                    `[ChatPersistenceManager] Resolved fallback save conflict by updating existing chat file: ${conflictFile.path}`,
                   );
                 } else {
                   // File exists on disk but not in vault cache (hidden directory)
                   await this.app.vault.adapter.write(fallbackName, noteContent);
                   new Notice("Existing chat note found - updating it now.");
                   logInfo(
-                    `[ChatPersistenceManager] Resolved fallback save conflict via adapter: ${fallbackName}`
+                    `[ChatPersistenceManager] Resolved fallback save conflict via adapter: ${fallbackName}`,
                   );
                 }
               } else {
@@ -289,7 +289,7 @@ export class ChatPersistenceManager {
 
           if (message.context.notes?.length) {
             contextParts.push(
-              `Notes: ${message.context.notes.map((note) => note.path).join(", ")}`
+              `Notes: ${message.context.notes.map((note) => note.path).join(", ")}`,
             );
           }
 
@@ -299,7 +299,7 @@ export class ChatPersistenceManager {
 
           if (message.context.webTabs?.length) {
             contextParts.push(
-              `Web Tabs: ${message.context.webTabs.map((tab) => tab.url).join(", ")}`
+              `Web Tabs: ${message.context.webTabs.map((tab) => tab.url).join(", ")}`,
             );
           }
 
@@ -381,7 +381,7 @@ export class ChatPersistenceManager {
         // Strip old tool call banners: <!--TOOL_CALL_START:...-->...<!--TOOL_CALL_END:...-->
         messageText = messageText.replace(
           /<!--TOOL_CALL_START:[^:]+:[^:]+:[^:]+:[^:]+:[^:]*:[^:]+-->[\s\S]*?<!--TOOL_CALL_END:[^:]+:[\s\S]*?-->/g,
-          ""
+          "",
         );
         // Strip agent reasoning blocks: <!--AGENT_REASONING:...-->
         const reasoningData = parseReasoningBlock(messageText);
@@ -463,12 +463,12 @@ export class ChatPersistenceManager {
 
               if (matches.length === 1) {
                 logInfo(
-                  `[ChatPersistenceManager] Resolved legacy basename "${basename}" to ${matches[0].path}`
+                  `[ChatPersistenceManager] Resolved legacy basename "${basename}" to ${matches[0].path}`,
                 );
                 return matches[0];
               } else if (matches.length > 1) {
                 logWarn(
-                  `[ChatPersistenceManager] Ambiguous basename "${basename}", skipping. Matches: ${matches.map((f) => f.path).join(", ")}`
+                  `[ChatPersistenceManager] Ambiguous basename "${basename}", skipping. Matches: ${matches.map((f) => f.path).join(", ")}`,
                 );
               } else {
                 logWarn(`[ChatPersistenceManager] Note not found: ${trimmedPath}`);
@@ -621,7 +621,7 @@ ${conversationSummary}`;
   private generateFileName(
     messages: ChatMessage[],
     firstMessageEpoch: number,
-    topic?: string
+    topic?: string,
   ): string {
     const settings = getSettings();
     const formattedDateTime = formatDateTime(new Date(firstMessageEpoch));
@@ -674,7 +674,7 @@ ${conversationSummary}`;
     // Calculate the maximum bytes available for the topic
     const topicByteBudget = Math.max(
       20, // Minimum 20 bytes for topic to ensure at least some meaningful text
-      SAFE_FILENAME_BYTE_LIMIT - extensionBytes - filePrefixBytes - formatOverheadBytes
+      SAFE_FILENAME_BYTE_LIMIT - extensionBytes - filePrefixBytes - formatOverheadBytes,
     );
 
     // Replace spaces with underscores and truncate to byte limit
@@ -715,7 +715,7 @@ ${conversationSummary}`;
     firstMessageEpoch: number,
     modelKey: string,
     topic?: string,
-    lastAccessedAt?: number
+    lastAccessedAt?: number,
   ): string {
     const settings = getSettings();
     const currentProject = getCurrentProject();
@@ -740,7 +740,7 @@ ${chatContent}`;
   private generateTopicAsyncIfNeeded(
     messages: ChatMessage[],
     file: TFile | null,
-    existingTopic?: string
+    existingTopic?: string,
   ): void {
     const settings = getSettings();
 

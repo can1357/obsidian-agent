@@ -90,7 +90,7 @@ export const quickAskOverlayPlugin = ViewPlugin.fromClass(
       this.pos = null;
       this.fallbackPos = null;
     }
-  }
+  },
 );
 
 /**

@@ -1,13 +1,14 @@
-import { logInfo, logWarn } from "@/logger";
-import { getSettings } from "@/settings/model";
-import { extractNoteFiles } from "@/utils";
 import { BaseCallbackConfig } from "@langchain/core/callbacks/manager";
 import { Document } from "@langchain/core/documents";
 import { BaseRetriever } from "@langchain/core/retrievers";
 import { App, TFile } from "obsidian";
+import { logInfo, logWarn } from "@/logger";
+import { getSettings } from "@/settings/model";
+import { extractNoteFiles } from "@/utils";
 import { ChunkManager, getSharedChunkManager } from "./chunks";
-import { SearchCore } from "./SearchCore";
 import { ExpandedQuery } from "./QueryExpander";
+import { SearchCore } from "./SearchCore";
+
 // Defer requiring ChatModelManager until runtime to avoid test-time import issues
 let getChatModelManagerSingleton: (() => any) | null = null;
 async function safeGetChatModel() {
@@ -52,7 +53,7 @@ export class TieredLexicalRetriever extends BaseRetriever {
       returnAll?: boolean;
       useRerankerThreshold?: number; // Not used in v3, kept for compatibility
       preExpandedQuery?: ExpandedQuery; // Pre-expanded query data to avoid double expansion
-    }
+    },
   ) {
     super();
     // Provide safe getter for chat model (returns null in tests if unavailable)
@@ -81,7 +82,7 @@ export class TieredLexicalRetriever extends BaseRetriever {
    */
   public async getRelevantDocuments(
     query: string,
-    config?: BaseCallbackConfig
+    config?: BaseCallbackConfig,
   ): Promise<Document[]> {
     try {
       // Extract note TFiles wrapped in [[]] from the query for salient term enhancement
@@ -136,7 +137,7 @@ export class TieredLexicalRetriever extends BaseRetriever {
    * Supports both chunk IDs (note_path#chunk_index) and note IDs.
    */
   private async convertToDocuments(
-    searchResults: Array<{ id: string; score: number; engine?: string; explanation?: any }>
+    searchResults: Array<{ id: string; score: number; engine?: string; explanation?: any }>,
   ): Promise<Document[]> {
     const documents: Document[] = [];
 
@@ -181,7 +182,7 @@ export class TieredLexicalRetriever extends BaseRetriever {
                 explanation: result.explanation,
                 isChunk: true,
               },
-            })
+            }),
           );
         } else {
           // Handle note result: full note content (legacy path)
@@ -209,7 +210,7 @@ export class TieredLexicalRetriever extends BaseRetriever {
                 explanation: result.explanation,
                 isChunk: false,
               },
-            })
+            }),
           );
         }
       } catch (error) {

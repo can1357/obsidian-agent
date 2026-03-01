@@ -89,7 +89,7 @@ describe("BedrockChatModel streaming decode", () => {
       event,
       undefined,
       undefined,
-      undefined
+      undefined,
     );
 
     expect(processed.hasText).toBe(true);
@@ -165,7 +165,7 @@ describe("BedrockChatModel streaming decode", () => {
         event,
         undefined,
         undefined,
-        undefined
+        undefined,
       );
 
       expect(processed.hasText).toBe(true);
@@ -212,7 +212,7 @@ describe("BedrockChatModel streaming decode", () => {
         event,
         undefined,
         undefined,
-        undefined
+        undefined,
       );
 
       expect(processed.hasText).toBe(true);
@@ -258,7 +258,7 @@ describe("BedrockChatModel streaming decode", () => {
         thinkingEvent,
         undefined,
         undefined,
-        undefined
+        undefined,
       );
 
       expect(thinkingResult.deltaChunks).toHaveLength(1);
@@ -287,7 +287,7 @@ describe("BedrockChatModel streaming decode", () => {
         textEvent,
         undefined,
         undefined,
-        undefined
+        undefined,
       );
 
       expect(textResult.deltaChunks).toHaveLength(1);
@@ -353,7 +353,7 @@ describe("BedrockChatModel streaming decode", () => {
       const model = createModel(false);
       const requestBody = (model as any).buildRequestBody(
         [{ role: "user", content: "test", _getType: () => "human" }],
-        { temperature: 0.7 }
+        { temperature: 0.7 },
       );
 
       expect(requestBody.thinking).toBeUndefined();
@@ -366,7 +366,7 @@ describe("BedrockChatModel streaming decode", () => {
       const model = createModel(false);
       const requestBody = (model as any).buildRequestBody(
         [{ role: "user", content: "test", _getType: () => "human" }],
-        { temperature: 0.5 }
+        { temperature: 0.5 },
       );
 
       expect(requestBody.temperature).toBe(0.5);
@@ -377,7 +377,7 @@ describe("BedrockChatModel streaming decode", () => {
       const model = createModel(true);
       const requestBody = (model as any).buildRequestBody(
         [{ role: "user", content: "test", _getType: () => "human" }],
-        { temperature: 0.5 } // User tries to set 0.5, should be overridden to 1
+        { temperature: 0.5 }, // User tries to set 0.5, should be overridden to 1
       );
 
       expect(requestBody.temperature).toBe(1);

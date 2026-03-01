@@ -1,6 +1,6 @@
+import { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import { logInfo } from "@/logger";
 import { ToolMetadata } from "@/tools/ToolRegistry";
-import { BaseChatModel } from "@langchain/core/language_models/chat_models";
 
 /**
  * Represents a labeled segment of the system prompt used for tool prompting.
@@ -43,7 +43,7 @@ export interface ModelAdapter {
     basePrompt: string,
     toolDescriptions: string,
     availableToolNames?: string[],
-    toolMetadata?: ToolMetadata[]
+    toolMetadata?: ToolMetadata[],
   ): string;
 
   /**
@@ -59,7 +59,7 @@ export interface ModelAdapter {
     basePrompt: string,
     toolDescriptions: string,
     availableToolNames?: string[],
-    toolMetadata?: ToolMetadata[]
+    toolMetadata?: ToolMetadata[],
   ): PromptSection[];
 
   /**
@@ -143,13 +143,13 @@ class BaseModelAdapter implements ModelAdapter {
     basePrompt: string,
     toolDescriptions: string,
     availableToolNames?: string[],
-    toolMetadata?: ToolMetadata[]
+    toolMetadata?: ToolMetadata[],
   ): string {
     const sections = this.buildSystemPromptSections(
       basePrompt,
       toolDescriptions,
       availableToolNames,
-      toolMetadata
+      toolMetadata,
     );
     return joinPromptSections(sections);
   }
@@ -158,7 +158,7 @@ class BaseModelAdapter implements ModelAdapter {
     basePrompt: string,
     toolDescriptions: string,
     _availableToolNames?: string[],
-    toolMetadata?: ToolMetadata[]
+    toolMetadata?: ToolMetadata[],
   ): PromptSection[] {
     const metadata = toolMetadata || [];
     const toolSpecificInstructions = this.buildToolSpecificInstructions(metadata).trim();
@@ -286,13 +286,13 @@ class GPTModelAdapter extends BaseModelAdapter {
     basePrompt: string,
     toolDescriptions: string,
     availableToolNames?: string[],
-    toolMetadata?: ToolMetadata[]
+    toolMetadata?: ToolMetadata[],
   ): PromptSection[] {
     const sections = super.buildSystemPromptSections(
       basePrompt,
       toolDescriptions,
       availableToolNames,
-      toolMetadata
+      toolMetadata,
     );
 
     const tools = availableToolNames || [];
@@ -308,7 +308,7 @@ class GPTModelAdapter extends BaseModelAdapter {
 - For localSearch: OMIT timeRange if not doing time-based search`);
     } else {
       gptSectionParts.push(
-        "CRITICAL FOR GPT MODELS: You MUST use tools when the user's request requires them. Do not just describe what you plan to do - actually call the tools."
+        "CRITICAL FOR GPT MODELS: You MUST use tools when the user's request requires them. Do not just describe what you plan to do - actually call the tools.",
       );
     }
 
@@ -331,7 +331,7 @@ replacement content
     }
 
     gptSectionParts.push(
-      "FINAL REMINDER FOR GPT MODELS: If the user asks you to search, find, edit, or modify anything, you MUST call the appropriate tool immediately. Do not wait for another turn."
+      "FINAL REMINDER FOR GPT MODELS: If the user asks you to search, find, edit, or modify anything, you MUST call the appropriate tool immediately. Do not wait for another turn.",
     );
 
     const gptSpecificContent = gptSectionParts.join("\n\n");
@@ -422,13 +422,13 @@ class ClaudeModelAdapter extends BaseModelAdapter {
     basePrompt: string,
     toolDescriptions: string,
     availableToolNames?: string[],
-    toolMetadata?: ToolMetadata[]
+    toolMetadata?: ToolMetadata[],
   ): PromptSection[] {
     const sections = super.buildSystemPromptSections(
       basePrompt,
       toolDescriptions,
       availableToolNames,
-      toolMetadata
+      toolMetadata,
     );
 
     if (!this.isThinkingModel()) {
@@ -521,13 +521,13 @@ class GeminiModelAdapter extends BaseModelAdapter {
     basePrompt: string,
     toolDescriptions: string,
     availableToolNames?: string[],
-    toolMetadata?: ToolMetadata[]
+    toolMetadata?: ToolMetadata[],
   ): PromptSection[] {
     const sections = super.buildSystemPromptSections(
       basePrompt,
       toolDescriptions,
       availableToolNames,
-      toolMetadata
+      toolMetadata,
     );
 
     // Gemini needs very explicit instructions about tool usage
@@ -611,13 +611,13 @@ class CopilotPlusModelAdapter extends BaseModelAdapter {
     basePrompt: string,
     toolDescriptions: string,
     availableToolNames?: string[],
-    toolMetadata?: ToolMetadata[]
+    toolMetadata?: ToolMetadata[],
   ): PromptSection[] {
     const sections = super.buildSystemPromptSections(
       basePrompt,
       toolDescriptions,
       availableToolNames,
-      toolMetadata
+      toolMetadata,
     );
 
     sections.push({

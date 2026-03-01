@@ -1,6 +1,6 @@
-import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
+import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -21,7 +21,7 @@ const DialogOverlay = React.forwardRef<
     className={cn(
       "tw-fixed tw-inset-0 tw-z-modal data-[state=open]:tw-animate-in data-[state=closed]:tw-animate-out data-[state=closed]:tw-fade-out-0 data-[state=open]:tw-fade-in-0",
       "tw-bg-overlay/50", // custom style
-      className
+      className,
     )}
     {...props}
   />
@@ -40,7 +40,7 @@ const DialogContent = React.forwardRef<
       ref={ref}
       className={cn(
         "tw-fixed tw-left-1/2 tw-top-1/2 tw-z-modal tw-grid tw-w-full tw-max-w-lg -tw-translate-x-1/2 -tw-translate-y-1/2 tw-gap-4 tw-border tw-bg-primary tw-p-6 tw-shadow-lg tw-duration-200 data-[state=open]:tw-animate-in data-[state=closed]:tw-animate-out data-[state=closed]:tw-fade-out-0 data-[state=open]:tw-fade-in-0 data-[state=closed]:tw-zoom-out-95 data-[state=open]:tw-zoom-in-95 data-[state=closed]:tw-slide-out-to-left-1/2 data-[state=closed]:tw-slide-out-to-top-[48%] data-[state=open]:tw-slide-in-from-left-1/2 data-[state=open]:tw-slide-in-from-top-[48%] sm:tw-rounded-lg",
-        className
+        className,
       )}
       {...props}
     >
@@ -66,7 +66,7 @@ const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
   <div
     className={cn(
       "tw-flex tw-flex-col-reverse sm:tw-flex-row sm:tw-justify-end sm:tw-space-x-2",
-      className
+      className,
     )}
     {...props}
   />
@@ -81,7 +81,7 @@ const DialogTitle = React.forwardRef<
     ref={ref}
     className={cn(
       "tw-mt-0 tw-text-lg tw-font-semibold tw-leading-none tw-tracking-tight",
-      className
+      className,
     )}
     {...props}
   />

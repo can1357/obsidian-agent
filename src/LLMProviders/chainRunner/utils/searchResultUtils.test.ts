@@ -1,7 +1,7 @@
 import {
-  formatSearchResultsForLLM,
-  formatSearchResultStringForLLM,
   extractSourcesFromSearchResults,
+  formatSearchResultStringForLLM,
+  formatSearchResultsForLLM,
 } from "./searchResultUtils";
 
 describe("searchResultUtils", () => {
@@ -42,7 +42,7 @@ describe("searchResultUtils", () => {
 
       const result = formatSearchResultsForLLM(documents);
       expect(result).toContain(
-        `<document>\n<id>1</id>\n<title>Test Document</title>\n<path>path/to/document.md</path>`
+        `<document>\n<id>1</id>\n<title>Test Document</title>\n<path>path/to/document.md</path>`,
       );
       expect(result).toContain(`<modified>2024-01-15T10:30:00.000Z</modified>`);
       expect(result).toContain(`<content>\nThis is the content\n</content>\n</document>`);

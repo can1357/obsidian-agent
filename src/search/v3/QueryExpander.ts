@@ -1,9 +1,9 @@
+import { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import { LLM_TIMEOUT_MS } from "@/constants";
 import { TimeoutError } from "@/error";
 import { logError, logInfo, logWarn } from "@/logger";
 import { extractTagsFromQuery } from "@/search/v3/utils/tagUtils";
 import { withSuppressedTokenWarnings, withTimeout } from "@/utils";
-import { BaseChatModel } from "@langchain/core/language_models/chat_models";
 
 export interface QueryExpanderOptions {
   maxVariants?: number;
@@ -121,7 +121,7 @@ Format:
       return await withTimeout(
         (signal) => this.expandWithLLM(query, signal),
         this.config.timeout,
-        "Query expansion"
+        "Query expansion",
       );
     } catch (error: any) {
       if (error instanceof TimeoutError) {
@@ -153,7 +153,7 @@ Format:
 
       const prompt = QueryExpander.PROMPT_TEMPLATE.replace(
         "{count}",
-        this.config.maxVariants.toString()
+        this.config.maxVariants.toString(),
       ).replace("{query}", query);
 
       // Invoke model with token warnings suppressed and abort signal
@@ -175,7 +175,7 @@ Format:
       const parsed = this.parseXMLResponse(content, query);
 
       logInfo(
-        `QueryExpander: Expanded "${query}" to ${parsed.queries.length} queries and ${parsed.salientTerms.length} terms`
+        `QueryExpander: Expanded "${query}" to ${parsed.queries.length} queries and ${parsed.salientTerms.length} terms`,
       );
       return parsed;
     } catch (error) {
@@ -358,7 +358,7 @@ Format:
   private combineBaseAndTagTerms(
     baseTerms: string[],
     tagTerms: string[],
-    originalQuery: string
+    originalQuery: string,
   ): string[] {
     const combined = new Set<string>([...baseTerms, ...tagTerms]);
 
@@ -407,7 +407,7 @@ Format:
           const start = match.index;
           const end = start + match[0].length;
           const insideTag = tagRanges.some(
-            ({ start: tagStart, end: tagEnd }) => start >= tagStart && end <= tagEnd
+            ({ start: tagStart, end: tagEnd }) => start >= tagStart && end <= tagEnd,
           );
 
           if (insideTag) {

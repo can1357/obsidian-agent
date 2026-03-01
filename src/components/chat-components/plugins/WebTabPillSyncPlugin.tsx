@@ -1,8 +1,8 @@
 import React from "react";
-import { $isWebTabPillNode, WebTabPillNode } from "../pills/WebTabPillNode";
-import { $isActiveWebTabPillNode } from "../pills/ActiveWebTabPillNode";
-import { GenericPillSyncPlugin, PillSyncConfig } from "./GenericPillSyncPlugin";
 import type { WebTabContext } from "@/types/message";
+import { $isActiveWebTabPillNode } from "../pills/ActiveWebTabPillNode";
+import { $isWebTabPillNode, WebTabPillNode } from "../pills/WebTabPillNode";
+import { GenericPillSyncPlugin, PillSyncConfig } from "./GenericPillSyncPlugin";
 
 /**
  * Props for the WebTabPillSyncPlugin component
@@ -88,7 +88,7 @@ function ActiveWebTabPillSyncPlugin({
         onActiveWebTabAdded();
       }
     },
-    [onActiveWebTabAdded]
+    [onActiveWebTabAdded],
   );
 
   const handleRemoved = React.useCallback(
@@ -97,7 +97,7 @@ function ActiveWebTabPillSyncPlugin({
         onActiveWebTabRemoved();
       }
     },
-    [onActiveWebTabRemoved]
+    [onActiveWebTabRemoved],
   );
 
   return (

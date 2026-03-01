@@ -29,7 +29,7 @@ describe("cicPromptUtils", () => {
       const wrapped = wrapLocalSearchPayload(content, "last week");
 
       expect(wrapped).toBe(
-        '<localSearch timeRange="last week">\n<guidance>Rules</guidance>\n\n<document>Doc</document>\n</localSearch>'
+        '<localSearch timeRange="last week">\n<guidance>Rules</guidance>\n\n<document>Doc</document>\n</localSearch>',
       );
     });
 
@@ -83,7 +83,7 @@ describe("cicPromptUtils", () => {
       const result = injectGuidanceBeforeUserQuery(payload, guidance);
 
       expect(result).toBe(
-        "# Additional context:\n\n<context>\n</context>\n\n<guidance>\nRules\n</guidance>\n\n[User query]:\nWhat?"
+        "# Additional context:\n\n<context>\n</context>\n\n<guidance>\nRules\n</guidance>\n\n[User query]:\nWhat?",
       );
     });
 
@@ -106,7 +106,7 @@ describe("cicPromptUtils", () => {
       const result = injectGuidanceBeforeUserQuery(payload, guidance);
 
       expect(result).toBe(
-        "# Additional context:\n\n<context>\n</context>\n\n<guidance>\nRules\n</guidance>\n\n[User query]:\nWhat?"
+        "# Additional context:\n\n<context>\n</context>\n\n<guidance>\nRules\n</guidance>\n\n[User query]:\nWhat?",
       );
     });
   });

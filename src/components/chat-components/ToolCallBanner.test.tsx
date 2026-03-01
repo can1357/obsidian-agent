@@ -1,5 +1,5 @@
-import React from "react";
 import { render, screen } from "@testing-library/react";
+import React from "react";
 import { ToolCallBanner } from "@/components/chat-components/ToolCallBanner";
 
 // Mock the Collapsible components from Radix UI
@@ -41,7 +41,7 @@ describe("ToolCallBanner", () => {
   describe("actuallyExecuting logic (defensive check)", () => {
     it("should show animation when executing with no result", () => {
       const { container } = render(
-        <ToolCallBanner {...defaultProps} isExecuting={true} result={null} />
+        <ToolCallBanner {...defaultProps} isExecuting={true} result={null} />,
       );
 
       // Check for shimmer animation container
@@ -54,7 +54,7 @@ describe("ToolCallBanner", () => {
 
     it("should hide animation when not executing with result", () => {
       const { container } = render(
-        <ToolCallBanner {...defaultProps} isExecuting={false} result="Success" />
+        <ToolCallBanner {...defaultProps} isExecuting={false} result="Success" />,
       );
 
       // Shimmer animation should NOT be present
@@ -67,7 +67,7 @@ describe("ToolCallBanner", () => {
 
     it("should hide animation when executing=true but result is present (bug fix)", () => {
       const { container } = render(
-        <ToolCallBanner {...defaultProps} isExecuting={true} result="Success" />
+        <ToolCallBanner {...defaultProps} isExecuting={true} result="Success" />,
       );
 
       // This is the key test: even though isExecuting=true, we have a result,
@@ -81,7 +81,7 @@ describe("ToolCallBanner", () => {
 
     it("should hide animation when not executing with empty result", () => {
       const { container } = render(
-        <ToolCallBanner {...defaultProps} isExecuting={false} result="" />
+        <ToolCallBanner {...defaultProps} isExecuting={false} result="" />,
       );
 
       // Shimmer animation should NOT be present
@@ -136,7 +136,7 @@ describe("ToolCallBanner", () => {
           isExecuting={true}
           result={null}
           confirmationMessage="Processing data"
-        />
+        />,
       );
       expect(screen.getByText(/Processing data/)).toBeTruthy();
     });
@@ -149,7 +149,7 @@ describe("ToolCallBanner", () => {
           displayName="MyNote.md"
           isExecuting={true}
           result={null}
-        />
+        />,
       );
       expect(screen.getByText(/Reading MyNote.md/)).toBeTruthy();
     });
@@ -162,7 +162,7 @@ describe("ToolCallBanner", () => {
           displayName="MyNote.md"
           isExecuting={false}
           result="Note content"
-        />
+        />,
       );
       expect(screen.getByText(/Read MyNote.md/)).toBeTruthy();
     });
@@ -205,7 +205,7 @@ describe("ToolCallBanner", () => {
           result={null}
           onAccept={onAccept}
           onReject={onReject}
-        />
+        />,
       );
 
       // Buttons should not be visible during execution
@@ -224,7 +224,7 @@ describe("ToolCallBanner", () => {
           result="Success"
           onAccept={onAccept}
           onReject={onReject}
-        />
+        />,
       );
 
       // Buttons should be visible when done
@@ -243,7 +243,7 @@ describe("ToolCallBanner", () => {
           result="Success"
           onAccept={onAccept}
           onReject={onReject}
-        />
+        />,
       );
 
       // Buttons SHOULD be visible since actuallyExecuting=false

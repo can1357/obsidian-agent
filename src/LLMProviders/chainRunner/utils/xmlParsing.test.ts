@@ -29,7 +29,7 @@ describe("escapeXml", () => {
 
   it("should escape multiple special characters", () => {
     expect(escapeXml('<tag attr="value">content & more</tag>')).toBe(
-      "&lt;tag attr=&quot;value&quot;&gt;content &amp; more&lt;/tag&gt;"
+      "&lt;tag attr=&quot;value&quot;&gt;content &amp; more&lt;/tag&gt;",
     );
   });
 
@@ -49,7 +49,7 @@ describe("escapeXml", () => {
 
   it("should escape XML entity references", () => {
     expect(escapeXml("&lt;&gt;&quot;&apos;&amp;")).toBe(
-      "&amp;lt;&amp;gt;&amp;quot;&amp;apos;&amp;amp;"
+      "&amp;lt;&amp;gt;&amp;quot;&amp;apos;&amp;amp;",
     );
   });
 });
@@ -77,7 +77,7 @@ describe("unescapeXml", () => {
 
   it("should unescape multiple entities", () => {
     expect(unescapeXml("&lt;tag attr=&quot;value&quot;&gt;content &amp; more&lt;/tag&gt;")).toBe(
-      '<tag attr="value">content & more</tag>'
+      '<tag attr="value">content & more</tag>',
     );
   });
 

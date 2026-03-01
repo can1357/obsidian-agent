@@ -121,7 +121,7 @@ export class OramaIndexBackend implements SemanticIndexBackend {
    * Detect embedding model changes and rebuild as needed.
    */
   public async checkAndHandleEmbeddingModelChange(
-    embeddingInstance?: Embeddings
+    embeddingInstance?: Embeddings,
   ): Promise<boolean> {
     if (!embeddingInstance) {
       throw new Error("Embedding instance is required to check Orama embedding model changes.");
@@ -196,7 +196,7 @@ export class OramaIndexBackend implements SemanticIndexBackend {
    * Reinitialize the Orama DB when index sync settings change the storage path.
    */
   public async reinitializeForIndexSyncChange(
-    embeddingInstance: Embeddings | undefined
+    embeddingInstance: Embeddings | undefined,
   ): Promise<void> {
     const newPath = await this.dbOps.getDbPath();
     const oldPath = this.dbOps.getCurrentDbPath();

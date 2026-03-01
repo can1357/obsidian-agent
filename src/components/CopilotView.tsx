@@ -1,13 +1,13 @@
-import ChainManager from "@/LLMProviders/chainManager";
-import Chat from "@/components/Chat";
-import { CHAT_VIEWTYPE } from "@/constants";
-import { AppContext, EventTargetContext } from "@/context";
-import CopilotPlugin from "@/main";
-import { FileParserManager } from "@/tools/FileParserManager";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { ItemView, Platform, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
+import Chat from "@/components/Chat";
+import { CHAT_VIEWTYPE } from "@/constants";
+import { AppContext, EventTargetContext } from "@/context";
+import ChainManager from "@/LLMProviders/chainManager";
+import CopilotPlugin from "@/main";
+import { FileParserManager } from "@/tools/FileParserManager";
 
 export default class CopilotView extends ItemView {
   private get chainManager(): ChainManager {
@@ -24,7 +24,7 @@ export default class CopilotView extends ItemView {
 
   constructor(
     leaf: WorkspaceLeaf,
-    private plugin: CopilotPlugin
+    private plugin: CopilotPlugin,
   ) {
     super(leaf);
     this.app = plugin.app;
@@ -72,7 +72,7 @@ export default class CopilotView extends ItemView {
     this.registerEvent(
       this.app.workspace.on("layout-change", () => {
         requestAnimationFrame(() => this.setupDrawerHideObserver());
-      })
+      }),
     );
   }
 
@@ -106,7 +106,7 @@ export default class CopilotView extends ItemView {
       // querying by data-type which is more brittle across Obsidian versions.
       const isCopilotActive = !!this.containerEl.closest(".workspace-drawer-active-tab-content");
       const kbHeight = parseFloat(
-        document.documentElement.style.getPropertyValue("--keyboard-height") || "0"
+        document.documentElement.style.getPropertyValue("--keyboard-height") || "0",
       );
       drawer.classList.toggle("copilot-keyboard-open", isCopilotActive && kbHeight > 0);
     };
@@ -146,7 +146,7 @@ export default class CopilotView extends ItemView {
         // Reason: Radix's dismissable-layer listens for Escape in capture phase on
         // document, so this will close the topmost open Radix layer.
         this.containerEl.dispatchEvent(
-          new KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true })
+          new KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true }),
         );
       }
       wasHidden = isHidden;
@@ -160,7 +160,7 @@ export default class CopilotView extends ItemView {
 
   private renderView(
     handleSaveAsNote: (saveFunction: () => Promise<void>) => void,
-    updateUserMessageHistory: (newMessage: string) => void
+    updateUserMessageHistory: (newMessage: string) => void,
   ): void {
     if (!this.root) return;
 
@@ -178,7 +178,7 @@ export default class CopilotView extends ItemView {
             />
           </Tooltip.Provider>
         </EventTargetContext.Provider>
-      </AppContext.Provider>
+      </AppContext.Provider>,
     );
   }
 

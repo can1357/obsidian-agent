@@ -1,10 +1,10 @@
-import { HybridRetriever } from "@/search/hybridRetriever";
-import { RETURN_ALL_LIMIT } from "@/search/v3/SearchCore";
-import { TieredLexicalRetriever } from "@/search/v3/TieredLexicalRetriever";
 import type { BaseCallbackConfig } from "@langchain/core/callbacks/manager";
 import { Document } from "@langchain/core/documents";
 import { BaseRetriever } from "@langchain/core/retrievers";
 import { App } from "obsidian";
+import { HybridRetriever } from "@/search/hybridRetriever";
+import { RETURN_ALL_LIMIT } from "@/search/v3/SearchCore";
+import { TieredLexicalRetriever } from "@/search/v3/TieredLexicalRetriever";
 
 type RetrieverOptions = {
   minSimilarityScore?: number;
@@ -48,7 +48,7 @@ export class MergedSemanticRetriever extends BaseRetriever {
   constructor(
     private app: App,
     private options: RetrieverOptions,
-    semanticRetriever?: SemanticRetriever
+    semanticRetriever?: SemanticRetriever,
   ) {
     super();
     this.originalMaxK = Math.max(1, options.maxK);
@@ -106,7 +106,7 @@ export class MergedSemanticRetriever extends BaseRetriever {
     }
 
     const mergedResults = Array.from(merged.values()).sort(
-      (a, b) => (b.metadata?.score ?? 0) - (a.metadata?.score ?? 0)
+      (a, b) => (b.metadata?.score ?? 0) - (a.metadata?.score ?? 0),
     );
 
     const limit = this.returnAll ? RETURN_ALL_LIMIT : this.originalMaxK;

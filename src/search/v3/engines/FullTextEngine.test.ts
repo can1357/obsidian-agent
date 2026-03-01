@@ -206,8 +206,8 @@ jest.mock("../chunks", () => {
     getChunks: jest.fn().mockImplementation((candidates: string[]) => {
       return Promise.resolve(
         mockChunks.filter((chunk) =>
-          candidates.some((candidate: string) => chunk.notePath === candidate)
-        )
+          candidates.some((candidate: string) => chunk.notePath === candidate),
+        ),
       );
     }),
     getChunkText: jest.fn((id: string) => chunkContent[id] || ""),
@@ -394,7 +394,7 @@ describe("FullTextEngine", () => {
           "alpha",
           "#deepwork",
           "deepwork",
-        ])
+        ]),
       );
     });
 
@@ -688,7 +688,7 @@ describe("FullTextEngine", () => {
         ["meeting", "rareterm"],
         10,
         ["meeting", "rareterm"],
-        "meeting rareterm"
+        "meeting rareterm",
       );
 
       expect(results[0].id).toBe("unique.md#0");

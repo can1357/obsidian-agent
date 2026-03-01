@@ -7,7 +7,7 @@ export class RebuildIndexConfirmModal extends ConfirmModal {
       app,
       onConfirm,
       "Changing this setting means you have to rebuild the index for your entire vault, do you wish to proceed?",
-      "Rebuild Index"
+      "Rebuild Index",
     );
   }
 }

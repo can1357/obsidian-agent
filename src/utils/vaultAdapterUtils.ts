@@ -51,7 +51,7 @@ export async function listMarkdownFiles(app: App, folderPath: string): Promise<T
 export async function patchFrontmatter(
   app: App,
   filePath: string,
-  updates: Record<string, string | number>
+  updates: Record<string, string | number>,
 ): Promise<void> {
   const file = app.vault.getAbstractFileByPath(filePath);
 
@@ -84,7 +84,7 @@ export async function patchFrontmatter(
         }
       }
       return patched + closing;
-    }
+    },
   );
 
   if (updated !== raw) {
@@ -99,7 +99,7 @@ export async function patchFrontmatter(
  */
 export async function readFrontmatterViaAdapter(
   app: App,
-  filePath: string
+  filePath: string,
 ): Promise<Record<string, string> | null> {
   const raw = await app.vault.adapter.read(filePath);
   const yaml = raw.match(/^---\n([\s\S]*?)\n---/)?.[1];

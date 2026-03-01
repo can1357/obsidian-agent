@@ -1,3 +1,6 @@
+import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { Notice, requestUrl } from "obsidian";
+import React, { useState } from "react";
 import { CustomModel } from "@/aiParams";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
@@ -9,9 +12,6 @@ import ProjectManager from "@/LLMProviders/projectManager";
 import { logError } from "@/logger";
 import { updateSetting, useSettingsValue } from "@/settings/model";
 import { err2String } from "@/utils";
-import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
-import { Notice, requestUrl } from "obsidian";
-import React, { useState } from "react";
 
 /** Supported local service provider types */
 type LocalServiceKind = ChatModelProviders.OLLAMA | ChatModelProviders.LM_STUDIO;
@@ -123,7 +123,7 @@ function LocalServiceItem({ service, expanded, onToggleExpand }: LocalServiceIte
 
       // Check if model already exists (use name + provider for dedup)
       const exists = settings.activeModels.find(
-        (m) => m.name === customModel.name && m.provider === customModel.provider
+        (m) => m.name === customModel.name && m.provider === customModel.provider,
       );
 
       // Show appropriate notice
@@ -138,7 +138,7 @@ function LocalServiceItem({ service, expanded, onToggleExpand }: LocalServiceIte
         if (verificationFailed) {
           new Notice(
             `Model ${model.name} already exists (verification failed: ${verificationError})`,
-            5000
+            5000,
           );
         } else {
           new Notice(`Model ${model.name} already exists.`);

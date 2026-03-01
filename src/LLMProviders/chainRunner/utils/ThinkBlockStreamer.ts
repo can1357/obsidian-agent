@@ -1,14 +1,14 @@
-import { StreamingResult, TokenUsage } from "@/types/message";
 import { AIMessage } from "@langchain/core/messages";
-import { detectTruncation, extractTokenUsage } from "./finishReasonDetector";
+import { logInfo, logWarn } from "@/logger";
+import { StreamingResult, TokenUsage } from "@/types/message";
 import { formatErrorChunk } from "@/utils/toolResultUtils";
+import { detectTruncation, extractTokenUsage } from "./finishReasonDetector";
 import {
-  NativeToolCall,
-  ToolCallChunk,
   buildToolCallsFromChunks,
   createAIMessageWithToolCalls,
+  NativeToolCall,
+  ToolCallChunk,
 } from "./nativeToolCalling";
-import { logInfo, logWarn } from "@/logger";
 
 /**
  * ThinkBlockStreamer handles streaming content from various LLM providers
@@ -31,7 +31,7 @@ export class ThinkBlockStreamer {
 
   constructor(
     private updateCurrentAiMessage: (message: string) => void,
-    private excludeThinking: boolean = false
+    private excludeThinking: boolean = false,
   ) {
     logInfo(`[ThinkBlockStreamer] Created with excludeThinking=${excludeThinking}`);
   }
@@ -70,7 +70,7 @@ export class ThinkBlockStreamer {
       this.hasHandledTextLevelThinkTag = true;
       logWarn(
         "Detected </think> closing tag without opening <think> tag. " +
-          "This may indicate a misconfigured chat template in LM Studio. Adding opening tag."
+          "This may indicate a misconfigured chat template in LM Studio. Adding opening tag.",
       );
       this.fullResponse = "<think>" + this.fullResponse;
     }

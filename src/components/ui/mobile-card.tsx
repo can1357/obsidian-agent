@@ -1,6 +1,9 @@
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { ChevronDown, ChevronRight, GripVertical, MoreVertical } from "lucide-react";
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,9 +11,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { ChevronDown, ChevronRight, GripVertical, MoreVertical } from "lucide-react";
 
 export interface MobileCardDropdownAction<T = any> {
   icon: React.ReactNode;
@@ -97,7 +97,7 @@ export function MobileCard<T extends object>({
           "tw-transform-gpu",
         ],
         isDraggable && "tw-touch-manipulation",
-        className
+        className,
       )}
     >
       <CardHeader className="tw-p-3">
@@ -200,7 +200,9 @@ export function MobileCard<T extends object>({
         <div
           className={cn(
             "tw-transition-all tw-duration-300 tw-ease-in-out",
-            isExpanded ? "tw-max-h-96 tw-opacity-100" : "tw-max-h-0 tw-overflow-hidden tw-opacity-0"
+            isExpanded
+              ? "tw-max-h-96 tw-opacity-100"
+              : "tw-max-h-0 tw-overflow-hidden tw-opacity-0",
           )}
         >
           <CardContent className="tw-p-3 tw-pt-0">{expandedContent}</CardContent>

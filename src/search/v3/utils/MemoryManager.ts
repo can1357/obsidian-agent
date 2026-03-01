@@ -22,7 +22,7 @@ export class MemoryManager {
     // Roughly 200KB average per document means ~500 docs for 100MB
     this.candidateLimit = Math.min(
       MemoryManager.DEFAULT_CANDIDATE_LIMIT,
-      Math.floor(ramLimitMB * 5) // Approximately 5 docs per MB
+      Math.floor(ramLimitMB * 5), // Approximately 5 docs per MB
     );
   }
 
@@ -71,7 +71,7 @@ export class MemoryManager {
     const previousBytes = this.bytesUsed;
     this.bytesUsed = 0;
     logInfo(
-      `MemoryManager: Reset memory tracking (was using ${previousBytes} bytes, max: ${this.maxBytes} bytes)`
+      `MemoryManager: Reset memory tracking (was using ${previousBytes} bytes, max: ${this.maxBytes} bytes)`,
     );
   }
 

@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Label } from "@/components/ui/label";
-import { ObsidianNativeSelect } from "@/components/ui/obsidian-native-select";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { AlertTriangle, ArrowUpRight, RotateCcw, Settings } from "lucide-react";
-import { SettingSwitch } from "@/components/ui/setting-switch";
-import { ModelParametersEditor } from "@/components/ui/ModelParametersEditor";
-import { CustomModel, getModelKey } from "@/aiParams";
-import { getSettings, updateSetting } from "@/settings/model";
 import debounce from "lodash.debounce";
+import { AlertTriangle, ArrowUpRight, RotateCcw, Settings } from "lucide-react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { CustomModel, getModelKey } from "@/aiParams";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { ModelParametersEditor } from "@/components/ui/ModelParametersEditor";
+import { ObsidianNativeSelect } from "@/components/ui/obsidian-native-select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { SettingSwitch } from "@/components/ui/setting-switch";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { getSettings, updateSetting } from "@/settings/model";
 import {
   getDefaultSystemPromptTitle,
   getDisableBuiltinSystemPrompt,
@@ -38,7 +38,7 @@ export function ChatSettingsPopover() {
 
   // Find the currently selected model (original model)
   const originalModel = settings.activeModels.find(
-    (model) => `${model.name}|${model.provider}` === modelKey
+    (model) => `${model.name}|${model.provider}` === modelKey,
   );
 
   // Local editing state
@@ -87,11 +87,11 @@ export function ChatSettingsPopover() {
     () =>
       debounce((updatedModel: CustomModel) => {
         const updatedModels = settings.activeModels.map((model) =>
-          `${model.name}|${model.provider}` === modelKey ? updatedModel : model
+          `${model.name}|${model.provider}` === modelKey ? updatedModel : model,
         );
         updateSetting("activeModels", updatedModels);
       }, 500),
-    [settings.activeModels, modelKey]
+    [settings.activeModels, modelKey],
   );
 
   // Cleanup debounced save on unmount to ensure pending changes are persisted
@@ -121,7 +121,7 @@ export function ChatSettingsPopover() {
         }
       }
     },
-    [debouncedSave]
+    [debouncedSave],
   );
 
   /**
@@ -135,7 +135,7 @@ export function ChatSettingsPopover() {
       setLocalModel(updatedModel);
       debouncedSave(updatedModel);
     },
-    [localModel, debouncedSave]
+    [localModel, debouncedSave],
   );
 
   /**
@@ -150,7 +150,7 @@ export function ChatSettingsPopover() {
       setLocalModel(updatedModel);
       debouncedSave(updatedModel);
     },
-    [localModel, debouncedSave]
+    [localModel, debouncedSave],
   );
 
   const handleReset = useCallback(() => {

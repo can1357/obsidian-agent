@@ -10,16 +10,16 @@ import type { App, WorkspaceLeaf } from "obsidian";
 import { logWarn } from "@/logger";
 import { isLeafStillOpen } from "@/services/webViewerService/webViewerServiceHelpers";
 import {
-  isWebViewerLeaf,
   type ActiveWebTabStateListener,
   type ActiveWebTabStateSnapshot,
   type ActiveWebTabTrackingRefs,
+  isWebViewerLeaf,
   type StartActiveWebTabTrackingOptions,
   type WebViewerLeaf,
   type WebViewerPageInfo,
 } from "@/services/webViewerService/webViewerServiceTypes";
-import { normalizeUrlForMatching } from "@/utils/urlNormalization";
 import type { WebTabContext } from "@/types/message";
+import { normalizeUrlForMatching } from "@/utils/urlNormalization";
 
 // ============================================================================
 // Webview Event Types
@@ -219,7 +219,7 @@ export class WebViewerStateManager {
             url: targetRaw,
             title: titleHint,
             matches: titleMatchedLeaves.length,
-          }
+          },
         );
         return titleMatchedLeaves[0];
       }
@@ -243,7 +243,7 @@ export class WebViewerStateManager {
       {
         url: targetRaw,
         matches: matchedLeaves.length,
-      }
+      },
     );
     return matchedLeaves[0];
   }
@@ -288,7 +288,7 @@ export class WebViewerStateManager {
    * Call this in plugin onload() and register the returned EventRefs.
    */
   startActiveWebTabTracking(
-    options: StartActiveWebTabTrackingOptions = {}
+    options: StartActiveWebTabTrackingOptions = {},
   ): ActiveWebTabTrackingRefs {
     // If already tracking, stop first to allow re-initialization with new options
     if (this.activeWebTabTrackingRefs) {
@@ -310,7 +310,7 @@ export class WebViewerStateManager {
         this.recomputeActiveWebTabState({ trigger: "active-leaf-change", activeLeaf: leaf });
         // Re-subscribe to webview events when active leaf changes
         this.subscribeToWebviewLoadEvents();
-      }
+      },
     );
 
     const layoutRef = this.app.workspace.on("layout-change", () => {
@@ -553,7 +553,7 @@ export class WebViewerStateManager {
       // 2) Sticky semantics only applies to active-leaf-change.
       const viewType = params.activeLeaf?.view?.getViewType();
       const preserve = Boolean(
-        viewType && this.activeWebTabTrackingPreserveViewTypes.includes(viewType)
+        viewType && this.activeWebTabTrackingPreserveViewTypes.includes(viewType),
       );
       if (!preserve) {
         nextActiveWebTabLeaf = null;
@@ -635,11 +635,11 @@ export class WebViewerStateManager {
     const unchanged =
       WebViewerStateManager.areWebTabContextsEqual(
         prev.activeWebTabForMentions,
-        next.activeWebTabForMentions
+        next.activeWebTabForMentions,
       ) &&
       WebViewerStateManager.areWebTabContextsEqual(
         prev.activeOrLastWebTab,
-        next.activeOrLastWebTab
+        next.activeOrLastWebTab,
       );
 
     if (unchanged) {

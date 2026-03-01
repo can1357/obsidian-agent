@@ -1,3 +1,4 @@
+import { type CallbackManagerForLLMRun } from "@langchain/core/callbacks/manager";
 import {
   BaseChatModel,
   type BaseChatModelParams,
@@ -8,11 +9,10 @@ import {
   type BaseMessage,
   type MessageContent,
 } from "@langchain/core/messages";
-import { type ChatResult, ChatGeneration, ChatGenerationChunk } from "@langchain/core/outputs";
-import { type CallbackManagerForLLMRun } from "@langchain/core/callbacks/manager";
-import { GitHubCopilotProvider } from "./GitHubCopilotProvider";
-import { extractTextFromChunk } from "@/utils";
+import { ChatGeneration, ChatGenerationChunk, type ChatResult } from "@langchain/core/outputs";
 import type { FetchImplementation } from "@/utils";
+import { extractTextFromChunk } from "@/utils";
+import { GitHubCopilotProvider } from "./GitHubCopilotProvider";
 
 // Approximate characters per token for English text
 const CHARS_PER_TOKEN = 4;
@@ -88,7 +88,7 @@ export class GitHubCopilotChatModel extends BaseChatModel {
   async _generate(
     messages: BaseMessage[],
     options: this["ParsedCallOptions"],
-    _runManager?: CallbackManagerForLLMRun
+    _runManager?: CallbackManagerForLLMRun,
   ): Promise<ChatResult> {
     const chatMessages = this.toCopilotMessages(messages);
 
@@ -143,7 +143,7 @@ export class GitHubCopilotChatModel extends BaseChatModel {
   override async *_streamResponseChunks(
     messages: BaseMessage[],
     options: this["ParsedCallOptions"],
-    runManager?: CallbackManagerForLLMRun
+    runManager?: CallbackManagerForLLMRun,
   ): AsyncGenerator<ChatGenerationChunk> {
     // If streaming is disabled, use _generate and yield as single chunk
     if (!this.streaming) {
@@ -231,7 +231,7 @@ export class GitHubCopilotChatModel extends BaseChatModel {
     // Provider's check catches "no JSON at all", this catches "JSON but no usable content".
     if (!yieldedUsableChunk) {
       throw new Error(
-        "GitHub Copilot streaming produced no usable chunks (no content, finish_reason, or usage)"
+        "GitHub Copilot streaming produced no usable chunks (no content, finish_reason, or usage)",
       );
     }
   }

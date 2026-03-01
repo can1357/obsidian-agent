@@ -195,7 +195,7 @@ export function requireWebview(leaf: WebViewerLeaf): WebviewElement {
     typeof (webview as unknown as WebviewElement).executeJavaScript !== "function"
   ) {
     throw new WebviewUnavailableError(
-      "Web Viewer webview is unavailable. The view may not be fully initialized."
+      "Web Viewer webview is unavailable. The view may not be fully initialized.",
     );
   }
   return webview as unknown as WebviewElement;

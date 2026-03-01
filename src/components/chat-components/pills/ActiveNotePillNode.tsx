@@ -1,17 +1,17 @@
-import React from "react";
 import {
+  $getRoot,
   DOMConversionMap,
   DOMConversionOutput,
   DOMExportOutput,
   EditorConfig,
   LexicalNode,
   NodeKey,
-  $getRoot,
 } from "lexical";
-import { BasePillNode, SerializedBasePillNode } from "./BasePillNode";
-import { TruncatedPillText } from "./TruncatedPillText";
-import { PillBadge } from "./PillBadge";
+import React from "react";
 import { useActiveFile } from "../context/ActiveFileContext";
+import { BasePillNode, SerializedBasePillNode } from "./BasePillNode";
+import { PillBadge } from "./PillBadge";
+import { TruncatedPillText } from "./TruncatedPillText";
 
 // Active note pill doesn't store any file-specific data
 // It always represents the current active file
@@ -150,7 +150,7 @@ export function $createActiveNotePillNode(): ActiveNotePillNode {
 }
 
 export function $isActiveNotePillNode(
-  node: LexicalNode | null | undefined
+  node: LexicalNode | null | undefined,
 ): node is ActiveNotePillNode {
   return node instanceof ActiveNotePillNode;
 }

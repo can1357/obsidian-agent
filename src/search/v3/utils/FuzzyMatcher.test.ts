@@ -89,7 +89,7 @@ describe("FuzzyMatcher", () => {
       const variants = FuzzyMatcher.generateVariants("test");
       // 't' can be replaced with 'r' or 'y' based on keyboard proximity
       const hasKeyboardVariant = variants.some(
-        (v) => v.includes("rest") || v.includes("yest") || v.includes("tesr")
+        (v) => v.includes("rest") || v.includes("yest") || v.includes("tesr"),
       );
       expect(hasKeyboardVariant).toBe(true);
     });

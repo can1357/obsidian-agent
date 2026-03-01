@@ -1,7 +1,7 @@
 import { logError, logInfo, logWarn } from "@/logger";
 import { getSettings } from "@/settings/model";
-import { ToolManager } from "@/tools/toolManager";
 import { ToolRegistry } from "@/tools/ToolRegistry";
+import { ToolManager } from "@/tools/toolManager";
 import { err2String } from "@/utils";
 
 /**
@@ -30,7 +30,7 @@ export interface ToolExecutionResult {
 export async function executeSequentialToolCall(
   toolCall: ToolCall,
   availableTools: any[],
-  originalUserMessage?: string
+  originalUserMessage?: string,
 ): Promise<ToolExecutionResult> {
   const DEFAULT_TOOL_TIMEOUT = 120000; // 120 seconds timeout per tool
 
@@ -85,8 +85,8 @@ export async function executeSequentialToolCall(
         new Promise((_, reject) =>
           setTimeout(
             () => reject(new Error(`Tool execution timed out after ${timeout}ms`)),
-            timeout
-          )
+            timeout,
+          ),
         ),
       ]);
     }
@@ -116,7 +116,7 @@ export async function executeSequentialToolCall(
     const isSchemaError = errorMsg.includes("schema");
     if (isSchemaError) {
       logError(
-        `[ToolCall] Schema validation failed for "${toolCall.name}". Args: ${JSON.stringify(toolCall.args, null, 2)}`
+        `[ToolCall] Schema validation failed for "${toolCall.name}". Args: ${JSON.stringify(toolCall.args, null, 2)}`,
       );
     } else {
       logError(`[ToolCall] Error executing "${toolCall.name}": ${errorMsg}`);
@@ -244,7 +244,7 @@ export function logToolResult(toolName: string, result: ToolExecutionResult): vo
   const text = String(result.result ?? "");
   if (text.length > maxLogLength) {
     logInfo(
-      `Result: ${text.substring(0, maxLogLength)}... (truncated, ${text.length} chars total)`
+      `Result: ${text.substring(0, maxLogLength)}... (truncated, ${text.length} chars total)`,
     );
   } else if (text.length > 0) {
     logInfo(`Result:`, text);
@@ -256,7 +256,7 @@ export function logToolResult(toolName: string, result: ToolExecutionResult): vo
  * If path is not available, falls back to title
  */
 export function deduplicateSources(
-  sources: { title: string; path: string; score: number; explanation?: any }[]
+  sources: { title: string; path: string; score: number; explanation?: any }[],
 ): { title: string; path: string; score: number; explanation?: any }[] {
   const uniqueSources = new Map<
     string,

@@ -1,3 +1,7 @@
+import { $getSelection, $isRangeSelection } from "lexical";
+import { CornerDownLeft, Image, Loader2, StopCircle, X } from "lucide-react";
+import { App, Notice, TFile } from "obsidian";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   getCurrentProject,
   ProjectConfig,
@@ -11,29 +15,24 @@ import { AddImageModal } from "@/components/modals/AddImageModal";
 import { Button } from "@/components/ui/button";
 import { ModelSelector } from "@/components/ui/ModelSelector";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ChatToolControls } from "./ChatToolControls";
+import { useSettingsValue } from "@/settings/model";
+import { SelectedTextContext, WebTabContext } from "@/types/message";
+import { isAllowedFileForNoteContext } from "@/utils";
 import {
   mergeWebTabContexts,
   normalizeUrlString,
   normalizeWebTabContext,
 } from "@/utils/urlNormalization";
-
-import { useSettingsValue } from "@/settings/model";
-import { SelectedTextContext, WebTabContext } from "@/types/message";
-import { isAllowedFileForNoteContext } from "@/utils";
-import { CornerDownLeft, Image, Loader2, StopCircle, X } from "lucide-react";
-import { App, Notice, TFile } from "obsidian";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { $getSelection, $isRangeSelection } from "lexical";
+import { ChatToolControls } from "./ChatToolControls";
 import { ContextControl } from "./ContextControl";
-import { $removePillsByPath } from "./pills/NotePillNode";
-import { $removeActiveNotePills } from "./pills/ActiveNotePillNode";
-import { $removePillsByURL } from "./pills/URLPillNode";
-import { $removePillsByFolder } from "./pills/FolderPillNode";
-import { $removePillsByToolName, $createToolPillNode } from "./pills/ToolPillNode";
-import { $removeActiveWebTabPills } from "./pills/ActiveWebTabPillNode";
-import { $findWebTabPills, $removeWebTabPillsByUrl } from "./pills/WebTabPillNode";
 import LexicalEditor from "./LexicalEditor";
+import { $removeActiveNotePills } from "./pills/ActiveNotePillNode";
+import { $removeActiveWebTabPills } from "./pills/ActiveWebTabPillNode";
+import { $removePillsByFolder } from "./pills/FolderPillNode";
+import { $removePillsByPath } from "./pills/NotePillNode";
+import { $createToolPillNode, $removePillsByToolName } from "./pills/ToolPillNode";
+import { $removePillsByURL } from "./pills/URLPillNode";
+import { $findWebTabPills, $removeWebTabPillsByUrl } from "./pills/WebTabPillNode";
 
 interface ChatInputProps {
   inputMessage: string;
@@ -72,7 +71,7 @@ interface ChatInputProps {
       notes: TFile[];
       urls: string[];
       folders: string[];
-    }
+    },
   ) => void;
   onEditCancel?: () => void;
   initialContext?: {
@@ -160,7 +159,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
   const [webToggle, setWebToggle] = useState(false);
   const [composerToggle, setComposerToggle] = useState(false);
   const [autonomousAgentToggle, setAutonomousAgentToggle] = useState(
-    settings.enableAutonomousAgent
+    settings.enableAutonomousAgent,
   );
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
   const loadingMessages = [
@@ -425,7 +424,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
           if (activeUrl && normalized.url === activeUrl) {
             setIncludeActiveWebTab(true);
             setContextWebTabs((prev) =>
-              prev.filter((t) => normalizeUrlString(t.url) !== activeUrl)
+              prev.filter((t) => normalizeUrlString(t.url) !== activeUrl),
             );
             break;
           }
@@ -441,7 +440,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
           const activeUrl = normalizeUrlString(activeWebTab?.url);
           if (activeUrl) {
             setContextWebTabs((prev) =>
-              prev.filter((t) => normalizeUrlString(t.url) !== activeUrl)
+              prev.filter((t) => normalizeUrlString(t.url) !== activeUrl),
             );
           }
         }

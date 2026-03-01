@@ -1,5 +1,5 @@
-import { generatePromptDebugReportForAgent, resolveBasePrompt } from "./promptDebugService";
 import { PromptSection } from "./modelAdapter";
+import { generatePromptDebugReportForAgent, resolveBasePrompt } from "./promptDebugService";
 import { PromptDebugReport } from "./toolPromptDebugger";
 
 const createAdapter = () => ({
@@ -8,7 +8,7 @@ const createAdapter = () => ({
       basePrompt: string,
       toolDescriptions: string,
       toolNames?: string[],
-      toolMetadata?: any[]
+      toolMetadata?: any[],
     ): PromptSection[] => [
       {
         id: "system",
@@ -18,7 +18,7 @@ const createAdapter = () => ({
           toolMetadata?.length ?? 0
         }`,
       },
-    ]
+    ],
   ),
   enhanceUserMessage: jest.fn((message: string) => `${message} (enhanced)`),
   constructor: { name: "TestAdapter" },
@@ -71,7 +71,7 @@ describe("promptDebugService", () => {
       "BasePrompt",
       "<tool></tool>",
       ["localSearch"],
-      expect.any(Array)
+      expect.any(Array),
     );
     expect(adapter.enhanceUserMessage).toHaveBeenCalledWith("search my notes", true);
     expect(report.sections.map((section) => section.id)).toEqual([

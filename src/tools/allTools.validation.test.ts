@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { StructuredTool } from "@langchain/core/tools";
+import { z } from "zod";
 
 /**
  * Tool validation tests to ensure all tools follow best practices
@@ -134,7 +134,7 @@ describe("All Tools Validation", () => {
           z.object({
             timestamp: z.number(),
             action: z.string(),
-          })
+          }),
         ),
       });
 
@@ -158,7 +158,7 @@ describe("All Tools Validation", () => {
 
       // All valid inputs
       expect(
-        schema.safeParse({ required: "test", withDefault: "value", nullable: "text" }).success
+        schema.safeParse({ required: "test", withDefault: "value", nullable: "text" }).success,
       ).toBe(true);
       expect(
         schema.safeParse({
@@ -166,10 +166,10 @@ describe("All Tools Validation", () => {
           optional: "opt",
           withDefault: "value",
           nullable: "text",
-        }).success
+        }).success,
       ).toBe(true);
       expect(
-        schema.safeParse({ required: "test", withDefault: "value", nullable: null }).success
+        schema.safeParse({ required: "test", withDefault: "value", nullable: null }).success,
       ).toBe(true);
 
       // Test that default value is applied
@@ -290,7 +290,7 @@ describe("All Tools Validation", () => {
             z.object({
               id: z.string(),
               quantity: z.number().positive(),
-            })
+            }),
           )
           .min(1, "At least one item required"),
       });

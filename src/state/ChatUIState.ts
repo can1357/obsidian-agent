@@ -1,8 +1,8 @@
-import { ChainType } from "@/chainFactory";
-import { logInfo } from "@/logger";
-import { ChatManager } from "@/core/ChatManager";
-import { ChatMessage, MessageContext } from "@/types/message";
 import { TFile } from "obsidian";
+import { ChainType } from "@/chainFactory";
+import { ChatManager } from "@/core/ChatManager";
+import { logInfo } from "@/logger";
+import { ChatMessage, MessageContext } from "@/types/message";
 
 /**
  * ChatUIState - Clean UI-only state manager
@@ -64,7 +64,7 @@ export class ChatUIState {
     includeActiveNote: boolean = false,
     includeActiveWebTab: boolean = false,
     content?: any[],
-    updateLoadingMessage?: (message: string) => void
+    updateLoadingMessage?: (message: string) => void,
   ): Promise<string> {
     const messageId = await this.chatManager.sendMessage(
       displayText,
@@ -73,7 +73,7 @@ export class ChatUIState {
       includeActiveNote,
       includeActiveWebTab,
       content,
-      updateLoadingMessage
+      updateLoadingMessage,
     );
     this.notifyListeners();
     return messageId;
@@ -86,13 +86,13 @@ export class ChatUIState {
     messageId: string,
     newText: string,
     chainType: ChainType,
-    includeActiveNote: boolean = false
+    includeActiveNote: boolean = false,
   ): Promise<boolean> {
     const success = await this.chatManager.editMessage(
       messageId,
       newText,
       chainType,
-      includeActiveNote
+      includeActiveNote,
     );
     if (success) {
       this.notifyListeners();
@@ -106,7 +106,7 @@ export class ChatUIState {
   async regenerateMessage(
     messageId: string,
     onUpdateCurrentMessage: (message: string) => void,
-    onAddMessage: (message: ChatMessage) => void
+    onAddMessage: (message: ChatMessage) => void,
   ): Promise<boolean> {
     const success = await this.chatManager.regenerateMessage(
       messageId,
@@ -118,7 +118,7 @@ export class ChatUIState {
       () => {
         // Notify immediately after truncation
         this.notifyListeners();
-      }
+      },
     );
     if (success) {
       this.notifyListeners();

@@ -1,8 +1,8 @@
-import { logInfo, logWarn } from "@/logger";
-import { getSettings, CopilotSettings } from "@/settings/model";
 import { App } from "obsidian";
-import { SelfHostRetriever, VectorSearchBackend } from "./selfHostRetriever";
+import { logInfo, logWarn } from "@/logger";
+import { CopilotSettings, getSettings } from "@/settings/model";
 import { MiyoSemanticRetriever } from "./miyo/MiyoSemanticRetriever";
+import { SelfHostRetriever, VectorSearchBackend } from "./selfHostRetriever";
 import { MergedSemanticRetriever } from "./v3/MergedSemanticRetriever";
 import { RETURN_ALL_LIMIT } from "./v3/SearchCore";
 import { TieredLexicalRetriever } from "./v3/TieredLexicalRetriever";
@@ -133,7 +133,7 @@ export class RetrieverFactory {
   static async createRetriever(
     app: App,
     options: RetrieverOptions,
-    settings?: Partial<CopilotSettings>
+    settings?: Partial<CopilotSettings>,
   ): Promise<RetrieverSelectionResult> {
     const currentSettings = settings ? { ...getSettings(), ...settings } : getSettings();
 
@@ -174,7 +174,7 @@ export class RetrieverFactory {
       if (currentSettings.enableSemanticSearchV3) {
         const retriever = new MergedSemanticRetriever(app, normalizedOptions);
         logInfo(
-          "RetrieverFactory: Using MergedSemanticRetriever (semantic search fallback for self-host mode)"
+          "RetrieverFactory: Using MergedSemanticRetriever (semantic search fallback for self-host mode)",
         );
         return {
           retriever,
@@ -186,7 +186,7 @@ export class RetrieverFactory {
       // Semantic search not enabled, fall back to lexical
       const retriever = new TieredLexicalRetriever(app, normalizedOptions);
       logInfo(
-        "RetrieverFactory: Using TieredLexicalRetriever (lexical search fallback for self-host mode)"
+        "RetrieverFactory: Using TieredLexicalRetriever (lexical search fallback for self-host mode)",
       );
       return {
         retriever,
@@ -238,7 +238,7 @@ export class RetrieverFactory {
    */
   static createSemanticRetriever(
     app: App,
-    options: RetrieverOptions
+    options: RetrieverOptions,
   ): MergedSemanticRetriever | MiyoSemanticRetriever {
     if (RetrieverFactory.shouldUseMiyo(getSettings())) {
       return RetrieverFactory.createMiyoRetriever(app, options);
@@ -254,7 +254,7 @@ export class RetrieverFactory {
    * @returns The vector search backend instance, or null if unavailable
    */
   private static async getSelfHostedBackend(
-    _settings: CopilotSettings
+    _settings: CopilotSettings,
   ): Promise<VectorSearchBackend | null> {
     // Return registered backend if available
     if (RetrieverFactory.selfHostedBackend) {
@@ -273,7 +273,7 @@ export class RetrieverFactory {
     // This is a placeholder until a concrete backend (e.g., Miyo) is implemented
     logWarn(
       "RetrieverFactory: No self-hosted backend available. " +
-        "Register a VectorSearchBackend implementation via RetrieverFactory.registerSelfHostedBackend()"
+        "Register a VectorSearchBackend implementation via RetrieverFactory.registerSelfHostedBackend()",
     );
     return null;
   }
@@ -286,7 +286,7 @@ export class RetrieverFactory {
    * @returns The type of retriever that would be created
    */
   static getRetrieverType(
-    settings?: Partial<CopilotSettings>
+    settings?: Partial<CopilotSettings>,
   ): "self_hosted" | "semantic" | "lexical" {
     const currentSettings = settings ? { ...getSettings(), ...settings } : getSettings();
 

@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { TFile } from "obsidian";
-import { TypeaheadMenuPortal } from "@/components/chat-components/TypeaheadMenuPortal";
-import { useNoteSearch, NoteSearchOption } from "@/components/chat-components/hooks/useNoteSearch";
+import React, { useCallback, useEffect, useState } from "react";
+import { NoteSearchOption, useNoteSearch } from "@/components/chat-components/hooks/useNoteSearch";
 import {
-  useTypeaheadPlugin,
   TypeaheadState,
+  useTypeaheadPlugin,
 } from "@/components/chat-components/hooks/useTypeaheadPlugin";
+import { TypeaheadMenuPortal } from "@/components/chat-components/TypeaheadMenuPortal";
 import {
   $replaceTriggeredTextWithPill,
   PillData,
@@ -48,7 +48,7 @@ export function NoteCommandPlugin({
         return errorMsg;
       }
     },
-    [previewCache]
+    [previewCache],
   );
 
   // Use unified note search hook with standard configuration
@@ -82,7 +82,7 @@ export function NoteCommandPlugin({
         });
       }
     },
-    [editor]
+    [editor],
   );
 
   // Use the shared typeahead hook

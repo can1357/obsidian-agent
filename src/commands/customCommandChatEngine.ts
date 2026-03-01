@@ -3,7 +3,6 @@
  * Extracted from CustomCommandChatModal.tsx for reuse across Quick Ask and Custom Commands.
  */
 
-import { RunnableSequence } from "@langchain/core/runnables";
 import { BaseChatMemory, BufferMemory } from "@langchain/classic/memory";
 import {
   ChatPromptTemplate,
@@ -11,8 +10,9 @@ import {
   MessagesPlaceholder,
   SystemMessagePromptTemplate,
 } from "@langchain/core/prompts";
-import ChatModelManager from "@/LLMProviders/chatModelManager";
+import { RunnableSequence } from "@langchain/core/runnables";
 import { CustomModel } from "@/aiParams";
+import ChatModelManager from "@/LLMProviders/chatModelManager";
 
 /**
  * Creates a new BufferMemory instance for chat history.
@@ -35,7 +35,7 @@ export function createChatMemory(): BufferMemory {
 export async function createChatChain(
   selectedModel: CustomModel,
   systemPrompt: string,
-  memory: BaseChatMemory
+  memory: BaseChatMemory,
 ): Promise<RunnableSequence> {
   const chatModel = await ChatModelManager.getInstance().createModelInstance(selectedModel);
 

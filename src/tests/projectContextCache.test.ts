@@ -51,7 +51,7 @@ jest.mock("@/cache/fileCache", () => {
         getCacheKey: jest
           .fn()
           .mockImplementation(
-            (file, additionalContext) => `key-${file.path}-${additionalContext || ""}`
+            (file, additionalContext) => `key-${file.path}-${additionalContext || ""}`,
           ),
         get: jest.fn().mockImplementation(async (key) => {
           // Return mock content based on key
@@ -181,7 +181,7 @@ describe("ProjectContextCache", () => {
     // Call the method with both required parameters
     const updatedCache = await projectContextCache.updateProjectFilesFromPatterns(
       mockProject,
-      contextCache
+      contextCache,
     );
 
     // Check that files were evaluated using the search pattern
@@ -244,7 +244,7 @@ describe("ProjectContextCache", () => {
     const updatedCache = projectContextCache.updateProjectMarkdownFilesFromPatterns(
       mockProject,
       contextCache,
-      testFiles as any
+      testFiles as any,
     );
 
     // Verify that only Markdown files were added to the cache
@@ -473,7 +473,7 @@ describe("ProjectContextCache", () => {
 
     // Should throw error when skipIfEmpty=false
     await expect(
-      projectContextCache.updateCacheSafely(isolatedProject, updateFn, false)
+      projectContextCache.updateCacheSafely(isolatedProject, updateFn, false),
     ).rejects.toThrow();
   });
 
@@ -538,10 +538,10 @@ describe("ProjectContextCache", () => {
     // Verify all updates were applied to the final cache
     expect(currentCache.markdownContext).toBe("Updated markdown content");
     expect(currentCache.webContexts && currentCache.webContexts["https://example.com"]).toBe(
-      "Web content"
+      "Web content",
     );
     expect(
-      currentCache.youtubeContexts && currentCache.youtubeContexts["https://youtube.com/test"]
+      currentCache.youtubeContexts && currentCache.youtubeContexts["https://youtube.com/test"],
     ).toBe("YouTube content");
   });
 
@@ -632,10 +632,10 @@ describe("ProjectContextCache", () => {
     // Verify all updates were applied to the final cache
     expect(currentCache.markdownContext).toBe("Async updated markdown");
     expect(currentCache.webContexts && currentCache.webContexts["https://example.com"]).toBe(
-      "Async web content"
+      "Async web content",
     );
     expect(
-      currentCache.youtubeContexts && currentCache.youtubeContexts["https://youtube.com/test"]
+      currentCache.youtubeContexts && currentCache.youtubeContexts["https://youtube.com/test"],
     ).toBe("Async YouTube content");
 
     // Log order details for debugging

@@ -52,7 +52,7 @@ const getErrorBlockRegistry = (): Map<string, Map<string, ToolCallRootRecord>> =
 const pruneEmptyMessageEntry = (
   messageId: string,
   messageRoots: Map<string, ToolCallRootRecord>,
-  registry: Map<string, Map<string, ToolCallRootRecord>>
+  registry: Map<string, Map<string, ToolCallRootRecord>>,
 ): void => {
   if (messageRoots.size > 0) {
     return;
@@ -73,7 +73,7 @@ const disposeToolCallRoot = (
   toolCallId: string,
   record: ToolCallRootRecord,
   logContext: string,
-  registry: Map<string, Map<string, ToolCallRootRecord>>
+  registry: Map<string, Map<string, ToolCallRootRecord>>,
 ): void => {
   try {
     record.root.unmount();
@@ -100,7 +100,7 @@ const handleContainerChange = (
   toolCallId: string,
   oldRecord: ToolCallRootRecord,
   logContext: string,
-  registry: Map<string, Map<string, ToolCallRootRecord>>
+  registry: Map<string, Map<string, ToolCallRootRecord>>,
 ): void => {
   // Immediately remove from map so new record can be created
   messageRoots.delete(toolCallId);
@@ -131,7 +131,7 @@ const scheduleToolCallRootDisposal = (
   toolCallId: string,
   record: ToolCallRootRecord,
   logContext: string,
-  registry: Map<string, Map<string, ToolCallRootRecord>>
+  registry: Map<string, Map<string, ToolCallRootRecord>>,
 ): void => {
   if (record.isUnmounting) {
     return;
@@ -160,7 +160,7 @@ export const ensureToolCallRoot = (
   messageRoots: Map<string, ToolCallRootRecord>,
   toolCallId: string,
   container: HTMLElement,
-  logContext: string
+  logContext: string,
 ): ToolCallRootRecord => {
   let record = messageRoots.get(toolCallId);
 
@@ -171,7 +171,7 @@ export const ensureToolCallRoot = (
       toolCallId,
       record,
       `${logContext} (finalizing stale root)`,
-      getRegistry()
+      getRegistry(),
     );
     record = undefined;
   }
@@ -187,7 +187,7 @@ export const ensureToolCallRoot = (
       toolCallId,
       record,
       `${logContext} (container changed)`,
-      getRegistry()
+      getRegistry(),
     );
     record = undefined;
   }
@@ -214,7 +214,7 @@ export const ensureErrorBlockRoot = (
   messageRoots: Map<string, ToolCallRootRecord>,
   errorId: string,
   container: HTMLElement,
-  logContext: string
+  logContext: string,
 ): ToolCallRootRecord => {
   let record = messageRoots.get(errorId);
 
@@ -225,7 +225,7 @@ export const ensureErrorBlockRoot = (
       errorId,
       record,
       `${logContext} (finalizing stale error root)`,
-      getErrorBlockRegistry()
+      getErrorBlockRegistry(),
     );
     record = undefined;
   }
@@ -240,7 +240,7 @@ export const ensureErrorBlockRoot = (
       errorId,
       record,
       `${logContext} (container changed)`,
-      getErrorBlockRegistry()
+      getErrorBlockRegistry(),
     );
     record = undefined;
   }
@@ -263,7 +263,7 @@ export const ensureErrorBlockRoot = (
  */
 export const renderToolCallBanner = (
   record: ToolCallRootRecord,
-  toolCall: ToolCallMarker
+  toolCall: ToolCallMarker,
 ): void => {
   record.root.render(
     <ToolCallBanner
@@ -273,7 +273,7 @@ export const renderToolCallBanner = (
       isExecuting={toolCall.isExecuting}
       result={toolCall.result || null}
       confirmationMessage={toolCall.confirmationMessage}
-    />
+    />,
   );
 };
 
@@ -291,7 +291,7 @@ export const removeToolCallRoot = (
   messageId: string,
   messageRoots: Map<string, ToolCallRootRecord>,
   toolCallId: string,
-  logContext: string
+  logContext: string,
 ): void => {
   const record = messageRoots.get(toolCallId);
 
@@ -304,7 +304,7 @@ export const removeToolCallRoot = (
     toolCallId,
     record,
     logContext,
-    getRegistry()
+    getRegistry(),
   );
 };
 
@@ -315,7 +315,7 @@ export const removeErrorBlockRoot = (
   messageId: string,
   messageRoots: Map<string, ToolCallRootRecord>,
   errorId: string,
-  logContext: string
+  logContext: string,
 ): void => {
   const record = messageRoots.get(errorId);
 
@@ -328,7 +328,7 @@ export const removeErrorBlockRoot = (
     errorId,
     record,
     logContext,
-    getErrorBlockRegistry()
+    getErrorBlockRegistry(),
   );
 };
 
@@ -384,7 +384,7 @@ export const cleanupStaleToolCallRoots = (now: number = Date.now()): void => {
           toolCallId,
           record,
           "stale cleanup (detached container)",
-          registry
+          registry,
         );
         return;
       }
@@ -400,7 +400,7 @@ export const cleanupStaleToolCallRoots = (now: number = Date.now()): void => {
         toolCallId,
         record,
         "stale cleanup (legacy record)",
-        registry
+        registry,
       );
     });
   });
@@ -427,7 +427,7 @@ export const cleanupStaleErrorBlockRoots = (now: number = Date.now()): void => {
           errorId,
           record,
           "stale error cleanup (detached container)",
-          registry
+          registry,
         );
         return;
       }
@@ -443,7 +443,7 @@ export const cleanupStaleErrorBlockRoots = (now: number = Date.now()): void => {
         errorId,
         record,
         "stale error cleanup (legacy record)",
-        registry
+        registry,
       );
     });
   });
@@ -455,7 +455,7 @@ export const cleanupStaleErrorBlockRoots = (now: number = Date.now()): void => {
 export const cleanupMessageToolCallRoots = (
   messageId: string,
   messageRoots: Map<string, ToolCallRootRecord>,
-  logContext: string
+  logContext: string,
 ): void => {
   const registry = getRegistry();
   messageRoots.forEach((record, toolCallId) => {
@@ -469,7 +469,7 @@ export const cleanupMessageToolCallRoots = (
 export const cleanupMessageErrorBlockRoots = (
   messageId: string,
   messageRoots: Map<string, ToolCallRootRecord>,
-  logContext: string
+  logContext: string,
 ): void => {
   const registry = getErrorBlockRegistry();
   messageRoots.forEach((record, errorId) => {

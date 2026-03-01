@@ -1,5 +1,5 @@
-import { processPrompt } from "@/commands/customCommandUtils";
 import { TFile, Vault } from "obsidian";
+import { processPrompt } from "@/commands/customCommandUtils";
 import { getFileContent, getFileName, getNotesFromPath } from "@/utils";
 
 // Mock the dependencies
@@ -86,7 +86,7 @@ describe("XML Escaping in processPrompt", () => {
     mockActiveNote.basename = "Note <with> \"XML\" & 'special' chars";
 
     (getFileContent as jest.Mock).mockResolvedValue(
-      'Content: <script>alert("xss")</script> & more'
+      'Content: <script>alert("xss")</script> & more',
     );
     (getFileName as jest.Mock).mockReturnValue(mockActiveNote.basename);
 

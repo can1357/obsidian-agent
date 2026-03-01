@@ -1,7 +1,7 @@
-import { logInfo, logWarn } from "@/logger";
-import { CHUNK_SIZE } from "@/constants";
-import { App, TFile } from "obsidian";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
+import { App, TFile } from "obsidian";
+import { CHUNK_SIZE } from "@/constants";
+import { logInfo, logWarn } from "@/logger";
 import { MemoryManager } from "./utils/MemoryManager";
 
 /**
@@ -155,12 +155,12 @@ export class ChunkManager {
       if (skippedCacheCount > 0) {
         const skippedMb = (skippedCacheBytes / 1024 / 1024).toFixed(1);
         logInfo(
-          `ChunkManager: Cache budget reached, skipped caching ${skippedCacheCount} notes (${skippedMb}MB total)`
+          `ChunkManager: Cache budget reached, skipped caching ${skippedCacheCount} notes (${skippedMb}MB total)`,
         );
       }
 
       logInfo(
-        `ChunkManager: Retrieved ${allChunks.length} chunks from ${validPaths.length} notes (${this.formatMemoryUsage()})`
+        `ChunkManager: Retrieved ${allChunks.length} chunks from ${validPaths.length} notes (${this.formatMemoryUsage()})`,
       );
       return allChunks;
     } catch (error) {
@@ -249,7 +249,7 @@ export class ChunkManager {
     }
 
     logWarn(
-      `ChunkManager: Chunk not in cache: ${id} (use async getChunkText for auto-regeneration)`
+      `ChunkManager: Chunk not in cache: ${id} (use async getChunkText for auto-regeneration)`,
     );
     return "";
   }
@@ -277,7 +277,7 @@ export class ChunkManager {
           this.memoryUsage += chunkBytes;
         } else {
           logInfo(
-            `ChunkManager: Cannot cache regenerated chunks for ${notePath}, would exceed memory budget`
+            `ChunkManager: Cannot cache regenerated chunks for ${notePath}, would exceed memory budget`,
           );
         }
       }
@@ -338,7 +338,7 @@ export class ChunkManager {
           firstHeading,
           file,
           chunkIndex,
-          options
+          options,
         );
         chunks.push(...processedChunks);
         return chunks;
@@ -352,7 +352,7 @@ export class ChunkManager {
           "",
           file,
           chunkIndex,
-          options
+          options,
         );
         chunks.push(...processedChunks);
         return chunks;
@@ -374,7 +374,7 @@ export class ChunkManager {
           heading.heading,
           file,
           chunkIndex,
-          options
+          options,
         );
 
         chunks.push(...processedChunks);
@@ -398,7 +398,7 @@ export class ChunkManager {
     heading: string,
     file: TFile,
     startChunkIndex: number,
-    options: ChunkOptions
+    options: ChunkOptions,
   ): Promise<Chunk[]> {
     const title = file.basename;
     const chunks: Chunk[] = [];
@@ -433,7 +433,7 @@ export class ChunkManager {
         const coalescedContents = this.coalesceTinySplitChunks(
           docs.map((doc) => doc.pageContent),
           header,
-          options.maxChars
+          options.maxChars,
         );
 
         coalescedContents.forEach((chunkContent, index) => {
@@ -481,7 +481,7 @@ export class ChunkManager {
   private coalesceTinySplitChunks(
     chunkContents: string[],
     header: string,
-    maxChars: number
+    maxChars: number,
   ): string[] {
     if (chunkContents.length <= 1) {
       return chunkContents;

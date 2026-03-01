@@ -7,7 +7,7 @@
  * (e.g. QuickAsk and Chat) can coexist without state conflicts.
  */
 
-import { StateEffect, StateEffectType, StateField, type Extension } from "@codemirror/state";
+import { type Extension, StateEffect, StateEffectType, StateField } from "@codemirror/state";
 import { Decoration, EditorView } from "@codemirror/view";
 
 // ============================================================================
@@ -53,7 +53,7 @@ export interface PersistentHighlightInstance {
    */
   buildEffects(
     view: EditorView,
-    range: { from: number; to: number } | null
+    range: { from: number; to: number } | null,
   ): StateEffect<unknown>[];
 
   /**
@@ -95,7 +95,7 @@ export function createPersistentHighlight(className: string): PersistentHighligh
   function normalizeRange(
     docLength: number,
     from: number,
-    to: number
+    to: number,
   ): PersistentHighlightRange | null {
     const clampedFrom = Math.max(0, Math.min(from, docLength));
     const clampedTo = Math.max(0, Math.min(to, docLength));
@@ -134,7 +134,7 @@ export function createPersistentHighlight(className: string): PersistentHighligh
 
     provide: (f) =>
       EditorView.decorations.from(f, (range) =>
-        range ? Decoration.set([mark.range(range.from, range.to)]) : Decoration.none
+        range ? Decoration.set([mark.range(range.from, range.to)]) : Decoration.none,
       ),
   });
 
@@ -164,7 +164,7 @@ export function createPersistentHighlight(className: string): PersistentHighligh
    */
   function buildEffects(
     view: EditorView,
-    range: { from: number; to: number } | null
+    range: { from: number; to: number } | null,
   ): StateEffect<unknown>[] {
     const effects: StateEffect<unknown>[] = [];
 

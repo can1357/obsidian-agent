@@ -1,17 +1,17 @@
+import { z } from "zod";
 import { getStandaloneQuestion } from "@/chainUtils";
 import { DEFAULT_MAX_SOURCE_CHUNKS, TEXT_WEIGHT } from "@/constants";
+import { getWebSearchCitationInstructions } from "@/LLMProviders/chainRunner/utils/citationUtils";
+import { deduplicateSources } from "@/LLMProviders/chainRunner/utils/toolExecution";
 import { hasSelfHostSearchKey, selfHostWebSearch } from "@/LLMProviders/selfHostServices";
 import { logInfo } from "@/logger";
 import { RetrieverFactory } from "@/search/RetrieverFactory";
-import { getSettings } from "@/settings/model";
-import { z } from "zod";
-import { deduplicateSources } from "@/LLMProviders/chainRunner/utils/toolExecution";
-import { createLangChainTool } from "./createLangChainTool";
-import { RETURN_ALL_LIMIT } from "@/search/v3/SearchCore";
-import { getWebSearchCitationInstructions } from "@/LLMProviders/chainRunner/utils/citationUtils";
-import { TieredLexicalRetriever } from "@/search/v3/TieredLexicalRetriever";
 import { FilterRetriever } from "@/search/v3/FilterRetriever";
 import { mergeFilterAndSearchResults } from "@/search/v3/mergeResults";
+import { RETURN_ALL_LIMIT } from "@/search/v3/SearchCore";
+import { TieredLexicalRetriever } from "@/search/v3/TieredLexicalRetriever";
+import { getSettings } from "@/settings/model";
+import { createLangChainTool } from "./createLangChainTool";
 
 /**
  * Query expansion data returned with search results.
@@ -65,7 +65,7 @@ const localSearchSchema = z.object({
   salientTerms: z
     .array(z.string())
     .describe(
-      "Keywords extracted from the user's query for BM25 full-text search. Must be from original query."
+      "Keywords extracted from the user's query for BM25 full-text search. Must be from original query.",
     ),
   timeRange: z
     .object({
@@ -81,7 +81,7 @@ const localSearchSchema = z.object({
       "Set to true when the user wants ALL matching notes, not just the best few. " +
         "Use for requests like 'find all my X', 'list every Y', 'show me all my Z', " +
         "'how many notes about W'. Returns up to 100 results instead of default 30. " +
-        "Leave false/undefined for normal questions."
+        "Leave false/undefined for normal questions.",
     ),
   _preExpandedQuery: z
     .object({
@@ -119,7 +119,7 @@ async function performLexicalSearch({
   const effectiveMaxK = useExpandedLimits ? RETURN_ALL_LIMIT : DEFAULT_MAX_SOURCE_CHUNKS;
 
   logInfo(
-    `lexicalSearch useExpandedLimits: ${useExpandedLimits} (timeRange: ${!!timeRange}, tags: ${tagTerms.length > 0}, explicit: ${returnAll}), forceLexical: ${forceLexical}`
+    `lexicalSearch useExpandedLimits: ${useExpandedLimits} (timeRange: ${!!timeRange}, tags: ${tagTerms.length > 0}, explicit: ${returnAll}), forceLexical: ${forceLexical}`,
   );
 
   // Convert QueryExpansionInfo to ExpandedQuery format (adding queries field)
@@ -215,11 +215,11 @@ async function performLexicalSearch({
   const taggedSearchResults = searchResults.map((doc) => mapDoc(doc, false));
 
   logInfo(
-    `lexicalSearch found ${taggedFilterResults.length} filter + ${taggedSearchResults.length} search documents for query: "${query}"`
+    `lexicalSearch found ${taggedFilterResults.length} filter + ${taggedSearchResults.length} search documents for query: "${query}"`,
   );
   if (timeRange) {
     logInfo(
-      `Time range search from ${new Date(timeRange.startTime).toISOString()} to ${new Date(timeRange.endTime).toISOString()}`
+      `Time range search from ${new Date(timeRange.startTime).toISOString()} to ${new Date(timeRange.endTime).toISOString()}`,
     );
   }
 
@@ -281,7 +281,7 @@ const semanticSearchTool = createLangChainTool({
       : DEFAULT_MAX_SOURCE_CHUNKS;
 
     logInfo(
-      `semanticSearch useExpandedLimits: ${useExpandedLimits} (timeRange: ${!!timeRange}, tags: ${tagTerms.length > 0}, explicit: ${returnAll === true})`
+      `semanticSearch useExpandedLimits: ${useExpandedLimits} (timeRange: ${!!timeRange}, tags: ${tagTerms.length > 0}, explicit: ${returnAll === true})`,
     );
 
     // Always use HybridRetriever for semantic search
@@ -300,7 +300,7 @@ const semanticSearchTool = createLangChainTool({
     logInfo(`semanticSearch found ${documents.length} documents for query: "${query}"`);
     if (timeRange) {
       logInfo(
-        `Time range search from ${new Date(timeRange.startTime).toISOString()} to ${new Date(timeRange.endTime).toISOString()}`
+        `Time range search from ${new Date(timeRange.startTime).toISOString()} to ${new Date(timeRange.endTime).toISOString()}`,
       );
     }
 
@@ -412,7 +412,7 @@ async function performMiyoSearch({
   const miyoDocs = await miyoRetriever.getRelevantDocuments(query);
 
   logInfo(
-    `miyoSearch: ${filterDocs.length} filter + ${miyoDocs.length} miyo docs for query: "${query}"`
+    `miyoSearch: ${filterDocs.length} filter + ${miyoDocs.length} miyo docs for query: "${query}"`,
   );
 
   // Merge: filter results first, then Miyo results (deduped)
@@ -534,7 +534,7 @@ const webSearchSchema = z.object({
       z.object({
         role: z.enum(["user", "assistant"]),
         content: z.string(),
-      })
+      }),
     )
     .describe("Previous conversation turns for context (usually empty array)"),
 });
@@ -552,7 +552,7 @@ const webSearchTool = createLangChainTool({
 
       if (!hasSelfHostSearchKey()) {
         throw new Error(
-          "Web search requires a configured search provider (Firecrawl or Perplexity). Set an API key in settings."
+          "Web search requires a configured search provider (Firecrawl or Perplexity). Set an API key in settings.",
         );
       }
 

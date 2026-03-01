@@ -1,3 +1,7 @@
+import { ChevronDown, ChevronRight, ChevronUp, Info } from "lucide-react";
+import { App, Modal } from "obsidian";
+import React, { useEffect, useState } from "react";
+import { createRoot, Root } from "react-dom/client";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import { PasswordInput } from "@/components/ui/password-input";
@@ -7,11 +11,7 @@ import { GitHubCopilotAuth } from "@/settings/v2/components/GitHubCopilotAuth";
 import { LocalServicesSection } from "@/settings/v2/components/LocalServicesSection";
 import { ModelImporter } from "@/settings/v2/components/ModelImporter";
 import { getNeedSetKeyProvider, getProviderInfo, getProviderLabel } from "@/utils";
-import { ChevronDown, ChevronRight, ChevronUp, Info } from "lucide-react";
 import { getApiKeyForProvider } from "@/utils/modelUtils";
-import { App, Modal } from "obsidian";
-import React, { useEffect, useState } from "react";
-import { createRoot, Root } from "react-dom/client";
 
 interface ApiKeyModalContentProps {
   onClose: () => void;
@@ -186,7 +186,7 @@ export class ApiKeyDialog extends Modal {
     this.root = createRoot(contentEl);
 
     this.root.render(
-      <ApiKeyModalContent onClose={() => this.close()} onGoToModelTab={this.onGoToModelTab} />
+      <ApiKeyModalContent onClose={() => this.close()} onGoToModelTab={this.onGoToModelTab} />,
     );
   }
 

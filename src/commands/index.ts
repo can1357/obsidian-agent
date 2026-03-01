@@ -1,34 +1,33 @@
-import { logFileManager } from "@/logFileManager";
+import { Editor, MarkdownView, Notice, TFile } from "obsidian";
+import { v4 as uuidv4 } from "uuid";
+import { setSelectedTextContexts } from "@/aiParams";
 import { FileCache } from "@/cache/fileCache";
 import { ProjectContextCache } from "@/cache/projectContextCache";
-import { logError } from "@/logger";
+import { CustomCommandChatModal } from "@/commands/CustomCommandChatModal";
+import { CustomCommandSettingsModal } from "@/commands/CustomCommandSettingsModal";
+import { EMPTY_COMMAND } from "@/commands/constants";
+import { CustomCommandManager } from "@/commands/customCommandManager";
+import {
+  appendIncludeNoteContextPlaceholders,
+  QUICK_COMMAND_SYSTEM_PROMPT,
+} from "@/commands/quickCommandPrompts";
+import { getCachedCustomCommands } from "@/commands/state";
+import { CustomCommand } from "@/commands/type";
+import { ApplyCustomCommandModal } from "@/components/modals/ApplyCustomCommandModal";
+import { YoutubeTranscriptModal } from "@/components/modals/YoutubeTranscriptModal";
 import {
   clearRecordedPromptPayload,
   flushRecordedPromptPayloadToLog,
 } from "@/LLMProviders/chainRunner/utils/promptPayloadRecorder";
-
-import { CustomCommandSettingsModal } from "@/commands/CustomCommandSettingsModal";
-import { EMPTY_COMMAND } from "@/commands/constants";
-import { CustomCommandManager } from "@/commands/customCommandManager";
-import { getCachedCustomCommands } from "@/commands/state";
-import { CustomCommand } from "@/commands/type";
-import {
-  QUICK_COMMAND_SYSTEM_PROMPT,
-  appendIncludeNoteContextPlaceholders,
-} from "@/commands/quickCommandPrompts";
-import { CustomCommandChatModal } from "@/commands/CustomCommandChatModal";
-import { ApplyCustomCommandModal } from "@/components/modals/ApplyCustomCommandModal";
-import { YoutubeTranscriptModal } from "@/components/modals/YoutubeTranscriptModal";
+import { logFileManager } from "@/logFileManager";
+import { logError } from "@/logger";
 // Debug modals removed with search v3
 import CopilotPlugin from "@/main";
 import { getAllQAMarkdownContent } from "@/search/searchUtils";
 import { CopilotSettings } from "@/settings/model";
 import { NoteSelectedTextContext, WebSelectedTextContext } from "@/types/message";
 import { ensureFolderExists, isSourceModeOn } from "@/utils";
-import { Editor, MarkdownView, Notice, TFile } from "obsidian";
-import { v4 as uuidv4 } from "uuid";
 import { COMMAND_IDS, COMMAND_NAMES, CommandId } from "../constants";
-import { setSelectedTextContexts } from "@/aiParams";
 
 /**
  * Add a command to the plugin.
@@ -47,7 +46,7 @@ export function addCommand(plugin: CopilotPlugin, id: CommandId, callback: () =>
 function addEditorCommand(
   plugin: CopilotPlugin,
   id: CommandId,
-  callback: (editor: Editor) => void
+  callback: (editor: Editor) => void,
 ) {
   plugin.addCommand({
     id,
@@ -62,7 +61,7 @@ function addEditorCommand(
 export function addCheckCommand(
   plugin: CopilotPlugin,
   id: CommandId,
-  callback: (checking: boolean) => boolean | void
+  callback: (checking: boolean) => boolean | void,
 ) {
   plugin.addCommand({
     id,
@@ -74,7 +73,7 @@ export function addCheckCommand(
 export function registerCommands(
   plugin: CopilotPlugin,
   prev: CopilotSettings | undefined,
-  next: CopilotSettings
+  next: CopilotSettings,
 ) {
   addEditorCommand(plugin, COMMAND_IDS.COUNT_WORD_AND_TOKENS_SELECTION, async (editor: Editor) => {
     const selectedText = await editor.getSelection();
@@ -553,7 +552,7 @@ export function registerCommands(
       newCommand,
       async (updatedCommand) => {
         await CustomCommandManager.getInstance().createCommand(updatedCommand);
-      }
+      },
     );
     modal.open();
   });

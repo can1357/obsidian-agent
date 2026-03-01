@@ -1,9 +1,9 @@
-import { logInfo, logWarn } from "@/logger";
-import { extractNoteFiles } from "@/utils";
 import { BaseCallbackConfig } from "@langchain/core/callbacks/manager";
 import { Document } from "@langchain/core/documents";
 import { BaseRetriever } from "@langchain/core/retrievers";
 import { App } from "obsidian";
+import { logInfo, logWarn } from "@/logger";
+import { extractNoteFiles } from "@/utils";
 
 /**
  * Options for configuring the SelfHostRetriever.
@@ -67,7 +67,7 @@ export interface VectorSearchBackend {
       limit: number;
       minScore?: number;
       filter?: Record<string, unknown>;
-    }
+    },
   ): Promise<VectorSearchResult[]>;
 
   /**
@@ -82,7 +82,7 @@ export interface VectorSearchBackend {
       limit: number;
       minScore?: number;
       filter?: Record<string, unknown>;
-    }
+    },
   ): Promise<VectorSearchResult[]>;
 
   /**
@@ -140,7 +140,7 @@ export class SelfHostRetriever extends BaseRetriever {
    */
   public async getRelevantDocuments(
     query: string,
-    config?: BaseCallbackConfig
+    config?: BaseCallbackConfig,
   ): Promise<Document[]> {
     try {
       // Check backend availability
@@ -173,7 +173,7 @@ export class SelfHostRetriever extends BaseRetriever {
       });
 
       logInfo(
-        `SelfHostRetriever: Found ${searchResults.length} results for query "${query.substring(0, 50)}..."`
+        `SelfHostRetriever: Found ${searchResults.length} results for query "${query.substring(0, 50)}..."`,
       );
 
       // Convert to LangChain Document format
@@ -231,7 +231,7 @@ export class SelfHostRetriever extends BaseRetriever {
             id: result.id,
             source: "self_host",
           },
-        })
+        }),
     );
   }
 
@@ -250,7 +250,7 @@ export class SelfHostRetriever extends BaseRetriever {
 
       // Check if any salient term appears in content or title
       const hasMatch = salientTerms.some(
-        (term) => content.includes(term.toLowerCase()) || title.includes(term.toLowerCase())
+        (term) => content.includes(term.toLowerCase()) || title.includes(term.toLowerCase()),
       );
 
       if (hasMatch) {

@@ -1,7 +1,7 @@
 import { getMiyoSourceId } from "@/miyo/miyoUtils";
 import { MiyoSemanticRetriever } from "@/search/miyo/MiyoSemanticRetriever";
-import { getSettings } from "@/settings/model";
 import { RETURN_ALL_LIMIT } from "@/search/v3/SearchCore";
+import { getSettings } from "@/settings/model";
 
 const mockResolveBaseUrl = jest.fn();
 const mockSearch = jest.fn();
@@ -29,7 +29,7 @@ jest.mock("@/miyo/MiyoClient", () => ({
  * @returns Configured retriever instance.
  */
 function createRetriever(
-  options: Partial<ConstructorParameters<typeof MiyoSemanticRetriever>[1]> = {}
+  options: Partial<ConstructorParameters<typeof MiyoSemanticRetriever>[1]> = {},
 ) {
   return new MiyoSemanticRetriever({ vault: {}, metadataCache: {} } as any, {
     maxK: 10,
@@ -92,7 +92,7 @@ describe("MiyoSemanticRetriever", () => {
       "vault-source",
       "query with [[notes/a]] mention",
       10,
-      undefined
+      undefined,
     );
     expect(mockGetDocumentsByPath).not.toHaveBeenCalled();
 
@@ -119,7 +119,7 @@ describe("MiyoSemanticRetriever", () => {
       "vault-source",
       "show notes from this week",
       10,
-      [{ field: "mtime", gte: startTime, lte: endTime }]
+      [{ field: "mtime", gte: startTime, lte: endTime }],
     );
     expect(mockGetDocumentsByPath).not.toHaveBeenCalled();
   });
@@ -139,7 +139,7 @@ describe("MiyoSemanticRetriever", () => {
       "vault-source",
       "list all notes about ai digests",
       RETURN_ALL_LIMIT,
-      undefined
+      undefined,
     );
   });
 });

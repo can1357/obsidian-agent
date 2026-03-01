@@ -1,7 +1,7 @@
-import { type Youtube4llmResponse } from "@/types/serviceResponses";
 import { getDecryptedKey } from "@/encryptionService";
 import { logError, logInfo } from "@/logger";
 import { getSettings } from "@/settings/model";
+import { type Youtube4llmResponse } from "@/types/serviceResponses";
 
 const FIRECRAWL_SEARCH_URL = "https://api.firecrawl.dev/v2/search";
 const PERPLEXITY_CHAT_URL = "https://api.perplexity.ai/chat/completions";
@@ -93,7 +93,7 @@ async function firecrawlSearch(query: string, apiKey: string): Promise<SelfHostW
  */
 async function perplexitySonarSearch(
   query: string,
-  apiKey: string
+  apiKey: string,
 ): Promise<SelfHostWebSearchResult> {
   const response = await fetch(PERPLEXITY_CHAT_URL, {
     method: "POST",
@@ -181,7 +181,7 @@ export async function selfHostYoutube4llm(url: string): Promise<Youtube4llmRespo
 async function pollSupadataJob(
   jobId: string,
   apiKey: string,
-  startTime: number
+  startTime: number,
 ): Promise<Youtube4llmResponse> {
   const deadline = Date.now() + SUPADATA_POLL_TIMEOUT;
   const pollUrl = `${SUPADATA_TRANSCRIPT_URL}/${jobId}`;

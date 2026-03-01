@@ -1,13 +1,14 @@
 // DEPRECATED: Legacy hybrid retriever backed by Orama. Replaced by v3 TieredLexicalRetriever + MemoryIndexManager.
+
+import { Document } from "@langchain/core/documents";
+import { BaseRetriever } from "@langchain/core/retrievers";
+import { search } from "@orama/orama";
+import { TFile } from "obsidian";
 import EmbeddingManager from "@/LLMProviders/embeddingManager";
 import { logInfo } from "@/logger";
 import VectorStoreManager from "@/search/vectorStoreManager";
 import { getSettings } from "@/settings/model";
 import { extractNoteFiles, withSuppressedTokenWarnings } from "@/utils";
-import { Document } from "@langchain/core/documents";
-import { BaseRetriever } from "@langchain/core/retrievers";
-import { search } from "@orama/orama";
-import { TFile } from "obsidian";
 
 export class HybridRetriever extends BaseRetriever {
   public lc_namespace = ["hybrid_retriever"];
@@ -21,7 +22,7 @@ export class HybridRetriever extends BaseRetriever {
       textWeight?: number;
       returnAll?: boolean;
       useRerankerThreshold?: number; // reranking API is only called with this set
-    }
+    },
   ) {
     super();
   }
@@ -42,7 +43,7 @@ export class HybridRetriever extends BaseRetriever {
       const oramaChunks = await this.getOramaChunks(
         query,
         enhancedSalientTerms,
-        this.options.textWeight
+        this.options.textWeight,
       );
 
       const combinedChunks = this.filterAndFormatChunks(oramaChunks, explicitChunks);
@@ -104,7 +105,7 @@ export class HybridRetriever extends BaseRetriever {
               // Expose chunkId explicitly for cross-engine deduplication
               chunkId: doc.metadata?.chunkId,
             },
-          })
+          }),
       );
       explicitChunks.push(...matchingChunks);
     }
@@ -116,7 +117,7 @@ export class HybridRetriever extends BaseRetriever {
   public async getOramaChunks(
     query: string,
     salientTerms: string[],
-    textWeight?: number
+    textWeight?: number,
   ): Promise<Document[]> {
     let queryVector: number[];
     try {
@@ -126,7 +127,7 @@ export class HybridRetriever extends BaseRetriever {
         "Error in convertQueryToVector, please ensure your embedding model is working and has an adequate context length:",
         error,
         "\nQuery:",
-        query
+        query,
       );
       throw error;
     }
@@ -233,13 +234,13 @@ export class HybridRetriever extends BaseRetriever {
               // Expose chunkId explicitly for cross-engine deduplication
               chunkId: hit.document.metadata?.chunkId,
             },
-          })
+          }),
       );
 
       // Combine and deduplicate results
       const combinedResults = [...dailyNoteResultsWithContext, ...timeIntervalDocuments];
       const uniqueResults = Array.from(new Set(combinedResults.map((doc) => doc.metadata.id))).map(
-        (id) => combinedResults.find((doc) => doc.metadata.id === id)
+        (id) => combinedResults.find((doc) => doc.metadata.id === id),
       );
 
       return uniqueResults.filter((doc): doc is Document => doc !== undefined);

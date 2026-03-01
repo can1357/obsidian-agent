@@ -1,7 +1,7 @@
 import { PromptContextEnvelope } from "@/context/PromptContextTypes";
-import { formatDateTime } from "@/utils";
-import { ChatMessage, MessageContext, NewChatMessage, StoredMessage } from "@/types/message";
 import { logInfo } from "@/logger";
+import { ChatMessage, MessageContext, NewChatMessage, StoredMessage } from "@/types/message";
+import { formatDateTime } from "@/utils";
 
 /**
  * MessageRepository - Single source of truth for all messages
@@ -34,14 +34,14 @@ export class MessageRepository {
     processedText: string,
     sender: string,
     context?: MessageContext,
-    content?: any[]
+    content?: any[],
   ): string;
   addMessage(
     messageOrDisplayText: NewChatMessage | string,
     processedText?: string,
     sender?: string,
     context?: MessageContext,
-    content?: any[]
+    content?: any[],
   ): string {
     // If first parameter is a ChatMessage object
     if (typeof messageOrDisplayText === "object") {
@@ -138,7 +138,7 @@ export class MessageRepository {
   updateProcessedText(
     id: string,
     processedText: string,
-    contextEnvelope?: PromptContextEnvelope
+    contextEnvelope?: PromptContextEnvelope,
   ): boolean {
     const message = this.messages.find((msg) => msg.id === id);
     if (!message) {

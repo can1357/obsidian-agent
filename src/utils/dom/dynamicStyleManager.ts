@@ -80,7 +80,7 @@ function removePrefixedClasses(element: HTMLElement, prefix: string): void {
   const prefixPattern = `${prefix}-`;
   // P2 Fix: Convert to array first to avoid modifying classList while iterating
   const classesToRemove = Array.from(element.classList).filter((className) =>
-    className.startsWith(prefixPattern)
+    className.startsWith(prefixPattern),
   );
   classesToRemove.forEach((className) => {
     element.classList.remove(className);
@@ -98,7 +98,7 @@ function removePrefixedClasses(element: HTMLElement, prefix: string): void {
 export function updateDynamicStyleClass(
   element: HTMLElement,
   prefix: string,
-  styles: StyleRecord
+  styles: StyleRecord,
 ): void {
   if (!element) return;
 

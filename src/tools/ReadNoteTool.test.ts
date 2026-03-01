@@ -173,7 +173,7 @@ describe("readNoteTool", () => {
 
     getAbstractFileByPathMock.mockReturnValue(file);
     getFirstLinkpathDestMock.mockImplementation((link: string) =>
-      link === "Project Plan" ? candidatePrimary : null
+      link === "Project Plan" ? candidatePrimary : null,
     );
     getMarkdownFilesMock.mockReturnValue([candidatePrimary, candidateDuplicate, file]);
     mockCachedRead.mockResolvedValue("Intro [[Project Plan]] details");
@@ -200,7 +200,7 @@ describe("readNoteTool", () => {
 
     getAbstractFileByPathMock.mockReturnValue(file);
     getFirstLinkpathDestMock.mockImplementation((link: string) =>
-      link === "Docs/Guide" ? guideFile : null
+      link === "Docs/Guide" ? guideFile : null,
     );
     getMarkdownFilesMock.mockReturnValue([guideFile, file]);
     mockCachedRead.mockResolvedValue("See [[Docs/Guide#Setup|Quick Start]] for steps.");
