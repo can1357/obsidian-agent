@@ -78,7 +78,7 @@ export function getCommandId(commandName: string) {
 }
 
 export function getCustomCommandsFolder(): string {
-  return normalizePath(getSettings().customPromptsFolder);
+  return normalizePath((getSettings() ?? DEFAULT_SETTINGS).customPromptsFolder);
 }
 
 export function getCommandFilePath(title: string): string {
@@ -167,7 +167,7 @@ export function sortCommandsByAlphabetical(commands: CustomCommand[]): CustomCom
  * Sort prompts of the slash commands based on the sort strategy.
  */
 export function sortSlashCommands(commands: CustomCommand[]): CustomCommand[] {
-  const sortStrategy = getSettings().promptSortStrategy;
+  const sortStrategy = (getSettings() ?? DEFAULT_SETTINGS).promptSortStrategy;
   switch (sortStrategy) {
     case PromptSortStrategy.TIMESTAMP:
       return sortCommandsByRecency(commands);

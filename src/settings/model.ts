@@ -267,7 +267,7 @@ export function updateSetting<K extends keyof CopilotSettings>(key: K, value: Co
  * changes.
  */
 export function getSettings(): Readonly<CopilotSettings> {
-  return settingsStore.get(settingsAtom);
+  return settingsStore.get(settingsAtom) ?? DEFAULT_SETTINGS;
 }
 
 /**
