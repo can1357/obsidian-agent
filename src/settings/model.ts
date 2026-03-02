@@ -67,6 +67,11 @@ export interface CopilotSettings {
   githubCopilotAccessToken: string;
   githubCopilotToken: string;
   githubCopilotTokenExpiresAt: number;
+  // OpenAI Codex OAuth tokens
+  openAICodexAccessToken: string;
+  openAICodexRefreshToken: string;
+  openAICodexTokenExpiresAt: number;
+  openAICodexAccountId: string;
   defaultChainType: ChainType;
   defaultModelKey: string;
   embeddingModelKey: string;

@@ -71,6 +71,25 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
     ? EmbeddingModelProviders.OPENAI_FORMAT
     : ChatModelProviders.OPENAI_FORMAT;
 
+  /**
+   * Returns default capability flags for the selected provider.
+   * @param provider - Provider identifier.
+   */
+  const getDefaultCapabilitiesForProvider = (provider: string): ModelCapability[] => {
+    if (!isEmbeddingModel && provider === ChatModelProviders.OPENAI_CODEX) {
+      return [ModelCapability.REASONING, ModelCapability.VISION];
+    }
+    return [];
+  };
+
+  /**
+   * Returns whether CORS should be enabled by default for the selected provider.
+   * @param provider - Provider identifier.
+   */
+  const shouldEnableCorsByDefault = (provider: string): boolean => {
+    return provider === ChatModelProviders.OPENAI_CODEX;
+  };
+
   // 判断 Provider 是否有必填的额外设置
   const hasRequiredExtraSettings = (provider: string) => {
     return provider === ChatModelProviders.AZURE_OPENAI;
@@ -151,7 +170,8 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
       baseUrl: getProviderInfo(provider).host || "http://localhost:4000/v1",
       apiKey: getApiKeyForProvider(provider as SettingKeyProviders),
       isEmbeddingModel,
-      capabilities: [],
+      capabilities: getDefaultCapabilitiesForProvider(provider),
+      enableCors: shouldEnableCorsByDefault(provider),
     };
 
     if (!isEmbeddingModel) {
@@ -238,6 +258,8 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
       provider,
       apiKey: getApiKeyForProvider(provider as SettingKeyProviders),
       baseUrl: getProviderInfo(provider).host || "http://localhost:4000/v1",
+      capabilities: getDefaultCapabilitiesForProvider(provider),
+      enableCors: shouldEnableCorsByDefault(provider),
       ...(provider === ChatModelProviders.OPENAI ? { openAIOrgId: settings.openAIOrgId } : {}),
       ...(provider === ChatModelProviders.AZURE_OPENAI
         ? {

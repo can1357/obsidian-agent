@@ -15,6 +15,7 @@ import { ChatModelProviders, ModelCapability, ProviderInfo } from "@/constants";
 import { getDecryptedKey } from "@/encryptionService";
 import { MissingApiKeyError } from "@/error";
 import { GitHubCopilotChatModel } from "@/LLMProviders/githubCopilot/GitHubCopilotChatModel";
+import { OpenAICodexChatModel } from "@/LLMProviders/openAICodex/OpenAICodexChatModel";
 import { logError, logInfo } from "@/logger";
 import {
   CopilotSettings,
@@ -54,6 +55,7 @@ const CHAT_PROVIDER_CONSTRUCTORS = {
   [ChatModelProviders.DEEPSEEK]: ChatDeepSeek,
   [ChatModelProviders.AMAZON_BEDROCK]: BedrockChatModel,
   [ChatModelProviders.GITHUB_COPILOT]: GitHubCopilotChatModel,
+  [ChatModelProviders.OPENAI_CODEX]: OpenAICodexChatModel,
 } as const;
 
 type ChatProviderConstructMap = typeof CHAT_PROVIDER_CONSTRUCTORS;
@@ -90,6 +92,8 @@ export default class ChatModelManager {
     [ChatModelProviders.SILICONFLOW]: () => getSettings().siliconflowApiKey,
     [ChatModelProviders.GITHUB_COPILOT]: () =>
       getSettings().githubCopilotToken || getSettings().githubCopilotAccessToken,
+    [ChatModelProviders.OPENAI_CODEX]: () =>
+      getSettings().openAICodexAccessToken || getSettings().openAICodexRefreshToken,
   } as const;
 
   private constructor() {
@@ -349,6 +353,11 @@ export default class ChatModelManager {
         // This doesn't throw on HTTP errors so 401 retry logic works correctly.
         // WARNING: AbortSignal/timeout will NOT work when enableCors is true
         // because Obsidian's requestUrl doesn't support cancellation.
+        fetchImplementation: customModel.enableCors ? safeFetchNoThrow : undefined,
+      },
+      [ChatModelProviders.OPENAI_CODEX]: {
+        modelName: modelName,
+        // Keep parity with GitHub Copilot behavior for CORS bypass paths.
         fetchImplementation: customModel.enableCors ? safeFetchNoThrow : undefined,
       },
     };

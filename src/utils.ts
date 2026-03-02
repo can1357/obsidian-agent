@@ -1179,6 +1179,7 @@ export function getNeedSetKeyProvider(): Provider[] {
     ChatModelProviders.LM_STUDIO,
     ChatModelProviders.AZURE_OPENAI,
     ChatModelProviders.GITHUB_COPILOT,
+    ChatModelProviders.OPENAI_CODEX,
   ];
 
   return (Object.keys(ProviderInfo) as Provider[]).filter((key) => !excludeProviders.includes(key));
@@ -1215,6 +1216,21 @@ export function checkModelApiKey(
         hasApiKey: false,
         errorNotice:
           "GitHub Copilot is not authenticated. Please connect it in Settings > Copilot > Basic Tab > Set Keys.",
+      };
+    }
+    return { hasApiKey: true };
+  }
+
+  // OpenAI Codex uses OAuth, not API key
+  if (model.provider === ChatModelProviders.OPENAI_CODEX) {
+    const hasAuth = Boolean(
+      model.apiKey || settings.openAICodexAccessToken || settings.openAICodexRefreshToken,
+    );
+    if (!hasAuth) {
+      return {
+        hasApiKey: false,
+        errorNotice:
+          "OpenAI Codex is not authenticated. Please connect it in Settings > Copilot > Basic Tab > Set Keys.",
       };
     }
     return { hasApiKey: true };

@@ -1,7 +1,8 @@
 import { CustomModel } from "@/aiParams";
-import { ChatModelProviders, SettingKeyProviders } from "@/constants";
+import { ChatModelProviders, ModelCapability, SettingKeyProviders } from "@/constants";
 import { getDecryptedKey } from "@/encryptionService";
 import { GitHubCopilotProvider } from "@/LLMProviders/githubCopilot/GitHubCopilotProvider";
+import { OpenAICodexProvider } from "@/LLMProviders/openAICodex/OpenAICodexProvider";
 import ProjectManager from "@/LLMProviders/projectManager";
 import { logError, logWarn } from "@/logger";
 import { parseModelsResponse, StandardModel } from "@/settings/providerModels";
@@ -22,6 +23,25 @@ export interface AddModelResult {
 }
 
 /**
+ * Returns default capability flags for provider-imported models.
+ * @param provider - Model provider identifier.
+ */
+function getDefaultCapabilitiesForProvider(provider: SettingKeyProviders): ModelCapability[] {
+  if (provider === ChatModelProviders.OPENAI_CODEX) {
+    return [ModelCapability.REASONING, ModelCapability.VISION];
+  }
+  return [];
+}
+
+/**
+ * Returns whether CORS should be enabled by default for provider-imported models.
+ * @param provider - Model provider identifier.
+ */
+function shouldEnableCorsByDefault(provider: SettingKeyProviders): boolean {
+  return provider === ChatModelProviders.OPENAI_CODEX;
+}
+
+/**
  * Fetch models for a provider
  */
 export async function fetchModelsForProvider(
@@ -32,6 +52,14 @@ export async function fetchModelsForProvider(
     if (provider === ChatModelProviders.GITHUB_COPILOT) {
       const copilotProvider = GitHubCopilotProvider.getInstance();
       const response = await copilotProvider.listModels();
+      const models = parseModelsResponse(provider, response);
+      return { success: true, models };
+    }
+
+    // Special handling for OpenAI Codex
+    if (provider === ChatModelProviders.OPENAI_CODEX) {
+      const codexProvider = OpenAICodexProvider.getInstance();
+      const response = await codexProvider.listModels();
       const models = parseModelsResponse(provider, response);
       return { success: true, models };
     }
@@ -131,7 +159,8 @@ export async function verifyAndAddModel(
 
   // Build CustomModel
   const apiKey =
-    model.provider === ChatModelProviders.GITHUB_COPILOT
+    model.provider === ChatModelProviders.GITHUB_COPILOT ||
+    model.provider === ChatModelProviders.OPENAI_CODEX
       ? undefined
       : getApiKeyForProvider(model.provider);
 
@@ -140,6 +169,8 @@ export async function verifyAndAddModel(
     provider: model.provider,
     apiKey,
     enabled: true,
+    enableCors: shouldEnableCorsByDefault(model.provider),
+    capabilities: getDefaultCapabilitiesForProvider(model.provider),
   };
 
   // Verify model if not skipped
@@ -176,5 +207,7 @@ export function buildCustomModel(model: {
     name: model.name,
     provider: model.provider,
     enabled: true,
+    enableCors: shouldEnableCorsByDefault(model.provider),
+    capabilities: getDefaultCapabilitiesForProvider(model.provider),
   };
 }

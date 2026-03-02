@@ -154,6 +154,20 @@ export class GitHubCopilotProvider {
   }
 
   /**
+   * Namespace used by shared OAuth chat model diagnostics.
+   */
+  getProviderModelNamespace(): string {
+    return "github_copilot";
+  }
+
+  /**
+   * Provider type identifier for diagnostics.
+   */
+  getProviderType(): string {
+    return "github-copilot";
+  }
+
+  /**
    * Get current authentication state based on stored tokens
    * Returns authenticated only if we have a valid copilot token or can refresh it
    */

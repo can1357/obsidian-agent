@@ -10,6 +10,7 @@ import { updateSetting } from "@/settings/model";
 import { GitHubCopilotAuth } from "@/settings/v2/components/GitHubCopilotAuth";
 import { LocalServicesSection } from "@/settings/v2/components/LocalServicesSection";
 import { ModelImporter } from "@/settings/v2/components/ModelImporter";
+import { OpenAICodexAuth } from "@/settings/v2/components/OpenAICodexAuth";
 import { getNeedSetKeyProvider, getProviderInfo, getProviderLabel } from "@/utils";
 import { getApiKeyForProvider } from "@/utils/modelUtils";
 
@@ -128,6 +129,9 @@ function ApiKeyModalContent({ onClose, onGoToModelTab }: ApiKeyModalContentProps
 
         {/* GitHub Copilot Section */}
         <GitHubCopilotAuth />
+
+        {/* OpenAI Codex Section */}
+        <OpenAICodexAuth />
 
         {/* Local Services Section */}
         <LocalServicesSection />
