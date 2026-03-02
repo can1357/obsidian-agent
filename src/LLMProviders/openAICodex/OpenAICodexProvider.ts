@@ -1082,16 +1082,20 @@ export class OpenAICodexProvider extends OAuthProviderBase implements OAuthChatP
 
     const inputMessages = messages
       .filter((message) => message.role !== "system" && message.content.trim().length > 0)
-      .map((message) => ({
-        type: "message",
-        role: message.role === "assistant" ? "assistant" : "user",
-        content: [
-          {
-            type: "input_text",
-            text: message.content,
-          },
-        ],
-      }));
+      .map((message) => {
+        const role = message.role === "assistant" ? "assistant" : "user";
+        const contentType = role === "assistant" ? "output_text" : "input_text";
+        return {
+          type: "message",
+          role,
+          content: [
+            {
+              type: contentType,
+              text: message.content,
+            },
+          ],
+        };
+      });
 
     return {
       model,
