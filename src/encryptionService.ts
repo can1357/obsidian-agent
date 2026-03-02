@@ -43,7 +43,10 @@ export async function encryptAllKeys(
     (key) =>
       key.toLowerCase().includes("apikey") ||
       key === "githubCopilotAccessToken" ||
-      key === "githubCopilotToken",
+      key === "githubCopilotToken" ||
+      key === "openAICodexAccessToken" ||
+      key === "openAICodexRefreshToken" ||
+      key === "openAICodexAccountId",
   );
 
   for (const key of keysToEncrypt) {

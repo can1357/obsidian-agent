@@ -8,7 +8,12 @@ import { CustomModel } from "@/aiParams";
 import { EmbeddingModelProviders, ProviderInfo } from "@/constants";
 import { getDecryptedKey } from "@/encryptionService";
 import { CustomError } from "@/error";
-import { getModelKeyFromModel, getSettings, subscribeToSettingsChange } from "@/settings/model";
+import {
+  getModelKeyFromModel,
+  getSettings,
+  subscribeToSettingsChange,
+  updateSetting,
+} from "@/settings/model";
 import { err2String, safeFetch } from "@/utils";
 import { CustomOpenAIEmbeddings } from "./CustomOpenAIEmbeddings";
 
@@ -132,7 +137,7 @@ export default class EmbeddingManager {
 
   async getEmbeddingsAPI(): Promise<Embeddings> {
     const settings = getSettings();
-    const embeddingModelKey = settings.embeddingModelKey;
+    const embeddingModelKey = this.resolveEmbeddingModelKey(settings.embeddingModelKey);
 
     if (!EmbeddingManager.modelMap.hasOwnProperty(embeddingModelKey)) {
       throw new CustomError(`No embedding model found for: ${embeddingModelKey}`);
@@ -157,6 +162,30 @@ export default class EmbeddingManager {
         `Error creating embedding model: ${embeddingModelKey}. ${error.message}`,
       );
     }
+  }
+
+  /**
+   * Resolve a valid embedding model key from the current model map.
+   * Falls back to the first available model and persists the correction.
+   * @param requestedModelKey - Currently configured embedding model key.
+   * @returns A valid embedding model key.
+   */
+  private resolveEmbeddingModelKey(requestedModelKey: string): string {
+    if (EmbeddingManager.modelMap.hasOwnProperty(requestedModelKey)) {
+      return requestedModelKey;
+    }
+
+    const fallbackModelKey = Object.keys(EmbeddingManager.modelMap)[0];
+    if (!fallbackModelKey) {
+      return requestedModelKey;
+    }
+
+    if (requestedModelKey !== fallbackModelKey) {
+      updateSetting("embeddingModelKey", fallbackModelKey);
+      new Notice(`Embedding model fallback applied: ${fallbackModelKey}`);
+    }
+
+    return fallbackModelKey;
   }
 
   private async getEmbeddingConfig(customModel: CustomModel): Promise<any> {

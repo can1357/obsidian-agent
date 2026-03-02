@@ -67,6 +67,11 @@ export interface CopilotSettings {
   githubCopilotAccessToken: string;
   githubCopilotToken: string;
   githubCopilotTokenExpiresAt: number;
+  // OpenAI Codex OAuth tokens
+  openAICodexAccessToken: string;
+  openAICodexRefreshToken: string;
+  openAICodexTokenExpiresAt: number;
+  openAICodexAccountId: string;
   defaultChainType: ChainType;
   defaultModelKey: string;
   embeddingModelKey: string;
@@ -198,12 +203,20 @@ export const settingsAtom = atom<CopilotSettings>(DEFAULT_SETTINGS);
  * @returns A valid embedding model key.
  */
 function resolveEmbeddingModelKey(settings: CopilotSettings): string {
+  const activeEmbeddingModels = (settings.activeEmbeddingModels || []).filter(
+    (model) => model.enabled,
+  );
   const activeEmbeddingModelKeys = new Set(
-    (settings.activeEmbeddingModels || []).map((model) => getModelKeyFromModel(model)),
+    activeEmbeddingModels.map((model) => getModelKeyFromModel(model)),
   );
 
   if (settings.embeddingModelKey && activeEmbeddingModelKeys.has(settings.embeddingModelKey)) {
     return settings.embeddingModelKey;
+  }
+
+  const firstActiveEmbeddingModel = activeEmbeddingModels[0];
+  if (firstActiveEmbeddingModel) {
+    return getModelKeyFromModel(firstActiveEmbeddingModel);
   }
 
   return DEFAULT_SETTINGS.embeddingModelKey;

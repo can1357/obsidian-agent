@@ -208,6 +208,7 @@ export enum ChatModelProviders {
   COHEREAI = "cohereai",
   SILICONFLOW = "siliconflow",
   GITHUB_COPILOT = "github-copilot",
+  OPENAI_CODEX = "openai-codex",
 }
 
 export enum ModelCapability {
@@ -646,6 +647,13 @@ export const ProviderInfo: Record<Provider, ProviderMetadata> = {
     keyManagementURL: "https://github.com/settings/apps/authorizations",
     listModelURL: "",
   },
+  [ChatModelProviders.OPENAI_CODEX]: {
+    label: "OpenAI Codex",
+    host: "https://chatgpt.com/backend-api/codex",
+    curlBaseURL: "https://chatgpt.com/backend-api/codex",
+    keyManagementURL: "https://chatgpt.com",
+    listModelURL: "",
+  },
 };
 
 // Map provider to its settings key for API key
@@ -663,6 +671,7 @@ export const ProviderSettingsKeyMap: Record<SettingKeyProviders, keyof CopilotSe
   "amazon-bedrock": "amazonBedrockApiKey",
   siliconflow: "siliconflowApiKey",
   "github-copilot": "githubCopilotToken",
+  "openai-codex": "openAICodexAccessToken",
 };
 
 export enum VAULT_VECTOR_STORE_STRATEGY {
@@ -770,6 +779,11 @@ export const DEFAULT_SETTINGS: CopilotSettings = {
   githubCopilotAccessToken: "",
   githubCopilotToken: "",
   githubCopilotTokenExpiresAt: 0,
+  // OpenAI Codex OAuth tokens
+  openAICodexAccessToken: "",
+  openAICodexRefreshToken: "",
+  openAICodexTokenExpiresAt: 0,
+  openAICodexAccountId: "",
   defaultChainType: ChainType.LLM_CHAIN,
   defaultModelKey: ChatModels.GPT_41 + "|" + ChatModelProviders.OPENAI_FORMAT,
   embeddingModelKey:

@@ -379,6 +379,18 @@ export interface GitHubCopilotModel {
   };
 }
 
+// OpenAI Codex response model definition
+export interface OpenAICodexModelResponse {
+  object: string;
+  data: OpenAICodexModel[];
+}
+
+export interface OpenAICodexModel {
+  id: string;
+  object: string;
+  name: string;
+}
+
 // Response type mapping
 export interface ProviderResponseMap {
   [ChatModelProviders.OPENAI]: OpenAIModelResponse;
@@ -394,6 +406,7 @@ export interface ProviderResponseMap {
   [ChatModelProviders.AZURE_OPENAI]: null;
   [ChatModelProviders.AMAZON_BEDROCK]: unknown;
   [ChatModelProviders.GITHUB_COPILOT]: GitHubCopilotModelResponse;
+  [ChatModelProviders.OPENAI_CODEX]: OpenAICodexModelResponse;
 }
 
 // Adapter type definition - converts provider-specific models to standard format
@@ -491,6 +504,13 @@ export const providerAdapters: ProviderModelAdapters = {
       id: model.id,
       name: model.id,
       provider: ChatModelProviders.GITHUB_COPILOT,
+    })) || [],
+
+  [ChatModelProviders.OPENAI_CODEX]: (data): StandardModel[] =>
+    data.data?.map((model) => ({
+      id: model.id,
+      name: model.name || model.id,
+      provider: ChatModelProviders.OPENAI_CODEX,
     })) || [],
 };
 
